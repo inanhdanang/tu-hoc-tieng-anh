@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ĐẠI TỪ TÂN NGỮ – Bài Học 1 Giờ</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --me:    #c0392b;
+    --you:   #1565c0;
+    --him:   #2e7d32;
+    --her:   #6a1b9a;
+    --it:    #e65100;
+    --us:    #00838f;
+    --them:  #4527a0;
+    --yellow:#FFD93D;
+    --bg:    #fafbff;
+    --dark:  #0d1b2a;
+    --gray:  #78909c;
+    --radius:18px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--dark);min-height:100vh;}
+
+  header{background:var(--dark);color:white;padding:16px 22px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 3px 14px rgba(0,0,0,.3);}
+  header h1{font-family:'Baloo 2',cursive;font-size:1.2rem;font-weight:800;letter-spacing:1px;}
+  header h1 span{color:var(--yellow);}
+  #timer-bar{font-size:1rem;font-weight:700;background:var(--yellow);color:var(--dark);padding:5px 16px;border-radius:30px;}
+
+  #progress-wrap{background:#e9ecef;height:8px;}
+  #progress-bar{height:8px;background:linear-gradient(90deg,var(--me),var(--you),var(--him),var(--her),var(--it),var(--us),var(--them));transition:width .6s ease;border-radius:0 4px 4px 0;}
+
+  #phase-nav{display:flex;gap:6px;padding:12px 18px;overflow-x:auto;background:white;border-bottom:2px solid #f1f3f4;}
+  .phase-tab{flex-shrink:0;padding:6px 13px;border-radius:20px;font-size:.75rem;font-weight:700;border:2px solid #dee2e6;background:white;cursor:pointer;transition:all .2s;color:var(--gray);}
+  .phase-tab.active{background:var(--dark);color:white;border-color:var(--dark);}
+  .phase-tab.done{background:#2e7d32;color:white;border-color:#2e7d32;}
+
+  main{padding:20px 16px 48px;max-width:780px;margin:0 auto;}
+  .phase{display:none;animation:fadeIn .4s ease;}
+  .phase.active{display:block;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+  .section-header{background:var(--dark);border-radius:var(--radius) var(--radius) 0 0;padding:14px 20px;}
+  .section-header .phase-label{font-size:.68rem;letter-spacing:2px;text-transform:uppercase;color:var(--yellow);font-weight:700;}
+  .section-header h2{font-family:'Baloo 2',cursive;font-size:1.25rem;font-weight:800;color:white;}
+  .section-header .duration{font-size:.78rem;color:rgba(255,255,255,.5);margin-top:2px;}
+
+  .section-body{background:white;border-radius:0 0 var(--radius) var(--radius);padding:20px;margin-bottom:22px;box-shadow:0 4px 18px rgba(0,0,0,.07);}
+
+  /* PRONOUN TABLE */
+  .pronoun-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px;}
+  .pronoun-badge{border-radius:12px;padding:12px 8px;text-align:center;cursor:pointer;transition:transform .2s;}
+  .pronoun-badge:hover{transform:scale(1.05);}
+  .pronoun-badge .eng{font-family:'Baloo 2',cursive;font-size:1.3rem;font-weight:800;color:white;}
+  .pronoun-badge .subj{font-size:.7rem;color:rgba(255,255,255,.7);margin:2px 0;}
+  .pronoun-badge .vi{font-size:.82rem;font-weight:700;color:white;}
+
+  .compare-table{width:100%;border-collapse:collapse;font-size:.83rem;margin-bottom:14px;border-radius:12px;overflow:hidden;}
+  .compare-table th{padding:9px 12px;font-weight:800;text-align:center;color:white;}
+  .compare-table td{padding:9px 12px;border-bottom:1px solid #f0f0f0;text-align:center;font-weight:700;}
+  .compare-table tr:nth-child(even) td{background:#f8f9fa;}
+
+  .tip-box{background:#fff8e1;border-radius:10px;padding:11px 15px;margin-bottom:13px;font-size:.83rem;border-left:4px solid var(--yellow);line-height:1.65;}
+  .tip-box strong{color:var(--e65100);}
+
+  /* VOCAB */
+  .vocab-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+  .vocab-card{background:#f8f9fa;border-radius:12px;padding:11px 13px;cursor:pointer;border:2px solid transparent;transition:all .2s;position:relative;}
+  .vocab-card:hover{transform:translateY(-2px);}
+  .vocab-card .word{font-size:1rem;font-weight:800;}
+  .vocab-card .pron{font-size:.75rem;color:var(--gray);font-style:italic;margin:2px 0;}
+  .vocab-card .meaning{font-size:.82rem;font-weight:600;color:var(--dark);}
+  .vocab-card .type{font-size:.68rem;font-weight:800;text-transform:uppercase;margin-top:3px;}
+  .vocab-card .play-btn{position:absolute;top:9px;right:9px;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:.68rem;border:none;cursor:pointer;color:white;}
+
+  /* EXAMPLES */
+  .ex-group{margin-bottom:18px;}
+  .ex-group-title{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:20px;font-size:.82rem;font-weight:800;color:white;margin-bottom:10px;}
+  .ex-block{border-radius:12px;padding:12px 15px;margin-bottom:8px;border-left:4px solid;}
+  .ex-block .en{font-size:.95rem;font-weight:700;margin-bottom:3px;}
+  .ex-block .vi{font-size:.83rem;color:#495057;margin-bottom:7px;}
+  .play-sm{border:none;border-radius:20px;padding:5px 13px;font-size:.74rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px;font-family:'Nunito',sans-serif;color:white;transition:opacity .2s;}
+  .play-sm:hover{opacity:.82;}
+
+  /* DIALOGUE */
+  .dialogue-box{background:#f8f9fa;border-radius:14px;padding:16px;margin-bottom:12px;border:2px solid #e9ecef;}
+  .dialogue-box .d-title{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--gray);margin-bottom:10px;}
+  .d-line{display:flex;gap:8px;margin-bottom:8px;align-items:flex-start;}
+  .d-label{font-size:.72rem;font-weight:800;padding:3px 8px;border-radius:8px;color:white;flex-shrink:0;margin-top:2px;min-width:28px;text-align:center;}
+  .d-content .d-vi{font-size:.86rem;font-weight:700;color:#1565c0;}
+  .d-content .d-en{font-size:.86rem;font-weight:700;color:#212121;}
+  .play-dlg-btn{margin-top:8px;background:#2e7d32;color:white;border:none;border-radius:20px;padding:6px 14px;font-size:.76rem;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;display:inline-flex;align-items:center;gap:5px;}
+
+  /* QUIZ */
+  .quiz-item{background:#f8f9fa;border-radius:14px;padding:15px;margin-bottom:13px;border:2px solid transparent;}
+  .quiz-item.correct{border-color:#2e7d32;background:#f1f8e9;}
+  .quiz-item.wrong{border-color:#c0392b;background:#fbe9e7;}
+  .quiz-q{font-size:.92rem;font-weight:700;margin-bottom:11px;}
+  .quiz-options{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .quiz-opt{background:white;border:2px solid #dee2e6;border-radius:10px;padding:8px 10px;font-size:.84rem;font-weight:700;cursor:pointer;transition:all .2s;font-family:'Nunito',sans-serif;text-align:center;}
+  .quiz-opt:hover:not(:disabled){border-color:#1565c0;color:#1565c0;}
+  .quiz-opt.sel-ok{background:#2e7d32;color:white;border-color:#2e7d32;}
+  .quiz-opt.sel-fail{background:#c0392b;color:white;border-color:#c0392b;}
+  .quiz-opt.reveal{background:#f1f8e9;border-color:#2e7d32;color:#2e7d32;}
+  .quiz-opt:disabled{cursor:default;}
+  .quiz-fb{margin-top:7px;font-size:.79rem;font-weight:700;display:none;}
+  .quiz-fb.show{display:block;}
+  .quiz-fb.ok{color:#2e7d32;}
+  .quiz-fb.fail{color:#c0392b;}
+
+  /* FILL */
+  .fill-item{background:#f8f9fa;border-radius:13px;padding:14px;margin-bottom:11px;border:2px solid transparent;}
+  .fill-item.correct{border-color:#2e7d32;background:#f1f8e9;}
+  .fill-item.wrong{border-color:#c0392b;background:#fbe9e7;}
+  .fill-q{font-size:.92rem;font-weight:700;margin-bottom:7px;line-height:1.8;}
+  .fill-q input{border:2px solid #1565c0;border-radius:8px;padding:3px 9px;font-size:.88rem;font-family:'Nunito',sans-serif;font-weight:700;width:100px;text-align:center;outline:none;background:white;}
+  .fill-q input:focus{border-color:var(--e65100);}
+  .fill-vi{font-size:.8rem;color:var(--gray);margin-bottom:7px;}
+  .fill-ans{font-size:.8rem;font-weight:700;margin-top:5px;display:none;color:#2e7d32;}
+  .fill-ans.show{display:block;}
+
+  /* SPEAKING */
+  .speak-card{border-radius:13px;padding:15px 18px;margin-bottom:11px;color:white;}
+  .speak-lbl{font-size:.68rem;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:4px;}
+  .speak-en{font-size:1rem;font-weight:800;margin-bottom:3px;}
+  .speak-vi{font-size:.82rem;color:rgba(255,255,255,.72);margin-bottom:10px;}
+  .hear-btn{background:var(--yellow);color:var(--dark);border:none;border-radius:20px;padding:7px 16px;font-weight:800;font-size:.82rem;cursor:pointer;font-family:'Nunito',sans-serif;display:inline-flex;align-items:center;gap:5px;transition:transform .15s;}
+  .hear-btn:hover{transform:scale(1.04);}
+
+  /* RESULT */
+  #score-section{text-align:center;padding:26px 14px;}
+  .score-circle{width:126px;height:126px;border-radius:50%;background:linear-gradient(135deg,#1565c0,#c0392b);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 18px;box-shadow:0 6px 22px rgba(21,101,192,.3);}
+  .score-circle .num{font-family:'Baloo 2',cursive;font-size:2.2rem;font-weight:800;color:white;line-height:1;}
+  .score-circle .lbl{font-size:.73rem;font-weight:700;color:rgba(255,255,255,.8);}
+  #score-section h2{font-family:'Baloo 2',cursive;font-size:1.5rem;font-weight:800;margin-bottom:7px;}
+  #score-section p{color:var(--gray);font-size:.88rem;max-width:340px;margin:0 auto 18px;}
+
+  .btn-next{background:#1565c0;color:white;border:none;border-radius:12px;padding:11px 26px;font-size:.92rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;margin-top:14px;display:inline-flex;align-items:center;gap:7px;transition:all .2s;}
+  .btn-next:hover{opacity:.88;}
+  .btn-check{background:#2e7d32;color:white;border:none;border-radius:12px;padding:10px 22px;font-size:.88rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;margin-top:11px;display:inline-flex;align-items:center;gap:6px;}
+  .btn-primary{background:var(--dark);color:white;border:none;border-radius:12px;padding:11px 26px;font-size:.92rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;display:inline-flex;align-items:center;gap:7px;}
+
+  .score-inline{background:#f1f3f5;border-radius:10px;padding:9px 15px;margin-bottom:14px;font-size:.83rem;font-weight:700;display:flex;align-items:center;gap:8px;}
+  .score-badge{background:var(--yellow);color:var(--dark);border-radius:20px;padding:3px 12px;font-weight:800;font-size:.83rem;}
+  .divider{height:1px;background:#e9ecef;margin:16px 0;}
+
+  @media(max-width:480px){
+    .pronoun-grid{grid-template-columns:repeat(2,1fr);}
+    .vocab-grid{grid-template-columns:1fr;}
+    .quiz-options{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🎓 <span>ĐẠI TỪ</span> TÂN NGỮ</h1>
+  <div id="timer-bar">⏱ 60:00</div>
+</header>
+<div id="progress-wrap"><div id="progress-bar" style="width:0%"></div></div>
+
+<nav id="phase-nav">
+  <button class="phase-tab active" onclick="goPhase(0)">1. Lý thuyết</button>
+  <button class="phase-tab" onclick="goPhase(1)">2. Từ vựng</button>
+  <button class="phase-tab" onclick="goPhase(2)">3. Câu mẫu</button>
+  <button class="phase-tab" onclick="goPhase(3)">4. Hội thoại</button>
+  <button class="phase-tab" onclick="goPhase(4)">5. Quiz</button>
+  <button class="phase-tab" onclick="goPhase(5)">6. Điền vào ô</button>
+  <button class="phase-tab" onclick="goPhase(6)">7. Nói</button>
+  <button class="phase-tab" onclick="goPhase(7)">8. Kết quả</button>
+</nav>
+
+<main>
+
+<!-- PHASE 0: LÝ THUYẾT -->
+<div class="phase active" id="phase-0">
+  <div class="section-header">
+    <div class="phase-label">📖 Giai đoạn 1 – 10 phút</div>
+    <h2>Đại từ tân ngữ – Object Pronouns</h2>
+    <div class="duration">Đứng sau động từ hoặc giới từ</div>
+  </div>
+  <div class="section-body">
+
+    <div class="tip-box">
+      <strong>🌟 Đại từ tân ngữ</strong> là đại từ làm <strong>tân ngữ</strong> trong câu, đứng sau <strong>động từ</strong> (call me, help you…) hoặc sau <strong>giới từ</strong> (for us, to him, with her…).
+    </div>
+
+    <div class="pronoun-grid" id="pronoun-badges"></div>
+
+    <table class="compare-table">
+      <tr>
+        <th style="background:#546e7a;">Chủ ngữ (Subject)</th>
+        <th style="background:#c0392b;">Tân ngữ (Object)</th>
+        <th style="background:#546e7a;">Nghĩa</th>
+        <th style="background:#546e7a;">Ví dụ</th>
+      </tr>
+      <tr><td>I</td><td style="color:var(--me);font-size:1rem;font-weight:800;">me</td><td>tôi</td><td>Call <strong>me</strong>!</td></tr>
+      <tr><td>you</td><td style="color:var(--you);font-size:1rem;font-weight:800;">you</td><td>bạn</td><td>I met <strong>you</strong>.</td></tr>
+      <tr><td>he</td><td style="color:var(--him);font-size:1rem;font-weight:800;">him</td><td>anh ấy</td><td>I know <strong>him</strong>.</td></tr>
+      <tr><td>she</td><td style="color:var(--her);font-size:1rem;font-weight:800;">her</td><td>cô ấy</td><td>I saw <strong>her</strong>.</td></tr>
+      <tr><td>it</td><td style="color:var(--it);font-size:1rem;font-weight:800;">it</td><td>nó</td><td>I like <strong>it</strong>.</td></tr>
+      <tr><td>we</td><td style="color:var(--us);font-size:1rem;font-weight:800;">us</td><td>chúng tôi</td><td>Help <strong>us</strong>!</td></tr>
+      <tr><td>they</td><td style="color:var(--them);font-size:1rem;font-weight:800;">them</td><td>họ</td><td>I met <strong>them</strong>.</td></tr>
+    </table>
+
+    <div class="tip-box">
+      <strong>💡 Vị trí trong câu:</strong><br>
+      • Sau động từ: The teacher calls <strong>me</strong>. / I like <strong>it</strong>.<br>
+      • Sau giới từ (to, for, with, about…): talk to <strong>him</strong> / a gift for <strong>us</strong> / call <strong>her</strong> for <strong>me</strong>
+    </div>
+
+    <button class="btn-next" onclick="goPhase(1)">Tiếp theo: Từ vựng →</button>
+  </div>
+</div>
+
+<!-- PHASE 1: TỪ VỰNG -->
+<div class="phase" id="phase-1">
+  <div class="section-header">
+    <div class="phase-label">📝 Giai đoạn 2 – 10 phút</div>
+    <h2>Từ vựng & Phát âm</h2>
+    <div class="duration">Nhấn ▶ để nghe từng từ</div>
+  </div>
+  <div class="section-body">
+    <p style="font-size:.82rem;color:var(--gray);margin-bottom:12px;font-weight:600;">Nhấn thẻ hoặc ▶ để nghe phát âm</p>
+    <div class="vocab-grid" id="vocab-grid"></div>
+    <button class="btn-next" onclick="goPhase(2)">Tiếp theo: Câu mẫu →</button>
+  </div>
+</div>
+
+<!-- PHASE 2: CÂU MẪU -->
+<div class="phase" id="phase-2">
+  <div class="section-header">
+    <div class="phase-label">🗣️ Giai đoạn 3 – 8 phút</div>
+    <h2>Câu mẫu & Phát âm</h2>
+    <div class="duration">Nghe và đọc theo từng câu</div>
+  </div>
+  <div class="section-body">
+    <div id="examples-container"></div>
+    <button class="btn-next" onclick="goPhase(3)">Tiếp theo: Hội thoại →</button>
+  </div>
+</div>
+
+<!-- PHASE 3: HỘI THOẠI -->
+<div class="phase" id="phase-3">
+  <div class="section-header">
+    <div class="phase-label">💬 Giai đoạn 4 – 7 phút</div>
+    <h2>Hội thoại thực tế</h2>
+    <div class="duration">Đọc và nghe hội thoại – chú ý đại từ tân ngữ</div>
+  </div>
+  <div class="section-body">
+    <div id="dialogue-container"></div>
+    <button class="btn-next" onclick="goPhase(4)">Tiếp theo: Quiz →</button>
+  </div>
+</div>
+
+<!-- PHASE 4: QUIZ -->
+<div class="phase" id="phase-4">
+  <div class="section-header">
+    <div class="phase-label">🧠 Giai đoạn 5 – 10 phút</div>
+    <h2>Trắc nghiệm</h2>
+    <div class="duration">Chọn đại từ tân ngữ đúng</div>
+  </div>
+  <div class="section-body">
+    <div class="score-inline">Điểm: <span class="score-badge" id="quiz-score">0 / 0</span></div>
+    <div id="quiz-container"></div>
+    <button class="btn-next" onclick="goPhase(5)">Tiếp theo: Điền vào ô →</button>
+  </div>
+</div>
+
+<!-- PHASE 5: FILL -->
+<div class="phase" id="phase-5">
+  <div class="section-header">
+    <div class="phase-label">✏️ Giai đoạn 6 – 8 phút</div>
+    <h2>Điền vào ô trống</h2>
+    <div class="duration">Điền đại từ tân ngữ phù hợp</div>
+  </div>
+  <div class="section-body">
+    <div id="fill-container"></div>
+    <button class="btn-check" onclick="checkFill()">✅ Kiểm tra tất cả</button>
+    <br>
+    <button class="btn-next" onclick="goPhase(6)" style="margin-top:12px">Tiếp theo: Nói →</button>
+  </div>
+</div>
+
+<!-- PHASE 6: SPEAKING -->
+<div class="phase" id="phase-6">
+  <div class="section-header">
+    <div class="phase-label">🎤 Giai đoạn 7 – 7 phút</div>
+    <h2>Luyện Nói</h2>
+    <div class="duration">Đọc to → Nhấn ▶ nghe mẫu → So sánh</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box"><strong>Hướng dẫn:</strong> Nhìn câu → Đọc to → Nhấn ▶ nghe → Luyện lại!</div>
+    <div id="speaking-container"></div>
+    <button class="btn-next" onclick="goPhase(7)">Xem kết quả →</button>
+  </div>
+</div>
+
+<!-- PHASE 7: RESULT -->
+<div class="phase" id="phase-7">
+  <div class="section-header">
+    <div class="phase-label">🏆 Kết thúc bài học</div>
+    <h2>Tổng kết</h2>
+    <div class="duration">Bạn đã hoàn thành 1 giờ học!</div>
+  </div>
+  <div class="section-body">
+    <div id="score-section">
+      <div class="score-circle">
+        <div class="num" id="final-score">—</div>
+        <div class="lbl">điểm</div>
+      </div>
+      <h2 id="final-msg">Hoàn thành!</h2>
+      <p id="final-desc">Bạn đã hoàn thành bài học Đại từ tân ngữ!</p>
+      <div style="background:#f8f9fa;border-radius:14px;padding:16px;text-align:left;margin:16px 0;">
+        <h3 style="font-size:.88rem;font-weight:800;margin-bottom:10px;">📋 Bảng đại từ tân ngữ:</h3>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;font-size:.82rem;" id="recap-badges"></div>
+      </div>
+      <button class="btn-primary" onclick="restartLesson()">🔄 Học lại từ đầu</button>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+// ===== DATA =====
+const pronouns = [
+  {obj:"me",   subj:"I",    vi:"tôi",      color:"#c0392b"},
+  {obj:"you",  subj:"you",  vi:"bạn",      color:"#1565c0"},
+  {obj:"him",  subj:"he",   vi:"anh ấy",   color:"#2e7d32"},
+  {obj:"her",  subj:"she",  vi:"cô ấy",    color:"#6a1b9a"},
+  {obj:"it",   subj:"it",   vi:"nó",       color:"#e65100"},
+  {obj:"us",   subj:"we",   vi:"chúng tôi",color:"#00838f"},
+  {obj:"them", subj:"they", vi:"họ",       color:"#4527a0"},
+];
+
+const vocab = [
+  {word:"me",     pron:"/miː/",      meaning:"tôi (tân ngữ)",       type:"Đại từ tân ngữ",  color:"#c0392b"},
+  {word:"you",    pron:"/juː/",      meaning:"bạn (tân ngữ)",        type:"Đại từ tân ngữ",  color:"#1565c0"},
+  {word:"him",    pron:"/hɪm/",      meaning:"anh ấy (tân ngữ)",    type:"Đại từ tân ngữ",  color:"#2e7d32"},
+  {word:"her",    pron:"/hɜːr/",     meaning:"cô ấy (tân ngữ)",     type:"Đại từ tân ngữ",  color:"#6a1b9a"},
+  {word:"it",     pron:"/ɪt/",       meaning:"nó (tân ngữ)",         type:"Đại từ tân ngữ",  color:"#e65100"},
+  {word:"us",     pron:"/ʌs/",       meaning:"chúng tôi (tân ngữ)", type:"Đại từ tân ngữ",  color:"#00838f"},
+  {word:"them",   pron:"/ðem/",      meaning:"họ (tân ngữ)",         type:"Đại từ tân ngữ",  color:"#4527a0"},
+  {word:"call",   pron:"/kɔːl/",     meaning:"gọi điện / gọi",      type:"Động từ",          color:"#546e7a"},
+  {word:"help",   pron:"/help/",     meaning:"giúp đỡ",              type:"Động từ",          color:"#546e7a"},
+  {word:"meet",   pron:"/miːt/",     meaning:"gặp",                  type:"Động từ",          color:"#546e7a"},
+  {word:"find",   pron:"/faɪnd/",    meaning:"tìm thấy",             type:"Động từ",          color:"#546e7a"},
+  {word:"need",   pron:"/niːd/",     meaning:"cần",                  type:"Động từ",          color:"#546e7a"},
+  {word:"know",   pron:"/noʊ/",      meaning:"biết",                 type:"Động từ",          color:"#546e7a"},
+  {word:"talk to",pron:"/tɔːk tuː/", meaning:"nói chuyện với",      type:"Cụm động từ",      color:"#546e7a"},
+  {word:"look for",pron:"/lʊk fɔːr/",meaning:"tìm kiếm",            type:"Cụm động từ",      color:"#546e7a"},
+  {word:"gift",   pron:"/ɡɪft/",     meaning:"quà tặng",             type:"Danh từ",          color:"#546e7a"},
+];
+
+const examplesData = [
+  {pron:"me",  color:"#c0392b", examples:[
+    {en:"The teacher calls me.",   vi:"Giáo viên gọi cho tôi."},
+    {en:"Can you help me?",        vi:"Bạn có thể giúp tôi không?"},
+    {en:"Give it to me.",          vi:"Đưa nó cho tôi."},
+  ]},
+  {pron:"you", color:"#1565c0", examples:[
+    {en:"I met you at school.",    vi:"Tôi đã gặp bạn ở trường."},
+    {en:"I will call you tonight.",vi:"Tôi sẽ gọi cho bạn tối nay."},
+    {en:"I can help you.",         vi:"Tôi có thể giúp bạn."},
+  ]},
+  {pron:"him", color:"#2e7d32", examples:[
+    {en:"I meet him at the company.", vi:"Tôi hay gặp anh ấy ở công ty."},
+    {en:"The teacher is talking to him.", vi:"Giáo viên đang nói chuyện với anh ấy."},
+    {en:"Yes, I know him.",        vi:"Có, tôi biết anh ấy."},
+  ]},
+  {pron:"her", color:"#6a1b9a", examples:[
+    {en:"I saw her at school.",    vi:"Tôi đã thấy cô ấy ở trường."},
+    {en:"My dad is calling her.",  vi:"Bố tôi đang gọi cô ấy rồi."},
+    {en:"Can you call her for me?",vi:"Bạn có thể gọi cô ấy giúp tôi không?"},
+  ]},
+  {pron:"it",  color:"#e65100", examples:[
+    {en:"I like it.",              vi:"Tôi thích nó."},
+    {en:"I can't find it.",        vi:"Tôi không tìm thấy nó."},
+    {en:"I saw it on the table.",  vi:"Tôi đã thấy nó trên bàn."},
+  ]},
+  {pron:"us",  color:"#00838f", examples:[
+    {en:"My mom bought a gift for us.", vi:"Mẹ đã mua quà cho chúng tôi."},
+    {en:"The teacher is talking to us.", vi:"Giáo viên đang nói chuyện với chúng tôi."},
+    {en:"Why does she need us?",   vi:"Tại sao cô ấy cần chúng ta?"},
+  ]},
+  {pron:"them",color:"#4527a0", examples:[
+    {en:"I met them at the park.", vi:"Tôi đã gặp họ ở công viên."},
+    {en:"I don't like them.",      vi:"Tôi không thích họ đâu."},
+    {en:"She wants to talk to them.", vi:"Cô ấy muốn nói chuyện với họ."},
+  ]},
+];
+
+const dialogues = [
+  {
+    title:"Hội thoại 1 – Mượn sách (me, you, it)",
+    lines:[
+      {label:"A",vi:"Bạn có thể giúp tôi với quyển sách này không?", en:"Can you help me with this book?", color:"#1565c0"},
+      {label:"B",vi:"Được, mình có thể giúp bạn. Đưa nó cho mình.", en:"Yes, I can help you. Give it to me.", color:"#2e7d32"},
+    ]
+  },
+  {
+    title:"Hội thoại 2 – Biết Tom không? (him)",
+    lines:[
+      {label:"A",vi:"Bạn có biết Tom không?",           en:"Do you know Tom?",                     color:"#1565c0"},
+      {label:"B",vi:"Có, tôi biết anh ấy.",             en:"Yes, I know him.",                     color:"#2e7d32"},
+      {label:"B",vi:"Tôi đã gặp anh ấy ở trường hôm qua.", en:"I met him at school yesterday.",   color:"#2e7d32"},
+    ]
+  },
+  {
+    title:"Hội thoại 3 – Anna đâu rồi? (her, me)",
+    lines:[
+      {label:"A",vi:"Anna đâu rồi?",                    en:"Where is Anna?",                       color:"#1565c0"},
+      {label:"B",vi:"Tôi thấy cô ấy trong văn phòng ấy.", en:"I see her in the office.",           color:"#2e7d32"},
+      {label:"A",vi:"Bạn có thể gọi cô ấy giúp tôi không?", en:"Can you call her for me?",        color:"#1565c0"},
+    ]
+  },
+  {
+    title:"Hội thoại 4 – Điện thoại đâu? (it)",
+    lines:[
+      {label:"A",vi:"Điện thoại của tôi đâu nhỉ? Tôi không tìm thấy nó.", en:"Where is my phone? I can't find it now.", color:"#1565c0"},
+      {label:"B",vi:"Tôi đã thấy nó trên bàn.",        en:"I saw it on the table.",                color:"#2e7d32"},
+    ]
+  },
+  {
+    title:"Hội thoại 5 – Giáo viên tìm chúng ta (us)",
+    lines:[
+      {label:"A",vi:"Giáo viên đang tìm chúng ta đấy.", en:"The teacher is looking for us.",       color:"#1565c0"},
+      {label:"B",vi:"Tại sao cô ấy cần chúng ta?",      en:"Why does she need us?",                color:"#1565c0"},
+      {label:"A",vi:"Cô ấy muốn nói chuyện với chúng ta.", en:"She wants to talk to us.",          color:"#2e7d32"},
+    ]
+  },
+];
+
+const quizData = [
+  {q:"The teacher calls ___. (tôi)", opts:["I","me","my","mine"], ans:1, ex:"Sau động từ 'calls' → dùng tân ngữ 'me'"},
+  {q:"Can you help ___? (tôi)", opts:["I","me","my","us"], ans:1, ex:"Sau động từ 'help' → 'me'"},
+  {q:"I met ___ at school. (bạn)", opts:["your","you","yours","him"], ans:1, ex:"Tân ngữ của 'you' (chủ ngữ) → vẫn là 'you'"},
+  {q:"I meet ___ at the company. (anh ấy)", opts:["he","his","him","them"], ans:2, ex:"he → tân ngữ là 'him'"},
+  {q:"The teacher is talking to ___. (anh ấy)", opts:["he","him","his","her"], ans:1, ex:"Sau giới từ 'to' → 'him'"},
+  {q:"I saw ___ at school. (cô ấy)", opts:["she","her","hers","him"], ans:1, ex:"she → tân ngữ là 'her'"},
+  {q:"I like ___. (nó)", opts:["its","it","they","them"], ans:1, ex:"it → tân ngữ vẫn là 'it'"},
+  {q:"My mom bought a gift for ___. (chúng tôi)", opts:["we","our","us","them"], ans:2, ex:"we → tân ngữ là 'us'"},
+  {q:"I met ___ at the park. (họ)", opts:["they","their","them","us"], ans:2, ex:"they → tân ngữ là 'them'"},
+  {q:"Can you call ___ for me? (cô ấy)", opts:["she","her","him","them"], ans:1, ex:"she → tân ngữ là 'her'"},
+  {q:"Give ___ to me! (nó)", opts:["its","it","them","him"], ans:1, ex:"it → tân ngữ là 'it'"},
+  {q:"She wants to talk to ___. (họ)", opts:["they","their","us","them"], ans:3, ex:"they → tân ngữ là 'them'"},
+];
+
+const fillData = [
+  {answer:"me",   sentence:"The teacher calls ___.",          vi:"Giáo viên gọi cho tôi."},
+  {answer:"you",  sentence:"I will call ___ tonight.",        vi:"Tôi sẽ gọi cho bạn tối nay."},
+  {answer:"him",  sentence:"I meet ___ at the company.",      vi:"Tôi hay gặp anh ấy ở công ty."},
+  {answer:"her",  sentence:"I saw ___ at school.",            vi:"Tôi đã thấy cô ấy ở trường."},
+  {answer:"it",   sentence:"I can't find ___.",               vi:"Tôi không tìm thấy nó."},
+  {answer:"us",   sentence:"My mom bought a gift for ___.",   vi:"Mẹ đã mua quà cho chúng tôi."},
+  {answer:"them", sentence:"I met ___ at the park.",          vi:"Tôi đã gặp họ ở công viên."},
+  {answer:"me",   sentence:"Can you help ___?",               vi:"Bạn có thể giúp tôi không?"},
+  {answer:"him",  sentence:"Yes, I know ___.",                vi:"Có, tôi biết anh ấy."},
+  {answer:"her",  sentence:"Can you call ___ for me?",        vi:"Bạn có thể gọi cô ấy giúp tôi không?"},
+  {answer:"it",   sentence:"Give ___ to me.",                 vi:"Đưa nó cho tôi."},
+  {answer:"us",   sentence:"The teacher is looking for ___.", vi:"Giáo viên đang tìm chúng ta."},
+];
+
+const speakingData = [
+  {en:"The teacher calls me.",           vi:"Giáo viên gọi cho tôi.",              color:"#c0392b"},
+  {en:"Can you help me?",                vi:"Bạn có thể giúp tôi không?",          color:"#c0392b"},
+  {en:"I met you at school.",            vi:"Tôi đã gặp bạn ở trường.",            color:"#1565c0"},
+  {en:"I know him.",                     vi:"Tôi biết anh ấy.",                    color:"#2e7d32"},
+  {en:"The teacher is talking to him.",  vi:"Giáo viên đang nói chuyện với anh ấy.", color:"#2e7d32"},
+  {en:"I saw her at school.",            vi:"Tôi đã thấy cô ấy ở trường.",         color:"#6a1b9a"},
+  {en:"Can you call her for me?",        vi:"Bạn có thể gọi cô ấy giúp tôi không?", color:"#6a1b9a"},
+  {en:"I can't find it.",                vi:"Tôi không tìm thấy nó.",              color:"#e65100"},
+  {en:"My mom bought a gift for us.",    vi:"Mẹ đã mua quà cho chúng tôi.",        color:"#00838f"},
+  {en:"She wants to talk to us.",        vi:"Cô ấy muốn nói chuyện với chúng ta.", color:"#00838f"},
+  {en:"I met them at the park.",         vi:"Tôi đã gặp họ ở công viên.",          color:"#4527a0"},
+  {en:"I don't like them.",              vi:"Tôi không thích họ đâu.",             color:"#4527a0"},
+];
+
+// ===== STATE =====
+let quizCorrect=0, quizAnswered=0, fillCorrect=0;
+let secondsLeft=3600, timerInterval;
+
+function init(){
+  buildBadges(); buildVocab(); buildExamples(); buildDialogues(); buildQuiz(); buildFill(); buildSpeaking(); buildRecap();
+  startTimer();
+}
+
+function startTimer(){
+  timerInterval=setInterval(()=>{
+    secondsLeft--;
+    const m=String(Math.floor(secondsLeft/60)).padStart(2,'0');
+    const s=String(secondsLeft%60).padStart(2,'0');
+    document.getElementById('timer-bar').textContent=`⏱ ${m}:${s}`;
+    if(secondsLeft<=0) clearInterval(timerInterval);
+  },1000);
+}
+
+function buildBadges(){
+  const g=document.getElementById('pronoun-badges');
+  g.innerHTML=pronouns.map(p=>`
+    <div class="pronoun-badge" style="background:${p.color}" onclick="speak('${p.obj}')">
+      <div class="eng">${p.obj}</div>
+      <div class="subj">← ${p.subj}</div>
+      <div class="vi">${p.vi}</div>
+    </div>`).join('');
+}
+
+function buildRecap(){
+  const g=document.getElementById('recap-badges');
+  g.innerHTML=pronouns.map(p=>`
+    <div style="background:${p.color};border-radius:10px;padding:8px;text-align:center;color:white;">
+      <div style="font-weight:800;font-size:1rem;">${p.obj}</div>
+      <div style="font-size:.72rem;opacity:.8;">${p.subj} →</div>
+      <div style="font-size:.78rem;font-weight:700;">${p.vi}</div>
+    </div>`).join('');
+}
+
+function buildVocab(){
+  const g=document.getElementById('vocab-grid');
+  g.innerHTML=vocab.map(v=>`
+    <div class="vocab-card" onclick="speak('${v.word.split(' ')[0]}')" style="border-color:${v.color}22">
+      <div class="word" style="color:${v.color}">${v.word}</div>
+      <div class="pron">${v.pron}</div>
+      <div class="meaning">${v.meaning}</div>
+      <div class="type" style="color:${v.color}">${v.type}</div>
+      <button class="play-btn" style="background:${v.color}" onclick="event.stopPropagation();speak('${v.word.split(' ')[0]}')">▶</button>
+    </div>`).join('');
+}
+
+function buildExamples(){
+  const c=document.getElementById('examples-container');
+  c.innerHTML=examplesData.map(g=>`
+    <div class="ex-group">
+      <div class="ex-group-title" style="background:${g.color}">
+        <span style="font-size:1.1rem;font-weight:900">${g.pron.toUpperCase()}</span>
+        <span style="font-weight:600;opacity:.85">${pronouns.find(p=>p.obj===g.pron)?.vi||''}</span>
+      </div>
+      ${g.examples.map(e=>`
+        <div class="ex-block" style="background:${g.color}12;border-color:${g.color}">
+          <div class="en" style="color:${g.color}">${e.en}</div>
+          <div class="vi">→ ${e.vi}</div>
+          <button class="play-sm" style="background:${g.color}" onclick="speak('${e.en.replace(/'/g,"\\'")}')">▶ Nghe</button>
+        </div>`).join('')}
+    </div>`).join('');
+}
+
+function buildDialogues(){
+  const c=document.getElementById('dialogue-container');
+  c.innerHTML=dialogues.map((d,i)=>`
+    <div class="dialogue-box">
+      <div class="d-title">💬 ${d.title}</div>
+      ${d.lines.map(l=>`
+        <div class="d-line">
+          <span class="d-label" style="background:${l.color}">${l.label}</span>
+          <div class="d-content">
+            <div class="d-vi">${l.vi}</div>
+            <div class="d-en">${l.en}</div>
+          </div>
+        </div>`).join('')}
+      <button class="play-dlg-btn" onclick="speakDialogue(${i})">▶ Nghe hội thoại</button>
+    </div>`).join('');
+}
+
+async function speakDialogue(i){
+  const d=dialogues[i];
+  for(const line of d.lines){
+    speak(line.en);
+    await new Promise(r=>setTimeout(r,line.en.length*60+900));
+  }
+}
+
+function buildQuiz(){
+  document.getElementById('quiz-container').innerHTML=quizData.map((q,i)=>`
+    <div class="quiz-item" id="qi-${i}">
+      <div class="quiz-q">${i+1}. ${q.q}</div>
+      <div class="quiz-options">
+        ${q.opts.map((o,j)=>`<button class="quiz-opt" id="qo-${i}-${j}" onclick="answerQuiz(${i},${j})">${o}</button>`).join('')}
+      </div>
+      <div class="quiz-fb" id="qf-${i}"></div>
+    </div>`).join('');
+}
+
+function answerQuiz(qi,choice){
+  const item=document.getElementById(`qi-${qi}`);
+  if(item.dataset.answered) return;
+  item.dataset.answered='1';
+  const q=quizData[qi];
+  item.querySelectorAll('.quiz-opt').forEach(b=>b.disabled=true);
+  const fb=document.getElementById(`qf-${qi}`);
+  if(choice===q.ans){
+    document.getElementById(`qo-${qi}-${choice}`).classList.add('sel-ok');
+    item.classList.add('correct');
+    fb.textContent='✅ Đúng! '+q.ex;
+    fb.className='quiz-fb show ok';
+    quizCorrect++;
+  } else {
+    document.getElementById(`qo-${qi}-${choice}`).classList.add('sel-fail');
+    document.getElementById(`qo-${qi}-${q.ans}`).classList.add('reveal');
+    item.classList.add('wrong');
+    fb.textContent='❌ Sai! '+q.ex;
+    fb.className='quiz-fb show fail';
+  }
+  quizAnswered++;
+  document.getElementById('quiz-score').textContent=`${quizCorrect} / ${quizAnswered}`;
+}
+
+function buildFill(){
+  document.getElementById('fill-container').innerHTML=fillData.map((f,i)=>{
+    const parts=f.sentence.split('___');
+    return `<div class="fill-item" id="fi-${i}">
+      <div class="fill-q">${i+1}. ${parts[0]}<input type="text" id="finp-${i}" placeholder="...">${parts[1]||''}</div>
+      <div class="fill-vi">${f.vi}</div>
+      <div class="fill-ans" id="fa-${i}">✅ Đáp án: <strong>${f.answer}</strong></div>
+    </div>`;
+  }).join('');
+}
+
+function checkFill(){
+  fillCorrect=0;
+  fillData.forEach((f,i)=>{
+    const inp=document.getElementById(`finp-${i}`);
+    const item=document.getElementById(`fi-${i}`);
+    const ans=document.getElementById(`fa-${i}`);
+    ans.classList.add('show');
+    if(inp.value.trim().toLowerCase()===f.answer.toLowerCase()){
+      item.classList.add('correct'); item.classList.remove('wrong'); fillCorrect++;
+    } else {
+      item.classList.add('wrong'); item.classList.remove('correct');
+    }
+  });
+}
+
+function buildSpeaking(){
+  document.getElementById('speaking-container').innerHTML=speakingData.map((s,i)=>`
+    <div class="speak-card" style="background:${s.color}">
+      <div class="speak-lbl">CÂU ${i+1}</div>
+      <div class="speak-en">${s.en}</div>
+      <div class="speak-vi">${s.vi}</div>
+      <button class="hear-btn" onclick="speak('${s.en.replace(/'/g,"\\'")}')">▶ Nghe mẫu</button>
+    </div>`).join('');
+}
+
+function speak(text){
+  if(!window.speechSynthesis) return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='en-US'; u.rate=0.85;
+  speechSynthesis.speak(u);
+}
+
+function goPhase(n){
+  document.querySelectorAll('.phase').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.phase-tab').forEach((t,i)=>{
+    t.classList.remove('active','done');
+    if(i<n) t.classList.add('done');
+  });
+  document.getElementById(`phase-${n}`).classList.add('active');
+  document.querySelectorAll('.phase-tab')[n].classList.add('active');
+  document.getElementById('progress-bar').style.width=Math.round((n/7)*100)+'%';
+  window.scrollTo(0,0);
+  if(n===7) showResult();
+}
+
+function showResult(){
+  const total=quizCorrect+fillCorrect;
+  const max=quizData.length+fillData.length;
+  const pct=Math.round((total/max)*100);
+  document.getElementById('final-score').textContent=pct+'%';
+  let msg,desc;
+  if(pct>=90){msg='🏆 Xuất sắc!';desc='Bạn đã nắm vững Đại từ tân ngữ! Tiếp tục phát huy nhé!';}
+  else if(pct>=70){msg='👍 Tốt lắm!';desc='Bạn hiểu tốt bài học. Ôn lại những phần còn sai nhé!';}
+  else if(pct>=50){msg='📚 Cần ôn thêm!';desc='Hãy đọc lại bảng đại từ và làm lại bài tập!';}
+  else{msg='💪 Cố lên!';desc='Hãy bắt đầu lại từ phần lý thuyết!';}
+  document.getElementById('final-msg').textContent=msg;
+  document.getElementById('final-desc').textContent=desc;
+  clearInterval(timerInterval);
+}
+
+function restartLesson(){
+  quizCorrect=0; quizAnswered=0; fillCorrect=0; secondsLeft=3600;
+  clearInterval(timerInterval);
+  buildQuiz(); buildFill();
+  document.getElementById('quiz-score').textContent='0 / 0';
+  goPhase(0); startTimer();
+}
+
+init();
+</script>
+</body>
+</html>
