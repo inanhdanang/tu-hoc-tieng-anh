@@ -133,6 +133,18 @@
   .btn-primary{background:var(--dark);color:white;border:none;border-radius:11px;padding:10px 24px;font-size:.9rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;}
   .retry-btn{background:#c0392b;color:white;border:none;border-radius:11px;padding:9px 20px;font-size:.86rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;margin-top:8px;margin-right:8px;}
   @media(max-width:520px){.pron-grid{grid-template-columns:1fr;}.quiz-opts{grid-template-columns:1fr;}.rule-row{grid-template-columns:1fr;}}
+  .back-btn{
+    display:inline-flex;align-items:center;gap:6px;
+    background:#FFD93D;color:#0d1b2a;
+    font-family:'Nunito',sans-serif;font-size:.82rem;font-weight:900;
+    padding:7px 16px;border-radius:0 0 14px 0;
+    text-decoration:none;
+    position:sticky;top:64px;z-index:99;
+    box-shadow:2px 2px 8px rgba(0,0,0,0.15);
+    transition:background .2s,transform .2s;
+    letter-spacing:.3px;
+  }
+  .back-btn:hover{background:#ffe566;transform:translateX(-2px);}
 </style>
 </head>
 <body>
@@ -141,6 +153,7 @@
   <h1>🔤 <span>ĐẠI TỪ BẤT ĐỊNH</span> – Some / No / Any</h1>
   <div id="timer-bar">⏱ 60:00</div>
 </header>
+  <a href="index.html" class="back-btn">&#8592; Trang chủ</a>
 <div id="progress-wrap"><div id="progress-bar" style="width:0%"></div></div>
 
 <nav id="phase-nav">
