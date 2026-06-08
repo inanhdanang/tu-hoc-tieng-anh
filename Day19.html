@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 19 – WHERE + Giới từ vị trí</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{--c1:#b7410e;--c2:#1565c0;--c3:#2e7d32;--c4:#6a1b9a;--c5:#00838f;--yellow:#FFD93D;--bg:#fafbff;--dark:#0d1b2a;--gray:#78909c;--radius:18px;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--dark);min-height:100vh;}
+  header{background:var(--dark);color:white;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 3px 14px rgba(0,0,0,.3);}
+  header h1{font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;}
+  header h1 span{color:var(--yellow);}
+  #timer-bar{font-size:.95rem;font-weight:700;background:var(--yellow);color:var(--dark);padding:5px 14px;border-radius:30px;}
+  #progress-wrap{background:#e9ecef;height:8px;}
+  #progress-bar{height:8px;background:linear-gradient(90deg,var(--c1),var(--c2),var(--c3),var(--c4));transition:width .6s ease;border-radius:0 4px 4px 0;}
+  #phase-nav{display:flex;gap:5px;padding:10px 16px;overflow-x:auto;background:white;border-bottom:2px solid #f1f3f4;}
+  .phase-tab{flex-shrink:0;padding:5px 11px;border-radius:20px;font-size:.72rem;font-weight:700;border:2px solid #dee2e6;background:white;cursor:pointer;transition:all .2s;color:var(--gray);}
+  .phase-tab.active{background:var(--dark);color:white;border-color:var(--dark);}
+  .phase-tab.done{background:var(--c3);color:white;border-color:var(--c3);}
+  main{padding:18px 14px 48px;max-width:780px;margin:0 auto;}
+  .phase{display:none;animation:fadeIn .4s ease;}
+  .phase.active{display:block;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+  .section-header{border-radius:var(--radius) var(--radius) 0 0;padding:13px 18px;}
+  .section-header .phase-label{font-size:.66rem;letter-spacing:2px;text-transform:uppercase;color:var(--yellow);font-weight:700;}
+  .section-header h2{font-family:'Baloo 2',cursive;font-size:1.2rem;font-weight:800;color:white;}
+  .section-header .duration{font-size:.76rem;color:rgba(255,255,255,.5);margin-top:1px;}
+  .section-body{background:white;border-radius:0 0 var(--radius) var(--radius);padding:18px;margin-bottom:20px;box-shadow:0 4px 18px rgba(0,0,0,.07);}
+  .formula-box{border-radius:13px;padding:14px 18px;margin-bottom:14px;border:3px solid;}
+  .formula-box .fb-title{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;}
+  .formula-box .fb-formula{font-family:'Baloo 2',cursive;font-size:1.02rem;font-weight:800;margin-bottom:6px;}
+  .formula-box .fb-ex{font-size:.84rem;line-height:1.9;}
+  .prep-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:16px;}
+  @media(max-width:480px){.prep-grid{grid-template-columns:repeat(2,1fr);}.quiz-opts{grid-template-columns:1fr;}}
+  .prep-card{border-radius:11px;padding:10px 8px;border:2px solid;text-align:center;}
+  .prep-card .pw{font-family:'Baloo 2',cursive;font-size:1rem;font-weight:800;}
+  .prep-card .pm{font-size:.72rem;color:#555;margin-top:2px;}
+  .tip-box{background:#fff8e1;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:.82rem;border-left:4px solid var(--yellow);line-height:1.75;}
+  .tip-box strong{color:#e65100;}
+  .phrase-table{width:100%;border-collapse:collapse;margin-bottom:14px;font-size:.83rem;}
+  .phrase-table th{background:var(--dark);color:white;padding:8px 10px;text-align:left;font-weight:800;}
+  .phrase-table td{padding:8px 10px;border-bottom:1px solid #e9ecef;vertical-align:middle;}
+  .phrase-table tr:hover td{background:#f1f8e9;}
+  .phrase-table .en{font-weight:700;color:var(--c1);}
+  .play-btn{background:none;border:1px solid #dee2e6;border-radius:20px;padding:2px 8px;font-size:.68rem;font-weight:700;cursor:pointer;color:var(--c3);font-family:'Nunito',sans-serif;}
+  .play-btn:hover{background:var(--c3);color:white;border-color:var(--c3);}
+  .ex-title{font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;padding:4px 12px;border-radius:20px;color:white;display:inline-block;margin-bottom:8px;}
+  .eb{border-radius:11px;padding:11px 14px;margin-bottom:8px;border-left:4px solid;}
+  .eb .en{font-size:.93rem;font-weight:700;margin-bottom:2px;}
+  .eb .vi{font-size:.81rem;color:#495057;}
+  .divider{height:1px;background:#e9ecef;margin:14px 0;}
+  .dbox{background:#f8f9fa;border-radius:13px;padding:14px;margin-bottom:11px;border:2px solid #e9ecef;}
+  .dtitle{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--gray);margin-bottom:9px;}
+  .dline{display:flex;gap:7px;margin-bottom:7px;align-items:flex-start;}
+  .dlabel{font-size:.7rem;font-weight:800;padding:2px 7px;border-radius:7px;color:white;flex-shrink:0;margin-top:2px;min-width:24px;text-align:center;}
+  .dvi{font-size:.84rem;font-weight:700;color:#1565c0;}
+  .den{font-size:.84rem;font-weight:700;color:#212121;}
+  .pdlg{margin-top:7px;background:#2e7d32;color:white;border:none;border-radius:20px;padding:5px 13px;font-size:.74rem;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;display:inline-flex;align-items:center;gap:4px;}
+  .quiz-item{background:#f8f9fa;border-radius:13px;padding:14px;margin-bottom:12px;border:2px solid transparent;transition:border-color .3s;}
+  .quiz-item.answered-ok{border-color:#2e7d32;background:#f1f8e9;}
+  .quiz-item.answered-fail{border-color:#c0392b;background:#fbe9e7;}
+  .quiz-q{font-size:.9rem;font-weight:700;margin-bottom:10px;}
+  .quiz-opts{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+  .qopt{background:white;border:2px solid #dee2e6;border-radius:9px;padding:7px 9px;font-size:.81rem;font-weight:700;cursor:pointer;transition:all .2s;font-family:'Nunito',sans-serif;text-align:center;}
+  .qopt:hover:not(:disabled){border-color:#1565c0;color:#1565c0;}
+  .qopt.sel-ok{background:#2e7d32;color:white;border-color:#2e7d32;}
+  .qopt.sel-fail{background:#c0392b;color:white;border-color:#c0392b;}
+  .qopt:disabled{cursor:default;}
+  .qfb{margin-top:6px;font-size:.77rem;font-weight:700;display:none;}
+  .qfb.show{display:block;}
+  .qfb.ok{color:#2e7d32;}
+  .qfb.fail{color:#c0392b;}
+  .fill-item{background:#f8f9fa;border-radius:12px;padding:13px;margin-bottom:10px;border:2px solid transparent;}
+  .fill-item.correct{border-color:#2e7d32;background:#f1f8e9;}
+  .fill-item.wrong{border-color:#c0392b;background:#fbe9e7;}
+  .fill-q{font-size:.9rem;font-weight:700;margin-bottom:6px;line-height:1.9;}
+  .fill-q input{border:2px solid #1565c0;border-radius:7px;padding:2px 8px;font-size:.86rem;font-family:'Nunito',sans-serif;font-weight:700;width:170px;text-align:center;outline:none;background:white;}
+  .fill-vi{font-size:.78rem;color:var(--gray);margin-bottom:4px;}
+  .fill-ans{font-size:.78rem;font-weight:700;margin-top:4px;display:none;}
+  .fill-ans.show-wrong{display:block;color:#c0392b;}
+  .trans-item{background:#f8f9fa;border-radius:12px;padding:13px;margin-bottom:10px;border:2px solid transparent;}
+  .trans-item.correct{border-color:#2e7d32;background:#f1f8e9;}
+  .trans-item.wrong{border-color:#c0392b;background:#fbe9e7;}
+  .trans-lang{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;color:var(--gray);}
+  .trans-q{font-size:.92rem;font-weight:700;margin-bottom:6px;}
+  .trans-input{width:100%;border:2px solid #1565c0;border-radius:8px;padding:6px 10px;font-size:.86rem;font-family:'Nunito',sans-serif;font-weight:700;outline:none;background:white;}
+  .trans-ans{font-size:.78rem;font-weight:700;margin-top:4px;display:none;color:#c0392b;}
+  .trans-ans.show{display:block;}
+  .speak-card{border-radius:12px;padding:13px 16px;margin-bottom:9px;color:white;}
+  .slbl{font-size:.66rem;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:3px;}
+  .sen-en{font-size:.97rem;font-weight:800;margin-bottom:2px;}
+  .sen-vi{font-size:.8rem;color:rgba(255,255,255,.7);margin-bottom:9px;}
+  .hear-btn{background:var(--yellow);color:var(--dark);border:none;border-radius:20px;padding:6px 14px;font-weight:800;font-size:.8rem;cursor:pointer;font-family:'Nunito',sans-serif;transition:transform .15s;}
+  .hear-btn:hover{transform:scale(1.04);}
+  #score-section{text-align:center;padding:24px 12px;}
+  .score-circle{width:120px;height:120px;border-radius:50%;background:linear-gradient(135deg,var(--c1),var(--c2));display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 6px 20px rgba(21,101,192,.3);}
+  .score-circle .num{font-family:'Baloo 2',cursive;font-size:2rem;font-weight:800;color:white;line-height:1;}
+  .score-circle .lbl{font-size:.7rem;font-weight:700;color:rgba(255,255,255,.8);}
+  #score-section h2{font-family:'Baloo 2',cursive;font-size:1.4rem;font-weight:800;margin-bottom:6px;}
+  #score-section p{color:var(--gray);font-size:.86rem;max-width:340px;margin:0 auto 16px;}
+  .btn-next{background:var(--c2);color:white;border:none;border-radius:11px;padding:10px 24px;font-size:.9rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;margin-top:12px;display:inline-flex;align-items:center;gap:6px;transition:all .2s;}
+  .btn-next:hover{opacity:.88;}
+  .btn-check{background:var(--c3);color:white;border:none;border-radius:11px;padding:9px 20px;font-size:.86rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;margin-top:10px;display:inline-flex;align-items:center;gap:5px;}
+  .btn-primary{background:var(--dark);color:white;border:none;border-radius:11px;padding:10px 24px;font-size:.9rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;display:inline-flex;align-items:center;gap:6px;}
+  .retry-btn{background:#c0392b;color:white;border:none;border-radius:11px;padding:9px 20px;font-size:.86rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;margin-top:8px;display:inline-flex;align-items:center;gap:5px;margin-right:8px;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📍 <span>WHERE</span> + Giới từ vị trí</h1>
+  <div id="timer-bar">⏱ 60:00</div>
+</header>
+<div id="progress-wrap"><div id="progress-bar" style="width:0%"></div></div>
+
+<nav id="phase-nav">
+  <button class="phase-tab active" onclick="goPhase(0)">1. Lý thuyết</button>
+  <button class="phase-tab" onclick="goPhase(1)">2. Từ vựng</button>
+  <button class="phase-tab" onclick="goPhase(2)">3. Ví dụ</button>
+  <button class="phase-tab" onclick="goPhase(3)">4. Hội thoại</button>
+  <button class="phase-tab" onclick="goPhase(4)">5. Quiz</button>
+  <button class="phase-tab" onclick="goPhase(5)">6. Điền từ</button>
+  <button class="phase-tab" onclick="goPhase(6)">7. Dịch câu</button>
+  <button class="phase-tab" onclick="goPhase(7)">8. Nói</button>
+  <button class="phase-tab" onclick="goPhase(8)">9. Kết quả</button>
+</nav>
+
+<main>
+
+<!-- PHASE 0: LÝ THUYẾT -->
+<div class="phase active" id="phase-0">
+  <div class="section-header" style="background:var(--dark)">
+    <div class="phase-label">📖 Giai đoạn 1 – 8 phút</div>
+    <h2>WHERE – Hỏi vị trí & Giới từ chỉ nơi chốn</h2>
+    <div class="duration">Hỏi "ở đâu" + trả lời bằng giới từ vị trí</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box"><strong>📌 Mục tiêu:</strong> Học cách hỏi vị trí bằng WHERE IS / ARE, WHERE DO / DOES và trả lời bằng giới từ vị trí. Nhấn ▶ để nghe!</div>
+
+    <!-- Giới từ vị trí -->
+    <div style="font-size:.76rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--gray);margin-bottom:8px;">🗺️ CÁC GIỚI TỪ VỊ TRÍ</div>
+    <div class="prep-grid">
+      <div class="prep-card" style="background:#fff3e0;border-color:#e65100"><div class="pw" style="color:#e65100">ON</div><div class="pm">trên (bề mặt)</div><button class="play-btn" onclick="speak('on')" style="margin-top:5px">▶</button></div>
+      <div class="prep-card" style="background:#e3f2fd;border-color:#1565c0"><div class="pw" style="color:#1565c0">IN</div><div class="pm">trong</div><button class="play-btn" onclick="speak('in')" style="margin-top:5px">▶</button></div>
+      <div class="prep-card" style="background:#f1f8e9;border-color:#2e7d32"><div class="pw" style="color:#2e7d32">UNDER</div><div class="pm">dưới</div><button class="play-btn" onclick="speak('under')" style="margin-top:5px">▶</button></div>
+      <div class="prep-card" style="background:#f3e5f5;border-color:#6a1b9a"><div class="pw" style="color:#6a1b9a">NEXT TO</div><div class="pm">bên cạnh</div><button class="play-btn" onclick="speak('next to')" style="margin-top:5px">▶</button></div>
+      <div class="prep-card" style="background:#e0f7fa;border-color:#00838f"><div class="pw" style="color:#00838f">BEHIND</div><div class="pm">phía sau</div><button class="play-btn" onclick="speak('behind')" style="margin-top:5px">▶</button></div>
+      <div class="prep-card" style="background:#fce4ec;border-color:#c0392b"><div class="pw" style="color:#c0392b">IN FRONT OF</div><div class="pm">phía trước</div><button class="play-btn" onclick="speak('in front of')" style="margin-top:5px">▶</button></div>
+    </div>
+
+    <!-- WHERE IS/ARE (vật) -->
+    <div class="formula-box" style="background:#fff3e0;border-color:#e65100">
+      <div class="fb-title" style="color:#e65100">📦 Hỏi vị trí của VẬT</div>
+      <div class="fb-formula" style="color:#e65100">Where is the + N (số ít)? → It is + giới từ + vị trí.</div>
+      <div class="fb-formula" style="color:#1565c0">Where are the + N (số nhiều)? → They are + giới từ + vị trí.</div>
+      <div class="fb-ex">
+        <button class="play-btn" onclick="speak('Where is the phone?')" style="margin-right:6px">▶</button><strong>Where is the phone?</strong> → Điện thoại ở đâu?<br>
+        <button class="play-btn" onclick="speak('It is on the chair.')" style="margin-right:6px">▶</button><strong>It is on the chair.</strong> → Nó ở trên ghế.<br>
+        <button class="play-btn" onclick="speak('Where are the keys?')" style="margin-right:6px">▶</button><strong>Where are the keys?</strong> → Chìa khóa ở đâu?<br>
+        <button class="play-btn" onclick="speak('They are on the table.')" style="margin-right:6px">▶</button><strong>They are on the table.</strong> → Chúng ở trên bàn.
+      </div>
+    </div>
+
+    <!-- IS/ARE ... ? (yes/no) -->
+    <div class="formula-box" style="background:#e3f2fd;border-color:#1565c0">
+      <div class="fb-title" style="color:#1565c0">✅ Hỏi Yes/No về vị trí</div>
+      <div class="fb-formula" style="color:#1565c0">Is + N (số ít) + giới từ + vị trí? → Yes, it is. / No, it isn't.</div>
+      <div class="fb-formula" style="color:#1565c0">Are + N (số nhiều) + giới từ + vị trí? → Yes, they are. / No, they aren't.</div>
+      <div class="fb-ex">
+        <button class="play-btn" onclick="speak('Is the phone on the chair?')" style="margin-right:6px">▶</button><strong>Is the phone on the chair?</strong> → Điện thoại có ở trên ghế không?<br>
+        <button class="play-btn" onclick="speak('Is the book in the bag?')" style="margin-right:6px">▶</button><strong>Is the book in the bag?</strong> → Cuốn sách có trong túi không?<br>
+        <button class="play-btn" onclick="speak('Are the car keys on the table?')" style="margin-right:6px">▶</button><strong>Are the car keys on the table?</strong> → Chìa khóa xe có ở trên bàn không?<br>
+        <button class="play-btn" onclick="speak('Are the shoes under the bed?')" style="margin-right:6px">▶</button><strong>Are the shoes under the bed?</strong> → Giày có ở dưới giường không?
+      </div>
+    </div>
+
+    <!-- WHERE DO/DOES (hành động) -->
+    <div class="formula-box" style="background:#f1f8e9;border-color:#2e7d32">
+      <div class="fb-title" style="color:#2e7d32">🏃 Hỏi nơi thực hiện HÀNH ĐỘNG</div>
+      <div class="fb-formula" style="color:#2e7d32">Where do + You/We/They + V nguyên thể?</div>
+      <div class="fb-formula" style="color:#e65100">Where does + He/She + V nguyên thể?</div>
+      <div class="fb-ex">
+        <button class="play-btn" onclick="speak('Where do you live?')" style="margin-right:6px">▶</button><strong>Where do you live?</strong> → Bạn sống ở đâu?<br>
+        <button class="play-btn" onclick="speak('Where do they work?')" style="margin-right:6px">▶</button><strong>Where do they work?</strong> → Họ làm việc ở đâu?<br>
+        <button class="play-btn" onclick="speak('Where does he live?')" style="margin-right:6px">▶</button><strong>Where does he live?</strong> → Anh ấy sống ở đâu?<br>
+        <button class="play-btn" onclick="speak('Where does she work?')" style="margin-right:6px">▶</button><strong>Where does she work?</strong> → Cô ấy làm việc ở đâu?
+      </div>
+    </div>
+
+    <div class="tip-box"><strong>💡 Nhớ:</strong> <strong>on</strong> = trên bề mặt (on the table) | <strong>in</strong> = bên trong (in the bag) | <strong>under</strong> = phía dưới (under the bed) | <strong>next to</strong> = bên cạnh | <strong>behind</strong> = phía sau | <strong>in front of</strong> = phía trước</div>
+    <button class="btn-next" onclick="goPhase(1)">Tiếp theo: Từ vựng →</button>
+  </div>
+</div>
+
+<!-- PHASE 1: TỪ VỰNG -->
+<div class="phase" id="phase-1">
+  <div class="section-header" style="background:var(--c1)">
+    <div class="phase-label">📝 Giai đoạn 2 – 7 phút</div>
+    <h2>Bảng Từ Vựng & Câu Mẫu</h2>
+    <div class="duration">Nhấn ▶ nghe phát âm từng câu</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box"><strong>Cách học:</strong> Nhìn tiếng Việt → nhớ tiếng Anh → nhấn ▶ nghe phát âm!</div>
+    <table class="phrase-table">
+      <thead><tr><th>Tiếng Anh</th><th>Nghĩa</th><th>Nhóm</th><th>Nghe</th></tr></thead>
+      <tbody id="phrase-tbody"></tbody>
+    </table>
+    <button class="btn-next" onclick="goPhase(2)">Tiếp theo: Ví dụ →</button>
+  </div>
+</div>
+
+<!-- PHASE 2: VÍ DỤ -->
+<div class="phase" id="phase-2">
+  <div class="section-header" style="background:var(--c2)">
+    <div class="phase-label">🗣️ Giai đoạn 3 – 8 phút</div>
+    <h2>Ví dụ trong ngữ cảnh thực tế</h2>
+    <div class="duration">Nghe và đọc theo từng câu</div>
+  </div>
+  <div class="section-body">
+    <span class="ex-title" style="background:var(--c1)">📦 WHERE IS/ARE – Hỏi vị trí vật</span>
+    <div id="ex-group1"></div>
+    <div class="divider"></div>
+    <span class="ex-title" style="background:var(--c2)">✅ IS/ARE ... ? – Yes/No về vị trí</span>
+    <div id="ex-group2"></div>
+    <div class="divider"></div>
+    <span class="ex-title" style="background:var(--c3)">🏃 WHERE DO/DOES – Hỏi hành động</span>
+    <div id="ex-group3"></div>
+    <button class="btn-next" onclick="goPhase(3)">Tiếp theo: Hội thoại →</button>
+  </div>
+</div>
+
+<!-- PHASE 3: HỘI THOẠI -->
+<div class="phase" id="phase-3">
+  <div class="section-header" style="background:var(--c3)">
+    <div class="phase-label">💬 Giai đoạn 4 – 7 phút</div>
+    <h2>Hội Thoại Thực Tế</h2>
+    <div class="duration">Đọc, nghe, và luyện theo hội thoại</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box"><strong>Cách luyện:</strong> Đọc tiếng Việt trước → đoán tiếng Anh → nhấn ▶ nghe toàn bộ hội thoại.</div>
+    <div id="dialogue-container"></div>
+    <button class="btn-next" onclick="goPhase(4)">Tiếp theo: Quiz →</button>
+  </div>
+</div>
+
+<!-- PHASE 4: QUIZ -->
+<div class="phase" id="phase-4">
+  <div class="section-header" style="background:var(--c4)">
+    <div class="phase-label">🧠 Giai đoạn 5 – 8 phút</div>
+    <h2>Quiz Trắc Nghiệm</h2>
+    <div class="duration">Chọn đáp án đúng – cần đạt 80%!</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box"><strong>Hướng dẫn:</strong> Chọn câu trả lời đúng. Cần đạt <strong>80%</strong> để qua vòng này!</div>
+    <div style="font-size:.82rem;font-weight:700;margin-bottom:12px;">Điểm: <span id="quiz-score">0 / 0</span></div>
+    <div id="quiz-container"></div>
+    <div id="quiz-retry-section" style="display:none;margin-top:12px;">
+      <div style="color:#c0392b;font-weight:700;font-size:.86rem;margin-bottom:8px;">Chưa đạt 80% — Hãy thử lại nhé!</div>
+      <button class="retry-btn" onclick="retryQuiz()">🔄 Làm lại Quiz</button>
+    </div>
+    <div id="quiz-done-btn" style="display:none;"><button class="btn-next" onclick="goPhase(5)">✅ Tiếp theo: Điền từ →</button></div>
+    <button class="btn-next" style="margin-top:10px;background:var(--gray)" onclick="goPhase(5)">Bỏ qua →</button>
+  </div>
+</div>
+
+<!-- PHASE 5: ĐIỀN TỪ -->
+<div class="phase" id="phase-5">
+  <div class="section-header" style="background:var(--c5)">
+    <div class="phase-label">✏️ Giai đoạn 6 – 7 phút</div>
+    <h2>Điền từ vào chỗ trống</h2>
+    <div class="duration">Gõ từ còn thiếu – không có gợi ý!</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box"><strong>Hướng dẫn:</strong> Điền từ đúng vào ô trống. Nhấn "Kiểm tra" sau khi làm xong.</div>
+    <div id="fill-container"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">
+      <button class="btn-check" onclick="checkFill()">✅ Kiểm tra tất cả</button>
+      <button class="retry-btn" onclick="retryFill()" id="retry-fill-btn" style="display:none">🔄 Làm lại</button>
+    </div>
+    <div id="fill-score-display" style="margin-top:10px;font-weight:700;font-size:.9rem;display:none;"></div>
+    <button class="btn-next" onclick="goPhase(6)" style="margin-top:12px">Tiếp theo: Dịch câu →</button>
+  </div>
+</div>
+
+<!-- PHASE 6: DỊCH CÂU -->
+<div class="phase" id="phase-6">
+  <div class="section-header" style="background:var(--c4)">
+    <div class="phase-label">🔄 Giai đoạn 7 – 7 phút</div>
+    <h2>Dịch câu</h2>
+    <div class="duration">Dịch 2 chiều Việt ↔ Anh – không có gợi ý!</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box"><strong>Hướng dẫn:</strong> Dịch câu vào ô. Nhấn "Kiểm tra" sau khi làm xong.</div>
+    <div id="trans-container"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">
+      <button class="btn-check" onclick="checkTrans()">✅ Kiểm tra tất cả</button>
+      <button class="retry-btn" onclick="retryTrans()" id="retry-trans-btn" style="display:none">🔄 Làm lại</button>
+    </div>
+    <div id="trans-score-display" style="margin-top:10px;font-weight:700;font-size:.9rem;display:none;"></div>
+    <button class="btn-next" onclick="goPhase(7)" style="margin-top:12px">Tiếp theo: Luyện nói →</button>
+  </div>
+</div>
+
+<!-- PHASE 7: NÓI -->
+<div class="phase" id="phase-7">
+  <div class="section-header" style="background:var(--c5)">
+    <div class="phase-label">🎤 Giai đoạn 8 – 8 phút</div>
+    <h2>Luyện nói</h2>
+    <div class="duration">Nghe mẫu → đọc to theo → lặp lại 3 lần!</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box"><strong>Cách luyện:</strong> Nhấn ▶ nghe, sau đó nói to câu đó. Lặp lại đến khi phát âm tự nhiên.</div>
+    <div id="speaking-container"></div>
+    <button class="btn-next" onclick="goPhase(8)">Xem kết quả →</button>
+  </div>
+</div>
+
+<!-- PHASE 8: KẾT QUẢ -->
+<div class="phase" id="phase-8">
+  <div class="section-header" style="background:var(--dark)">
+    <div class="phase-label">🏆 Kết thúc bài học</div>
+    <h2>Tổng kết</h2>
+    <div class="duration">Kết quả Quiz + Điền từ + Dịch câu</div>
+  </div>
+  <div class="section-body">
+    <div id="score-section">
+      <div class="score-circle"><div class="num" id="final-score">—</div><div class="lbl">điểm</div></div>
+      <h2 id="final-msg">Hoàn thành!</h2>
+      <p id="final-desc"></p>
+      <div id="detail-score" style="margin:12px 0;font-size:.85rem;font-weight:700;background:#f8f9fa;border-radius:10px;padding:12px 16px;text-align:left;"></div>
+      <div style="background:#f8f9fa;border-radius:13px;padding:14px;text-align:left;margin:14px 0;">
+        <h3 style="font-size:.86rem;font-weight:800;margin-bottom:10px;">📋 Ôn nhanh:</h3>
+        <div id="quick-review" style="font-size:.82rem;line-height:2.2;"></div>
+      </div>
+      <button class="btn-primary" onclick="restartLesson()">🔄 Học lại từ đầu</button>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+const allPhrases=[
+  {en:"Where is the phone?",                vi:"Điện thoại ở đâu?",                    group:"WHERE IS"},
+  {en:"Where is the cat?",                  vi:"Con mèo ở đâu?",                       group:"WHERE IS"},
+  {en:"Where is the ball?",                 vi:"Quả bóng ở đâu?",                      group:"WHERE IS"},
+  {en:"Where are the keys?",               vi:"Chìa khóa ở đâu?",                     group:"WHERE ARE"},
+  {en:"Where are the books?",              vi:"Những quyển sách ở đâu?",              group:"WHERE ARE"},
+  {en:"Where are the house keys?",         vi:"Chùm chìa khóa nhà ở đâu?",           group:"WHERE ARE"},
+  {en:"It is on the chair.",               vi:"Nó ở trên ghế.",                       group:"Trả lời"},
+  {en:"It's in the bag.",                  vi:"Nó ở trong túi.",                      group:"Trả lời"},
+  {en:"It is under the table.",            vi:"Nó ở dưới bàn.",                       group:"Trả lời"},
+  {en:"They are on the table.",            vi:"Chúng ở trên bàn.",                    group:"Trả lời"},
+  {en:"They are under the bed.",           vi:"Chúng ở dưới giường.",                 group:"Trả lời"},
+  {en:"They are next to the box.",         vi:"Chúng ở bên cạnh cái hộp.",           group:"Trả lời"},
+  {en:"They are on the desk.",             vi:"Chúng ở trên bàn làm việc.",           group:"Trả lời"},
+  {en:"Is the phone on the chair?",        vi:"Điện thoại có ở trên ghế không?",     group:"IS/ARE...?"},
+  {en:"Is the book in the bag?",           vi:"Cuốn sách có trong túi không?",       group:"IS/ARE...?"},
+  {en:"Are the car keys on the table?",    vi:"Chìa khóa xe có ở trên bàn không?",  group:"IS/ARE...?"},
+  {en:"Are the shoes under the bed?",      vi:"Giày có ở dưới giường không?",        group:"IS/ARE...?"},
+  {en:"Where do you live?",               vi:"Bạn sống ở đâu?",                     group:"WHERE DO/DOES"},
+  {en:"Where do you go every weekend?",   vi:"Bạn đi đâu mỗi cuối tuần?",          group:"WHERE DO/DOES"},
+  {en:"Where do they work?",              vi:"Họ làm việc ở đâu?",                  group:"WHERE DO/DOES"},
+  {en:"Where does he live?",              vi:"Anh ấy sống ở đâu?",                  group:"WHERE DO/DOES"},
+  {en:"Where does she work?",             vi:"Cô ấy làm việc ở đâu?",               group:"WHERE DO/DOES"},
+  {en:"Where does your sister work?",     vi:"Chị gái bạn làm việc ở đâu?",        group:"WHERE DO/DOES"},
+];
+
+const exGroup1=[
+  {en:"A: Where is the phone? B: It's on the desk.",                    vi:"A: Điện thoại ở đâu? B: Nó ở trên bàn làm việc."},
+  {en:"A: Where is the cat? B: It's under the chair.",                  vi:"A: Con mèo ở đâu? B: Nó ở dưới ghế."},
+  {en:"A: Where are the keys? B: They are in the bag.",                 vi:"A: Chìa khóa ở đâu? B: Chúng ở trong túi."},
+  {en:"A: Where are the books? B: They are next to the box.",           vi:"A: Những quyển sách ở đâu? B: Chúng ở bên cạnh cái hộp."},
+  {en:"A: Where is the ball? B: It is under the table.",                vi:"A: Quả bóng ở đâu? B: Nó ở dưới bàn."},
+];
+
+const exGroup2=[
+  {en:"A: Is the pen on the table? B: Yes, it is.",                     vi:"A: Bút có ở trên bàn không? B: Có, nó ở đó."},
+  {en:"A: Is the cat under the chair? B: Yes, it is.",                  vi:"A: Con mèo có ở dưới ghế không? B: Có."},
+  {en:"A: Are the books in the bag? B: No, they are next to the box.",  vi:"A: Sách có trong túi không? B: Không, chúng bên cạnh hộp."},
+  {en:"A: Are the shoes under the bed? B: No, they aren't. They are behind the door.", vi:"A: Giày có dưới giường không? B: Không. Chúng ở sau cửa."},
+  {en:"A: Is the phone in your pocket? B: No, it's on the sofa.",       vi:"A: Điện thoại có trong túi không? B: Không, nó ở trên ghế sofa."},
+];
+
+const exGroup3=[
+  {en:"A: Where do you live? B: I live in Da Nang.",                    vi:"A: Bạn sống ở đâu? B: Tôi sống ở Đà Nẵng."},
+  {en:"A: Where do you go every weekend? B: I go to the park.",         vi:"A: Bạn đi đâu mỗi cuối tuần? B: Tôi đi tới công viên."},
+  {en:"A: Where does she work? B: She works in a hospital.",            vi:"A: Cô ấy làm việc ở đâu? B: Cô ấy làm ở bệnh viện."},
+  {en:"A: Where does he study? B: He studies at the university.",       vi:"A: Anh ấy học ở đâu? B: Anh ấy học ở trường đại học."},
+  {en:"A: Where do they eat lunch? B: They eat at the office canteen.", vi:"A: Họ ăn trưa ở đâu? B: Họ ăn ở căng-tin văn phòng."},
+];
+
+const dialogues=[
+  {title:"Hội thoại 1 – Tìm quả bóng",
+   lines:[
+     {label:"A",vi:"Quả bóng ở đâu?",                           en:"Where is the ball?",                        color:"#1565c0"},
+     {label:"B",vi:"Nó ở dưới bàn.",                            en:"It is under the table.",                    color:"#e65100"},
+     {label:"A",vi:"Ồ tôi thấy rồi. Cảm ơn!",                  en:"Oh I see it. Thank you!",                   color:"#1565c0"},
+   ]},
+  {title:"Hội thoại 2 – Tìm chìa khóa nhà",
+   lines:[
+     {label:"A",vi:"Chùm chìa khóa nhà ở đâu?",                en:"Where are the house keys?",                 color:"#2e7d32"},
+     {label:"B",vi:"Chúng ở trên bàn làm việc.",                en:"They are on the desk.",                     color:"#c0392b"},
+     {label:"A",vi:"Chúng có ở trong ngăn kéo không?",          en:"Are they in the drawer?",                   color:"#2e7d32"},
+     {label:"B",vi:"Không. Chúng ở trên mặt bàn.",              en:"No, they are on top of the desk.",          color:"#c0392b"},
+   ]},
+  {title:"Hội thoại 3 – Hỏi về nơi sống và làm việc",
+   lines:[
+     {label:"A",vi:"Chị gái bạn làm việc ở đâu?",              en:"Where does your sister work?",              color:"#6a1b9a"},
+     {label:"B",vi:"Cô ấy làm việc ở bệnh viện.",              en:"She works in a hospital.",                  color:"#00838f"},
+     {label:"A",vi:"Còn bạn trai cô ấy thì làm ở đâu?",        en:"Where does her boyfriend work?",            color:"#6a1b9a"},
+     {label:"B",vi:"Anh ấy làm việc ở trường học.",             en:"He works at a school.",                    color:"#00838f"},
+   ]},
+  {title:"Hội thoại 4 – Cuối tuần đi đâu?",
+   lines:[
+     {label:"A",vi:"Bạn đi đâu mỗi cuối tuần?",                en:"Where do you go every weekend?",            color:"#e65100"},
+     {label:"B",vi:"Tôi đi tới công viên.",                     en:"I go to the park.",                        color:"#1565c0"},
+     {label:"A",vi:"Còn bạn bè của bạn thì sao?",               en:"What about your friends?",                  color:"#e65100"},
+     {label:"B",vi:"Họ thường đi đến trung tâm thương mại.",     en:"They usually go to the shopping mall.",    color:"#1565c0"},
+   ]},
+];
+
+const quizData=[
+  {q:"'Điện thoại ở đâu?' – Câu tiếng Anh đúng?",opts:["Where is a phone?","Where the phone is?","Where is the phone?","Where are the phone?"],ans:2},
+  {q:"'Những quyển sách ở đâu?' – Câu đúng?",opts:["Where is the books?","Where are the books?","Where do the books?","Where are a books?"],ans:1},
+  {q:"'Nó ở trên ghế.' – Câu đúng?",opts:["It is in the chair.","It is on the chair.","It is under the chair.","It is at the chair."],ans:1},
+  {q:"'Chúng ở dưới giường.' – Câu đúng?",opts:["They are on the bed.","They are in the bed.","They are under the bed.","They are next to the bed."],ans:2},
+  {q:"'Điện thoại có ở trên ghế không?' – Câu đúng?",opts:["Where is the phone on the chair?","Is the phone on the chair?","Are the phone on the chair?","Does the phone on the chair?"],ans:1},
+  {q:"'Chìa khóa xe có ở trên bàn không?' – Câu đúng?",opts:["Is the car keys on the table?","Where are the car keys?","Are the car keys on the table?","Do the car keys on the table?"],ans:2},
+  {q:"'Bạn sống ở đâu?' – Câu đúng?",opts:["Where do you live?","Where does you live?","Where are you live?","Where is you live?"],ans:0},
+  {q:"'Cô ấy làm việc ở đâu?' – Câu đúng?",opts:["Where do she work?","Where is she work?","Where does she work?","Where she works?"],ans:2},
+  {q:"Chọn giới từ đúng: 'The cat is ___ the chair.' (dưới ghế)",opts:["on","in","under","next to"],ans:2},
+  {q:"Chọn giới từ đúng: 'The book is ___ the bag.' (trong túi)",opts:["on","in","under","behind"],ans:1},
+  {q:"Chọn giới từ đúng: 'The keys are ___ the table.' (trên bàn)",opts:["in","under","on","behind"],ans:2},
+  {q:"Chọn giới từ đúng: 'The shoes are ___ the box.' (bên cạnh)",opts:["on","in","under","next to"],ans:3},
+  {q:"'A: Are the books in the bag? B: ___'",opts:["Yes, it is.","No, it isn't.","Yes, they are.","No, he isn't."],ans:2},
+  {q:"'A: Is the cat under the chair? B: ___'",opts:["Yes, they are.","Yes, it is.","No, it aren't.","Yes, she is."],ans:1},
+  {q:"'Họ làm việc ở đâu?' – Câu đúng?",opts:["Where does they work?","Where are they work?","Where do they work?","Where they work?"],ans:2},
+  {q:"Câu nào SAI ngữ pháp?",opts:["Where is the phone?","Where are the keys?","Where do she work?","Where does he live?"],ans:2},
+  {q:"'Bên cạnh' trong tiếng Anh là gì?",opts:["behind","under","next to","in front of"],ans:2},
+  {q:"'In front of' nghĩa là gì?",opts:["bên cạnh","phía sau","phía trước","bên trong"],ans:2},
+];
+
+const fillData=[
+  {answer:"is",         before:"Where ",             after:" the phone?",                   vi:"Điện thoại ở đâu?"},
+  {answer:"are",        before:"Where ",             after:" the keys?",                    vi:"Chìa khóa ở đâu?"},
+  {answer:"on",         before:"It is ",             after:" the chair.",                   vi:"Nó ở trên ghế."},
+  {answer:"in",         before:"It's ",              after:" the bag.",                     vi:"Nó ở trong túi."},
+  {answer:"under",      before:"They are ",          after:" the bed.",                     vi:"Chúng ở dưới giường."},
+  {answer:"next to",    before:"They are ",          after:" the box.",                     vi:"Chúng ở bên cạnh cái hộp."},
+  {answer:"Is",         before:"",                   after:" the book in the bag?",         vi:"Cuốn sách có trong túi không?"},
+  {answer:"Are",        before:"",                   after:" the car keys on the table?",   vi:"Chìa khóa xe có ở trên bàn không?"},
+  {answer:"do",         before:"Where ",             after:" you live?",                    vi:"Bạn sống ở đâu?"},
+  {answer:"does",       before:"Where ",             after:" she work?",                    vi:"Cô ấy làm việc ở đâu?"},
+  {answer:"behind",     before:"The door is ",       after:" the sofa.",                    vi:"Cái cửa ở phía sau ghế sofa."},
+  {answer:"in front of",before:"The car is ",        after:" the house.",                   vi:"Cái xe ở phía trước nhà."},
+];
+
+const transData=[
+  {prompt:"Điện thoại ở đâu?",                            answer:"where is the phone",                       dir:"vi→en"},
+  {prompt:"Where are the keys?",                          answer:"chìa khóa ở đâu",                         dir:"en→vi"},
+  {prompt:"Nó ở trên ghế.",                               answer:"it is on the chair",                       dir:"vi→en"},
+  {prompt:"They are under the bed.",                      answer:"chúng ở dưới giường",                     dir:"en→vi"},
+  {prompt:"Điện thoại có ở trên ghế không?",              answer:"is the phone on the chair",                dir:"vi→en"},
+  {prompt:"Are the books in the bag?",                    answer:"những quyển sách có trong túi không",     dir:"en→vi"},
+  {prompt:"Bạn sống ở đâu?",                              answer:"where do you live",                        dir:"vi→en"},
+  {prompt:"Where does she work?",                         answer:"cô ấy làm việc ở đâu",                    dir:"en→vi"},
+  {prompt:"Chúng ở bên cạnh cái hộp.",                   answer:"they are next to the box",                 dir:"vi→en"},
+  {prompt:"Where do they go every weekend?",              answer:"họ đi đâu mỗi cuối tuần",                 dir:"en→vi"},
+  {prompt:"Chìa khóa xe có ở trên bàn không?",           answer:"are the car keys on the table",            dir:"vi→en"},
+  {prompt:"She works in a hospital.",                     answer:"cô ấy làm việc ở bệnh viện",              dir:"en→vi"},
+];
+
+const speakingData=[
+  {en:"Where is the phone?",                vi:"Điện thoại ở đâu?",                   color:"#b7410e"},
+  {en:"Where is the cat?",                  vi:"Con mèo ở đâu?",                      color:"#b7410e"},
+  {en:"It is on the chair.",               vi:"Nó ở trên ghế.",                      color:"#e65100"},
+  {en:"It's in the bag.",                  vi:"Nó ở trong túi.",                     color:"#e65100"},
+  {en:"Where are the keys?",               vi:"Chìa khóa ở đâu?",                    color:"#1565c0"},
+  {en:"They are under the bed.",           vi:"Chúng ở dưới giường.",                color:"#1565c0"},
+  {en:"They are next to the box.",         vi:"Chúng ở bên cạnh cái hộp.",           color:"#2e7d32"},
+  {en:"Is the phone on the chair?",        vi:"Điện thoại có ở trên ghế không?",     color:"#2e7d32"},
+  {en:"Are the car keys on the table?",    vi:"Chìa khóa xe có ở trên bàn không?",  color:"#6a1b9a"},
+  {en:"Yes, they are.",                    vi:"Có, chúng ở đó.",                     color:"#6a1b9a"},
+  {en:"No, they are next to the box.",     vi:"Không, chúng ở bên cạnh hộp.",       color:"#00838f"},
+  {en:"Where do you live?",               vi:"Bạn sống ở đâu?",                     color:"#00838f"},
+  {en:"Where does she work?",             vi:"Cô ấy làm việc ở đâu?",               color:"#c0392b"},
+  {en:"She works in a hospital.",         vi:"Cô ấy làm việc ở bệnh viện.",         color:"#c0392b"},
+];
+
+// STATE
+let quizCorrect=0,quizAnswered=0,fillCorrect=0,fillChecked=false,transCorrect=0,transChecked=false,secondsLeft=3600,timerInterval;
+
+function init(){buildPhraseTable();buildExamples();buildDialogues();buildQuiz();buildFill();buildTrans();buildSpeaking();buildQuickReview();startTimer();}
+
+function startTimer(){
+  timerInterval=setInterval(()=>{secondsLeft--;const m=String(Math.floor(secondsLeft/60)).padStart(2,'0');const s=String(secondsLeft%60).padStart(2,'0');document.getElementById('timer-bar').textContent=`⏱ ${m}:${s}`;if(secondsLeft<=0)clearInterval(timerInterval);},1000);
+}
+
+function buildPhraseTable(){
+  const colors={"WHERE IS":'#e65100',"WHERE ARE":'#1565c0',"Trả lời":'#2e7d32',"IS/ARE...?":'#6a1b9a',"WHERE DO/DOES":'#00838f'};
+  document.getElementById('phrase-tbody').innerHTML=allPhrases.map(w=>`<tr><td class="en">${w.en}</td><td>${w.vi}</td><td><span style="background:${colors[w.group]||'#555'};color:white;border-radius:20px;padding:2px 9px;font-size:.68rem;font-weight:800;">${w.group}</span></td><td><button class="play-btn" onclick="speak('${w.en.replace(/'/g,"\\'")}')">▶</button></td></tr>`).join('');
+}
+
+function buildExamples(){
+  [{id:'ex-group1',data:exGroup1,color:'#b7410e'},{id:'ex-group2',data:exGroup2,color:'#1565c0'},{id:'ex-group3',data:exGroup3,color:'#2e7d32'}].forEach(g=>{
+    document.getElementById(g.id).innerHTML=g.data.map(e=>`<div class="eb" style="background:${g.color}11;border-color:${g.color}"><div class="en">${e.en} <button class="play-btn" onclick="speak('${e.en.replace(/'/g,"\\'")}')">▶</button></div><div class="vi">→ ${e.vi}</div></div>`).join('');
+  });
+}
+
+function buildDialogues(){
+  document.getElementById('dialogue-container').innerHTML=dialogues.map((d,i)=>`<div class="dbox"><div class="dtitle">💬 ${d.title}</div>${d.lines.map(l=>`<div class="dline"><span class="dlabel" style="background:${l.color}">${l.label}</span><div><div class="dvi">${l.vi}</div><div class="den">${l.en}</div></div></div>`).join('')}<button class="pdlg" onclick="speakDlg(${i})">▶ Nghe hội thoại</button></div>`).join('');
+}
+
+async function speakDlg(i){for(const l of dialogues[i].lines){speak(l.en);await new Promise(r=>setTimeout(r,l.en.length*65+900));}}
+
+function buildQuiz(){
+  document.getElementById('quiz-container').innerHTML=quizData.map((q,i)=>`<div class="quiz-item" id="qi-${i}"><div class="quiz-q">${i+1}. ${q.q}</div><div class="quiz-opts">${q.opts.map((o,j)=>`<button class="qopt" id="qo-${i}-${j}" onclick="answerQuiz(${i},${j})">${o}</button>`).join('')}</div><div class="qfb" id="qf-${i}"></div></div>`).join('');
+}
+
+function answerQuiz(qi,choice){
+  const item=document.getElementById(`qi-${qi}`);if(item.dataset.answered)return;item.dataset.answered='1';
+  const q=quizData[qi];item.querySelectorAll('.qopt').forEach(b=>b.disabled=true);const fb=document.getElementById(`qf-${qi}`);
+  if(choice===q.ans){document.getElementById(`qo-${qi}-${choice}`).classList.add('sel-ok');item.classList.add('answered-ok');fb.textContent='✅ Đúng!';fb.className='qfb show ok';quizCorrect++;}
+  else{document.getElementById(`qo-${qi}-${choice}`).classList.add('sel-fail');item.classList.add('answered-fail');fb.textContent='❌ Sai! Hãy ghi nhớ.';fb.className='qfb show fail';}
+  quizAnswered++;document.getElementById('quiz-score').textContent=`${quizCorrect} / ${quizAnswered}`;
+  if(quizAnswered===quizData.length){const pct=Math.round((quizCorrect/quizData.length)*100);if(pct<80)document.getElementById('quiz-retry-section').style.display='block';else document.getElementById('quiz-done-btn').style.display='block';}
+}
+
+function retryQuiz(){quizCorrect=0;quizAnswered=0;document.getElementById('quiz-score').textContent='0 / 0';document.getElementById('quiz-retry-section').style.display='none';document.getElementById('quiz-done-btn').style.display='none';buildQuiz();}
+
+function buildFill(){
+  document.getElementById('fill-container').innerHTML=fillData.map((f,i)=>`<div class="fill-item" id="fi-${i}"><div class="fill-q">${i+1}. ${f.before}<input type="text" id="finp-${i}" placeholder="...">${f.after}</div><div class="fill-vi">${f.vi}</div><div class="fill-ans" id="fa-${i}">❌ Đáp án: <strong>${f.answer}</strong></div></div>`).join('');
+  fillChecked=false;document.getElementById('retry-fill-btn').style.display='none';document.getElementById('fill-score-display').style.display='none';
+}
+
+function checkFill(){
+  fillCorrect=0;
+  fillData.forEach((f,i)=>{const inp=document.getElementById(`finp-${i}`);const item=document.getElementById(`fi-${i}`);const ans=document.getElementById(`fa-${i}`);const val=inp.value.trim().toLowerCase().replace(/\s+/g,' ');inp.disabled=true;if(val===f.answer.toLowerCase()){item.classList.add('correct');item.classList.remove('wrong');ans.classList.remove('show-wrong');fillCorrect++;}else{item.classList.add('wrong');item.classList.remove('correct');ans.classList.add('show-wrong');}});
+  fillChecked=true;const pct=Math.round((fillCorrect/fillData.length)*100);const scoreEl=document.getElementById('fill-score-display');scoreEl.style.display='block';scoreEl.innerHTML=`Điểm điền từ: <span style="color:${pct>=70?'#2e7d32':'#c0392b'}">${fillCorrect}/${fillData.length} (${pct}%)</span>`;if(pct<70){scoreEl.innerHTML+=` – <span style="color:#c0392b">Làm lại nhé!</span>`;document.getElementById('retry-fill-btn').style.display='inline-flex';}
+}
+
+function retryFill(){fillData.forEach((f,i)=>{const inp=document.getElementById(`finp-${i}`);const item=document.getElementById(`fi-${i}`);const ans=document.getElementById(`fa-${i}`);inp.value='';inp.disabled=false;item.classList.remove('correct','wrong');ans.classList.remove('show-wrong');});fillChecked=false;fillCorrect=0;document.getElementById('retry-fill-btn').style.display='none';document.getElementById('fill-score-display').style.display='none';}
+
+function buildTrans(){
+  document.getElementById('trans-container').innerHTML=transData.map((t,i)=>`<div class="trans-item" id="ti-${i}"><div class="trans-lang">${t.dir==='vi→en'?'🇻🇳 Tiếng Việt → Tiếng Anh':'🇬🇧 Tiếng Anh → Tiếng Việt'}</div><div class="trans-q">${t.prompt}</div><input class="trans-input" type="text" id="tinp-${i}" placeholder="Nhập bản dịch..."><div class="trans-ans" id="ta-${i}">❌ Gợi ý: <strong>${t.answer}</strong></div></div>`).join('');
+  transChecked=false;document.getElementById('retry-trans-btn').style.display='none';document.getElementById('trans-score-display').style.display='none';
+}
+
+function checkTrans(){
+  transCorrect=0;
+  transData.forEach((t,i)=>{const inp=document.getElementById(`tinp-${i}`);const item=document.getElementById(`ti-${i}`);const ans=document.getElementById(`ta-${i}`);const val=normalize(inp.value);const correct=normalize(t.answer);inp.disabled=true;const kw=correct.split(' ').filter(w=>w.length>2);const matched=kw.filter(w=>val.includes(w)).length;const ratio=kw.length>0?matched/kw.length:0;if(ratio>=0.65){item.classList.add('correct');item.classList.remove('wrong');ans.classList.remove('show');transCorrect++;}else{item.classList.add('wrong');item.classList.remove('correct');ans.classList.add('show');}});
+  transChecked=true;const pct=Math.round((transCorrect/transData.length)*100);const scoreEl=document.getElementById('trans-score-display');scoreEl.style.display='block';scoreEl.innerHTML=`Điểm dịch câu: <span style="color:${pct>=70?'#2e7d32':'#c0392b'}">${transCorrect}/${transData.length} (${pct}%)</span>`;if(pct<70){scoreEl.innerHTML+=` – <span style="color:#c0392b">Làm lại nhé!</span>`;document.getElementById('retry-trans-btn').style.display='inline-flex';}
+}
+
+function retryTrans(){transData.forEach((t,i)=>{const inp=document.getElementById(`tinp-${i}`);const item=document.getElementById(`ti-${i}`);const ans=document.getElementById(`ta-${i}`);inp.value='';inp.disabled=false;item.classList.remove('correct','wrong');ans.classList.remove('show');});transChecked=false;transCorrect=0;document.getElementById('retry-trans-btn').style.display='none';document.getElementById('trans-score-display').style.display='none';}
+
+function buildSpeaking(){document.getElementById('speaking-container').innerHTML=speakingData.map((s,i)=>`<div class="speak-card" style="background:${s.color}"><div class="slbl">CÂU ${i+1}</div><div class="sen-en">${s.en}</div><div class="sen-vi">${s.vi}</div><button class="hear-btn" onclick="speak('${s.en.replace(/'/g,"\\'")}')">▶ Nghe mẫu</button></div>`).join('');}
+
+function buildQuickReview(){
+  const items=[
+    {emoji:"📦",label:"WHERE IS the + N (số ít)?",en:"Where is the phone?",vi:"Hỏi vị trí 1 vật"},
+    {emoji:"📦",label:"WHERE ARE the + N (số nhiều)?",en:"Where are the keys?",vi:"Hỏi vị trí nhiều vật"},
+    {emoji:"✅",label:"IS + N + giới từ?",en:"Is the cat under the chair?",vi:"Yes, it is / No, it isn't"},
+    {emoji:"✅",label:"ARE + N + giới từ?",en:"Are the books in the bag?",vi:"Yes, they are / No, they aren't"},
+    {emoji:"🏃",label:"WHERE DO + you/we/they + V?",en:"Where do you live?",vi:"Hỏi nơi thực hiện hành động"},
+    {emoji:"🏃",label:"WHERE DOES + he/she + V?",en:"Where does she work?",vi:"Hỏi nơi anh ấy/cô ấy làm"},
+    {emoji:"🗺️",label:"Giới từ vị trí",en:"on / in / under / next to / behind / in front of",vi:"trên / trong / dưới / bên cạnh / sau / trước"},
+  ];
+  document.getElementById('quick-review').innerHTML=items.map(p=>`<div>${p.emoji} <strong>${p.label}:</strong> <span style="color:#1565c0">${p.en}</span> → <span style="color:#555">${p.vi}</span></div>`).join('');
+}
+
+function speak(text){if(!window.speechSynthesis)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='en-US';u.rate=0.85;speechSynthesis.speak(u);}
+
+function goPhase(n){
+  document.querySelectorAll('.phase').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.phase-tab').forEach((t,i)=>{t.classList.remove('active','done');if(i<n)t.classList.add('done');});
+  document.getElementById(`phase-${n}`).classList.add('active');
+  document.querySelectorAll('.phase-tab')[n].classList.add('active');
+  document.getElementById('progress-bar').style.width=Math.round((n/8)*100)+'%';
+  window.scrollTo(0,0);if(n===8)showResult();
+}
+
+function showResult(){
+  const qT=quizData.length,fT=fillData.length,tT=transData.length;const total=quizCorrect+fillCorrect+transCorrect;const max=qT+fT+tT;const pct=Math.round((total/max)*100);
+  document.getElementById('final-score').textContent=pct+'%';
+  let msg,desc;
+  if(pct>=90){msg='🏆 Xuất sắc!';desc='Bạn đã nắm vững WHERE + giới từ vị trí!';}
+  else if(pct>=75){msg='👍 Tốt lắm!';desc='Ôn thêm giới từ và cách dùng where is/are nhé!';}
+  else if(pct>=55){msg='📚 Cần ôn thêm!';desc='Học lại lý thuyết và làm lại bài tập!';}
+  else{msg='💪 Cố gắng lên!';desc='Hãy bắt đầu lại từ phần lý thuyết nhé!';}
+  document.getElementById('final-msg').textContent=msg;document.getElementById('final-desc').textContent=desc;
+  document.getElementById('detail-score').innerHTML=`🧠 Quiz: <strong>${quizCorrect}/${qT}</strong> &nbsp;|&nbsp; ✏️ Điền từ: <strong>${fillCorrect}/${fT}</strong> &nbsp;|&nbsp; 🔄 Dịch câu: <strong>${transCorrect}/${tT}</strong> &nbsp;|&nbsp; Tổng: <strong>${total}/${max} (${pct}%)</strong>`;
+  clearInterval(timerInterval);
+}
+
+function restartLesson(){quizCorrect=0;quizAnswered=0;fillCorrect=0;fillChecked=false;transCorrect=0;transChecked=false;secondsLeft=3600;clearInterval(timerInterval);buildQuiz();buildFill();buildTrans();document.getElementById('quiz-score').textContent='0 / 0';document.getElementById('quiz-retry-section').style.display='none';document.getElementById('quiz-done-btn').style.display='none';goPhase(0);startTimer();}
+
+function normalize(s){return s.trim().toLowerCase().replace(/[.?!,]/g,'').replace(/\s+/g,' ');}
+
+init();
+</script>
+</body>
+</html>
