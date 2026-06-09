@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 25 – Mô Tả Đồ Ăn trong Tiếng Anh</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{--c1:#b7410e;--c2:#1565c0;--c3:#2e7d32;--c4:#6a1b9a;--c5:#00838f;--yellow:#FFD93D;--bg:#fafbff;--dark:#0d1b2a;--gray:#78909c;--radius:18px;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--dark);min-height:100vh;}
+  header{background:var(--dark);color:white;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 3px 14px rgba(0,0,0,.3);}
+  header h1{font-family:'Baloo 2',cursive;font-size:1.05rem;font-weight:800;text-align:center;flex:1;}
+  header h1 span{color:var(--yellow);}
+  #timer-bar{font-size:.95rem;font-weight:700;background:var(--yellow);color:var(--dark);padding:5px 14px;border-radius:30px;white-space:nowrap;}
+  .back-btn{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.25);color:white;padding:5px 13px;border-radius:30px;font-size:.78rem;font-weight:700;text-decoration:none;transition:all .2s;white-space:nowrap;}
+  .back-btn:hover{background:rgba(255,255,255,.22);}
+  #progress-wrap{background:#e9ecef;height:8px;}
+  #progress-bar{height:8px;background:linear-gradient(90deg,var(--c1),var(--c2),var(--c3),var(--c4));transition:width .6s ease;border-radius:0 4px 4px 0;}
+  #phase-nav{display:flex;gap:5px;padding:10px 16px;overflow-x:auto;background:white;border-bottom:2px solid #f1f3f4;}
+  .phase-tab{flex-shrink:0;padding:5px 11px;border-radius:20px;font-size:.72rem;font-weight:700;border:2px solid #dee2e6;background:white;cursor:pointer;transition:all .2s;color:var(--gray);}
+  .phase-tab.active{background:var(--dark);color:white;border-color:var(--dark);}
+  .phase-tab.done{background:var(--c3);color:white;border-color:var(--c3);}
+  main{padding:18px 14px 48px;max-width:780px;margin:0 auto;}
+  .phase{display:none;animation:fadeIn .4s ease;}
+  .phase.active{display:block;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+  .section-header{border-radius:var(--radius) var(--radius) 0 0;padding:13px 18px;}
+  .section-header .phase-label{font-size:.66rem;letter-spacing:2px;text-transform:uppercase;color:var(--yellow);font-weight:700;}
+  .section-header h2{font-family:'Baloo 2',cursive;font-size:1.2rem;font-weight:800;color:white;}
+  .section-header .duration{font-size:.76rem;color:rgba(255,255,255,.5);margin-top:1px;}
+  .section-body{background:white;border-radius:0 0 var(--radius) var(--radius);padding:18px;margin-bottom:20px;box-shadow:0 4px 18px rgba(0,0,0,.07);}
+  .formula-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+  .fc{border-radius:12px;padding:12px 14px;}
+  .fc h3{font-family:'Baloo 2',cursive;font-size:.92rem;font-weight:800;margin-bottom:6px;color:white;}
+  .fc .fb{background:rgba(255,255,255,.2);border-radius:7px;padding:7px 10px;font-size:.8rem;font-weight:700;font-family:monospace;color:white;margin-bottom:5px;line-height:1.6;}
+  .fc .fn{font-size:.75rem;color:rgba(255,255,255,.88);line-height:1.7;}
+  .tip-box{background:#fff8e1;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:.82rem;border-left:4px solid var(--yellow);line-height:1.75;}
+  .tip-box strong{color:#e65100;}
+  .tip-red{background:#fce4ec;border-left-color:var(--c1);}
+  .tip-red strong{color:var(--c1);}
+  .tip-green{background:#e8f5e9;border-left-color:var(--c3);}
+  .tip-green strong{color:var(--c3);}
+  .tip-blue{background:#e3f2fd;border-left-color:var(--c2);}
+  .tip-blue strong{color:var(--c2);}
+
+  /* VOCAB CARDS */
+  .vocab-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
+  @media(max-width:520px){.vocab-grid{grid-template-columns:repeat(2,1fr);}.formula-grid{grid-template-columns:1fr;}.quiz-opts{grid-template-columns:1fr;}}
+  .vc{border-radius:13px;padding:12px 10px;border:2px solid;text-align:center;cursor:pointer;transition:transform .15s;}
+  .vc:hover{transform:scale(1.05);}
+  .vc .ve{font-family:'Baloo 2',cursive;font-size:1.05rem;font-weight:800;}
+  .vc .vp{font-size:.68rem;font-style:italic;color:#666;margin:2px 0;}
+  .vc .vv{font-size:.78rem;font-weight:700;}
+
+  /* PHRASE TABLE */
+  .phrase-table{width:100%;border-collapse:collapse;margin-bottom:14px;font-size:.83rem;}
+  .phrase-table th{background:var(--dark);color:white;padding:8px 10px;text-align:left;font-weight:800;}
+  .phrase-table td{padding:8px 10px;border-bottom:1px solid #e9ecef;vertical-align:middle;}
+  .phrase-table tr:hover td{background:#f1f8e9;}
+  .phrase-table .en{font-weight:700;color:var(--c1);}
+  .play-btn{background:none;border:1px solid #dee2e6;border-radius:20px;padding:2px 8px;font-size:.68rem;font-weight:700;cursor:pointer;color:var(--c3);font-family:'Nunito',sans-serif;}
+  .play-btn:hover{background:var(--c3);color:white;border-color:var(--c3);}
+
+  .ex-title{font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;padding:4px 12px;border-radius:20px;color:white;display:inline-block;margin-bottom:8px;}
+  .eb{border-radius:11px;padding:11px 14px;margin-bottom:8px;border-left:4px solid;}
+  .eb .en{font-size:.93rem;font-weight:700;margin-bottom:2px;}
+  .eb .vi{font-size:.81rem;color:#495057;margin-bottom:5px;}
+  .divider{height:1px;background:#e9ecef;margin:14px 0;}
+
+  .dbox{background:#f8f9fa;border-radius:13px;padding:14px;margin-bottom:11px;border:2px solid #e9ecef;}
+  .dtitle{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--gray);margin-bottom:9px;}
+  .dline{display:flex;gap:7px;margin-bottom:7px;align-items:flex-start;}
+  .dlabel{font-size:.7rem;font-weight:800;padding:2px 7px;border-radius:7px;color:white;flex-shrink:0;margin-top:2px;min-width:24px;text-align:center;}
+  .dvi{font-size:.84rem;font-weight:700;color:#1565c0;}
+  .den{font-size:.84rem;font-weight:700;color:#212121;}
+  .pdlg{margin-top:7px;background:#2e7d32;color:white;border:none;border-radius:20px;padding:5px 13px;font-size:.74rem;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;display:inline-flex;align-items:center;gap:4px;}
+
+  .quiz-item{background:#f8f9fa;border-radius:13px;padding:14px;margin-bottom:12px;border:2px solid transparent;transition:border-color .3s;}
+  .quiz-item.answered-ok{border-color:#2e7d32;background:#f1f8e9;}
+  .quiz-item.answered-fail{border-color:#c0392b;background:#fbe9e7;}
+  .quiz-q{font-size:.9rem;font-weight:700;margin-bottom:10px;}
+  .quiz-opts{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+  .qopt{background:white;border:2px solid #dee2e6;border-radius:9px;padding:7px 9px;font-size:.81rem;font-weight:700;cursor:pointer;transition:all .2s;font-family:'Nunito',sans-serif;text-align:center;}
+  .qopt:hover:not(:disabled){border-color:#1565c0;color:#1565c0;}
+  .qopt.sel-ok{background:#2e7d32;color:white;border-color:#2e7d32;}
+  .qopt.sel-fail{background:#c0392b;color:white;border-color:#c0392b;}
+  .qopt:disabled{cursor:default;}
+  .qfb{margin-top:6px;font-size:.77rem;font-weight:700;display:none;}
+  .qfb.show{display:block;}
+  .qfb.ok{color:#2e7d32;}
+  .qfb.fail{color:#c0392b;}
+
+  .fill-item{background:#f8f9fa;border-radius:12px;padding:13px;margin-bottom:10px;border:2px solid transparent;}
+  .fill-item.correct{border-color:#2e7d32;background:#f1f8e9;}
+  .fill-item.wrong{border-color:#c0392b;background:#fbe9e7;}
+  .fill-q{font-size:.9rem;font-weight:700;margin-bottom:6px;line-height:2;}
+  .fill-q input{border:2px solid #1565c0;border-radius:7px;padding:2px 8px;font-size:.86rem;font-family:'Nunito',sans-serif;font-weight:700;width:140px;text-align:center;outline:none;background:white;}
+  .fill-vi{font-size:.78rem;color:var(--gray);margin-bottom:4px;}
+  .fill-ans{font-size:.78rem;font-weight:700;margin-top:4px;display:none;}
+  .fill-ans.show-wrong{display:block;color:#c0392b;}
+
+  .trans-item{background:#f8f9fa;border-radius:12px;padding:13px;margin-bottom:10px;border:2px solid transparent;}
+  .trans-item.correct{border-color:#2e7d32;background:#f1f8e9;}
+  .trans-item.wrong{border-color:#c0392b;background:#fbe9e7;}
+  .trans-lang{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;color:var(--gray);}
+  .trans-q{font-size:.92rem;font-weight:700;margin-bottom:6px;color:var(--dark);}
+  .trans-input{width:100%;border:2px solid #1565c0;border-radius:8px;padding:6px 10px;font-size:.86rem;font-family:'Nunito',sans-serif;font-weight:700;outline:none;background:white;}
+  .trans-ans{font-size:.78rem;font-weight:700;margin-top:4px;display:none;color:#c0392b;}
+  .trans-ans.show{display:block;}
+
+  .speak-card{border-radius:12px;padding:13px 16px;margin-bottom:9px;color:white;}
+  .slbl{font-size:.66rem;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:3px;}
+  .sen-en{font-size:.97rem;font-weight:800;margin-bottom:2px;}
+  .sen-vi{font-size:.8rem;color:rgba(255,255,255,.75);margin-bottom:9px;}
+  .hear-btn{background:var(--yellow);color:var(--dark);border:none;border-radius:20px;padding:6px 14px;font-weight:800;font-size:.8rem;cursor:pointer;font-family:'Nunito',sans-serif;transition:transform .15s;}
+  .hear-btn:hover{transform:scale(1.04);}
+
+  #score-section{text-align:center;padding:24px 12px;}
+  .score-circle{width:120px;height:120px;border-radius:50%;background:linear-gradient(135deg,var(--c1),var(--c2));display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 6px 20px rgba(21,101,192,.3);}
+  .score-circle .num{font-family:'Baloo 2',cursive;font-size:2rem;font-weight:800;color:white;line-height:1;}
+  .score-circle .lbl{font-size:.7rem;font-weight:700;color:rgba(255,255,255,.8);}
+  #score-section h2{font-family:'Baloo 2',cursive;font-size:1.4rem;font-weight:800;margin-bottom:6px;}
+  #score-section p{color:var(--gray);font-size:.86rem;max-width:340px;margin:0 auto 16px;}
+  .score-inline{background:#f1f3f5;border-radius:9px;padding:8px 14px;margin-bottom:12px;font-size:.81rem;font-weight:700;display:flex;align-items:center;gap:7px;}
+  .score-badge{background:var(--yellow);color:var(--dark);border-radius:20px;padding:2px 11px;font-weight:800;font-size:.81rem;}
+  .btn-next{background:var(--c2);color:white;border:none;border-radius:11px;padding:10px 24px;font-size:.9rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;margin-top:12px;display:inline-flex;align-items:center;gap:6px;transition:all .2s;}
+  .btn-next:hover{opacity:.88;}
+  .btn-check{background:var(--c3);color:white;border:none;border-radius:11px;padding:9px 20px;font-size:.86rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;margin-top:10px;display:inline-flex;align-items:center;gap:5px;}
+  .btn-primary{background:var(--dark);color:white;border:none;border-radius:11px;padding:10px 24px;font-size:.9rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;display:inline-flex;align-items:center;gap:6px;}
+  .retry-btn{background:#c0392b;color:white;border:none;border-radius:11px;padding:9px 20px;font-size:.86rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;margin-top:8px;display:inline-flex;align-items:center;gap:5px;margin-right:8px;}
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="back-btn">&#8592; Trang chủ</a>
+  <h1>🍜 <span>MÔ TẢ ĐỒ ĂN</span> trong Tiếng Anh</h1>
+  <div id="timer-bar">⏱ 60:00</div>
+</header>
+<div id="progress-wrap"><div id="progress-bar" style="width:0%"></div></div>
+
+<nav id="phase-nav">
+  <button class="phase-tab active" onclick="goPhase(0)">1. Lý thuyết</button>
+  <button class="phase-tab" onclick="goPhase(1)">2. Từ vựng</button>
+  <button class="phase-tab" onclick="goPhase(2)">3. Câu mẫu</button>
+  <button class="phase-tab" onclick="goPhase(3)">4. Hội thoại</button>
+  <button class="phase-tab" onclick="goPhase(4)">5. Quiz</button>
+  <button class="phase-tab" onclick="goPhase(5)">6. Điền từ</button>
+  <button class="phase-tab" onclick="goPhase(6)">7. Dịch câu</button>
+  <button class="phase-tab" onclick="goPhase(7)">8. Nói</button>
+  <button class="phase-tab" onclick="goPhase(8)">9. Kết quả</button>
+</nav>
+
+<main>
+
+<!-- PHASE 0: LÝ THUYẾT -->
+<div class="phase active" id="phase-0">
+  <div class="section-header" style="background:var(--dark)">
+    <div class="phase-label">📖 Giai đoạn 1 – 8 phút</div>
+    <h2>Mô tả đồ ăn – Tính từ & Cấu trúc câu</h2>
+    <div class="duration">hot · cold · fresh · wilted · delicious · sour · sweet · spicy · và nhiều hơn</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box">
+      <strong>📌 Hôm nay học gì?</strong><br>
+      🍽️ <strong>Tính từ mô tả đồ ăn:</strong> hot, cold, fresh, wilted, delicious, sour, sweet, spicy, salty, bland, crispy, soft, oily, healthy...<br>
+      📐 <strong>Cấu trúc:</strong> S + is/are + (very/too) + Adj &nbsp;|&nbsp; S + looks/tastes/smells + Adj<br>
+      🗣️ <strong>Hỏi ý kiến:</strong> How is the food? / What does it taste like?
+    </div>
+
+    <div class="formula-grid">
+      <div class="fc" style="background:var(--c2)">
+        <h3>✅ Mô tả với IS/ARE</h3>
+        <div class="fb">S + is/are + (very/too) + Adj</div>
+        <div class="fn">→ This coffee <strong>is very hot.</strong><br>→ The soup <strong>is too hot.</strong><br>→ The soup <strong>is cold.</strong><br>→ This fish <strong>is fresh.</strong></div>
+      </div>
+      <div class="fc" style="background:var(--c3)">
+        <h3>👁️ Mô tả với LOOK/TASTE/SMELL</h3>
+        <div class="fb">S + looks/tastes/smells + Adj</div>
+        <div class="fn">→ This food <strong>looks delicious.</strong><br>→ This bunch <strong>looks too wilted.</strong><br>→ The soup <strong>tastes sour.</strong><br>→ The bread <strong>smells fresh.</strong></div>
+      </div>
+      <div class="fc" style="background:var(--c1)">
+        <h3>❓ Hỏi Yes/No về đồ ăn</h3>
+        <div class="fb">Is/Are + S + Adj?</div>
+        <div class="fn">→ <strong>Is</strong> the food cold?<br>→ Yes, it is. / No, it isn't.<br>→ <strong>Is</strong> this dish spicy?<br>→ <strong>Are</strong> the vegetables fresh?</div>
+      </div>
+      <div class="fc" style="background:var(--c4)">
+        <h3>❓ Hỏi ý kiến / mô tả</h3>
+        <div class="fb">How is the + N? / What does it taste like?</div>
+        <div class="fn">→ <strong>How is</strong> the soup?<br>→ It's delicious!<br>→ <strong>What does</strong> it <strong>taste like?</strong><br>→ It tastes a bit sour.</div>
+      </div>
+    </div>
+
+    <div class="tip-box tip-blue">
+      <strong>💡 Phân biệt very / too:</strong><br>
+      • <strong>very</strong> = rất (tích cực) → This coffee is <strong>very</strong> hot. (nóng, dễ chịu)<br>
+      • <strong>too</strong> = quá (tiêu cực, vấn đề) → The soup is <strong>too</strong> hot. (nóng quá, không ăn được)<br>
+      • <strong>a bit / a little</strong> = hơi → This is <strong>a bit</strong> salty.
+    </div>
+
+    <div class="tip-box tip-red">
+      <strong>⚠️ Lỗi hay gặp:</strong><br>
+      ❌ This food <s>very delicious</s>. &nbsp;→&nbsp; ✅ This food <strong>is very delicious.</strong> (phải có "is")<br>
+      ❌ The soup <s>taste</s> sour. &nbsp;→&nbsp; ✅ The soup <strong>tastes</strong> sour. (he/she/it → thêm -s)<br>
+      ❌ <s>Too</s> delicious! &nbsp;→&nbsp; ✅ <strong>Very</strong> delicious! (too = tiêu cực, dùng very cho khen ngợi)
+    </div>
+
+    <button class="btn-next" onclick="goPhase(1)">Tiếp theo: Từ vựng →</button>
+  </div>
+</div>
+
+<!-- PHASE 1: TỪ VỰNG -->
+<div class="phase" id="phase-1">
+  <div class="section-header" style="background:var(--c1)">
+    <div class="phase-label">📝 Giai đoạn 2 – 8 phút</div>
+    <h2>Bảng Từ Vựng – Tính từ Mô tả Đồ Ăn</h2>
+    <div class="duration">Nhấn vào thẻ hoặc ▶ để nghe phát âm!</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box">Nhìn tiếng Việt → đọc to tiếng Anh → nhấn thẻ để nghe kiểm tra!</div>
+    <div class="vocab-grid" id="vocab-grid"></div>
+    <div class="divider"></div>
+    <div style="font-size:.72rem;font-weight:800;text-transform:uppercase;color:var(--gray);margin-bottom:9px;letter-spacing:1.5px;">📋 Bảng từ đầy đủ + câu ví dụ</div>
+    <table class="phrase-table">
+      <thead><tr><th>Tính từ</th><th>Nghĩa</th><th>Ví dụ</th><th>Nghe</th></tr></thead>
+      <tbody id="vocab-tbody"></tbody>
+    </table>
+    <button class="btn-next" onclick="goPhase(2)">Tiếp theo: Câu mẫu →</button>
+  </div>
+</div>
+
+<!-- PHASE 2: CÂU MẪU -->
+<div class="phase" id="phase-2">
+  <div class="section-header" style="background:var(--c2)">
+    <div class="phase-label">🗣️ Giai đoạn 3 – 8 phút</div>
+    <h2>Câu mẫu & Phát âm</h2>
+    <div class="duration">Nhấn ▶ nghe, sau đó đọc to theo</div>
+  </div>
+  <div class="section-body">
+    <span class="ex-title" style="background:var(--c2)">🌡️ hot · cold – Nóng / Nguội</span>
+    <div id="ex-hot-cold"></div>
+    <div class="divider"></div>
+    <span class="ex-title" style="background:var(--c3)">🥬 fresh · wilted – Tươi / Héo</span>
+    <div id="ex-fresh-wilted"></div>
+    <div class="divider"></div>
+    <span class="ex-title" style="background:var(--c1)">😋 delicious · tasty · bland – Ngon / Nhạt</span>
+    <div id="ex-taste"></div>
+    <div class="divider"></div>
+    <span class="ex-title" style="background:var(--c4)">🌶️ spicy · sour · sweet · salty – Cay / Chua / Ngọt / Mặn</span>
+    <div id="ex-flavour"></div>
+    <div class="divider"></div>
+    <span class="ex-title" style="background:var(--c5)">❓ Câu hỏi & Hỏi ý kiến</span>
+    <div id="ex-question"></div>
+    <button class="btn-next" onclick="goPhase(3)">Tiếp theo: Hội thoại →</button>
+  </div>
+</div>
+
+<!-- PHASE 3: HỘI THOẠI -->
+<div class="phase" id="phase-3">
+  <div class="section-header" style="background:var(--c3)">
+    <div class="phase-label">💬 Giai đoạn 4 – 7 phút</div>
+    <h2>Hội thoại thực tế</h2>
+    <div class="duration">Nghe và luyện theo – nhấn ▶ để nghe toàn bộ</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box"><strong>Cách luyện:</strong> Đọc tiếng Việt → đoán tiếng Anh → nhấn ▶ nghe toàn bộ để kiểm tra!</div>
+    <div id="dialogue-container"></div>
+    <button class="btn-next" onclick="goPhase(4)">Tiếp theo: Quiz →</button>
+  </div>
+</div>
+
+<!-- PHASE 4: QUIZ -->
+<div class="phase" id="phase-4">
+  <div class="section-header" style="background:var(--dark)">
+    <div class="phase-label">🧠 Giai đoạn 5 – 8 phút</div>
+    <h2>Trắc nghiệm</h2>
+    <div class="duration">Chọn đáp án đúng – không có gợi ý!</div>
+  </div>
+  <div class="section-body">
+    <div class="score-inline">Điểm: <span class="score-badge" id="quiz-score">0 / 0</span></div>
+    <div class="tip-box tip-red"><strong>⚠️ Lưu ý:</strong> Không có gợi ý đáp án. Hãy suy nghĩ kỹ trước khi chọn!</div>
+    <div id="quiz-container"></div>
+    <div id="quiz-retry-section" style="display:none;margin-top:12px;">
+      <button class="retry-btn" onclick="retryQuiz()">🔄 Làm lại Quiz</button>
+      <button class="btn-next" onclick="goPhase(5)" style="margin-top:0">Tiếp theo →</button>
+    </div>
+    <div id="quiz-done-btn" style="display:none">
+      <button class="btn-next" onclick="goPhase(5)">Tiếp theo: Điền từ →</button>
+    </div>
+  </div>
+</div>
+
+<!-- PHASE 5: FILL -->
+<div class="phase" id="phase-5">
+  <div class="section-header" style="background:var(--c1)">
+    <div class="phase-label">✏️ Giai đoạn 6 – 7 phút</div>
+    <h2>Điền vào ô trống</h2>
+    <div class="duration">Điền tính từ đúng – không có gợi ý!</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box tip-red"><strong>⚠️ Lưu ý:</strong> Điền đầy đủ tất cả ô, sau đó mới nhấn kiểm tra!</div>
+    <div id="fill-container"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">
+      <button class="btn-check" onclick="checkFill()">✅ Kiểm tra tất cả</button>
+      <button class="retry-btn" onclick="retryFill()" id="retry-fill-btn" style="display:none">🔄 Làm lại</button>
+    </div>
+    <div id="fill-score-display" style="margin-top:10px;font-weight:700;font-size:.9rem;display:none;"></div>
+    <button class="btn-next" onclick="goPhase(6)" style="margin-top:14px">Tiếp theo: Dịch câu →</button>
+  </div>
+</div>
+
+<!-- PHASE 6: DỊCH CÂU -->
+<div class="phase" id="phase-6">
+  <div class="section-header" style="background:var(--c4)">
+    <div class="phase-label">🔄 Giai đoạn 7 – 7 phút</div>
+    <h2>Dịch câu</h2>
+    <div class="duration">Dịch 2 chiều Việt ↔ Anh – không có gợi ý!</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box"><strong>Hướng dẫn:</strong> Dịch câu vào ô. Nhấn "Kiểm tra" sau khi hoàn thành tất cả.</div>
+    <div id="trans-container"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">
+      <button class="btn-check" onclick="checkTrans()">✅ Kiểm tra tất cả</button>
+      <button class="retry-btn" onclick="retryTrans()" id="retry-trans-btn" style="display:none">🔄 Làm lại</button>
+    </div>
+    <div id="trans-score-display" style="margin-top:10px;font-weight:700;font-size:.9rem;display:none;"></div>
+    <button class="btn-next" onclick="goPhase(7)" style="margin-top:14px">Tiếp theo: Nói →</button>
+  </div>
+</div>
+
+<!-- PHASE 7: SPEAKING -->
+<div class="phase" id="phase-7">
+  <div class="section-header" style="background:var(--c5)">
+    <div class="phase-label">🎤 Giai đoạn 8 – 7 phút</div>
+    <h2>Luyện Nói</h2>
+    <div class="duration">Đọc to trước → Nhấn ▶ nghe mẫu → Luyện lại!</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box"><strong>Hướng dẫn:</strong> Nhìn câu → Tự đọc to → Nhấn ▶ so sánh → Luyện đến khi tự tin!</div>
+    <div id="speaking-container"></div>
+    <button class="btn-next" onclick="goPhase(8)">Xem kết quả →</button>
+  </div>
+</div>
+
+<!-- PHASE 8: RESULT -->
+<div class="phase" id="phase-8">
+  <div class="section-header" style="background:var(--dark)">
+    <div class="phase-label">🏆 Kết thúc bài học</div>
+    <h2>Tổng kết</h2>
+    <div class="duration">Kết quả Quiz + Điền từ + Dịch câu</div>
+  </div>
+  <div class="section-body">
+    <div id="score-section">
+      <div class="score-circle">
+        <div class="num" id="final-score">—</div>
+        <div class="lbl">điểm</div>
+      </div>
+      <h2 id="final-msg">Hoàn thành!</h2>
+      <p id="final-desc"></p>
+      <div id="detail-score" style="margin:12px 0;font-size:.85rem;font-weight:700;background:#f8f9fa;border-radius:10px;padding:12px 16px;text-align:left;"></div>
+      <div style="background:#f8f9fa;border-radius:13px;padding:14px;text-align:left;margin:14px 0;">
+        <h3 style="font-size:.86rem;font-weight:800;margin-bottom:10px;">📋 Ôn nhanh từ vựng hôm nay:</h3>
+        <div id="quick-review" style="font-size:.82rem;line-height:2.3;"></div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:8px;">
+        <button class="btn-primary" onclick="restartLesson()">🔄 Học lại từ đầu</button>
+        <a href="index.html" class="back-btn" style="padding:10px 20px;font-size:.86rem;border-radius:11px;">🏠 Trang chủ</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+// ===== DATA =====
+
+const vocabData = [
+  {en:"hot",       pron:"/hɒt/",        vi:"nóng",           color:"#b7410e",   ex:"This coffee is very hot."},
+  {en:"cold",      pron:"/koʊld/",       vi:"nguội / lạnh",   color:"#1565c0",   ex:"The soup is cold."},
+  {en:"fresh",     pron:"/freʃ/",        vi:"tươi",           color:"#2e7d32",   ex:"This fish is fresh."},
+  {en:"wilted",    pron:"/ˈwɪltɪd/",     vi:"héo, úa",        color:"#78909c",   ex:"The lettuce is wilted."},
+  {en:"delicious", pron:"/dɪˈlɪʃəs/",   vi:"ngon, thơm ngon", color:"#e65100",  ex:"This dish is delicious."},
+  {en:"tasty",     pron:"/ˈteɪsti/",     vi:"ngon miệng",     color:"#00838f",   ex:"The cake is very tasty."},
+  {en:"bland",     pron:"/blænd/",       vi:"nhạt nhẽo",      color:"#9e9e9e",   ex:"This soup is too bland."},
+  {en:"spicy",     pron:"/ˈspaɪsi/",     vi:"cay",            color:"#c0392b",   ex:"This dish is very spicy."},
+  {en:"sour",      pron:"/saʊər/",       vi:"chua",           color:"#f9a825",   ex:"The salad dressing is sour."},
+  {en:"sweet",     pron:"/swiːt/",       vi:"ngọt",           color:"#6a1b9a",   ex:"This dessert is sweet."},
+  {en:"salty",     pron:"/ˈsɔːlti/",     vi:"mặn",            color:"#00838f",   ex:"The broth is too salty."},
+  {en:"crispy",    pron:"/ˈkrɪspi/",     vi:"giòn",           color:"#b7410e",   ex:"The fried chicken is crispy."},
+  {en:"soft",      pron:"/sɒft/",        vi:"mềm",            color:"#1565c0",   ex:"The bread is soft."},
+  {en:"oily",      pron:"/ˈɔɪli/",       vi:"nhiều dầu mỡ",   color:"#f57f17",   ex:"The food is too oily."},
+  {en:"healthy",   pron:"/ˈhelθi/",      vi:"lành mạnh, tốt cho sức khỏe", color:"#2e7d32", ex:"Salad is healthy food."},
+  {en:"rotten",    pron:"/ˈrɒtən/",      vi:"thối, hỏng",     color:"#4e342e",   ex:"The meat smells rotten."},
+];
+
+const exHotCold = [
+  {en:"This coffee is very hot.",              vi:"Tách cà phê này rất nóng."},
+  {en:"The soup is too hot.",                  vi:"Canh nóng quá."},
+  {en:"Be careful! The food is very hot.",     vi:"Cẩn thận! Đồ ăn rất nóng."},
+  {en:"The soup is cold.",                     vi:"Canh nguội rồi."},
+  {en:"Is the food cold?",                     vi:"Đồ ăn có bị nguội không?"},
+  {en:"The rice is a bit cold.",               vi:"Cơm hơi nguội rồi."},
+];
+
+const exFreshWilted = [
+  {en:"This fish is fresh.",                   vi:"Cá này tươi đấy."},
+  {en:"I like fresh food.",                    vi:"Tôi thích các thực phẩm tươi sống."},
+  {en:"I usually buy fresh food at the market.", vi:"Tôi thường mua thực phẩm tươi sống ở chợ."},
+  {en:"The lettuce is wilted.",                vi:"Rau xà lách bị héo rồi."},
+  {en:"These flowers are wilted.",             vi:"Những bông hoa này bị héo rồi."},
+  {en:"This bunch of vegetables looks too wilted.", vi:"Mớ rau này trông héo quá."},
+  {en:"Are the vegetables fresh?",             vi:"Rau có tươi không?"},
+];
+
+const exTaste = [
+  {en:"This dish is very delicious.",          vi:"Món này rất ngon."},
+  {en:"The cake looks delicious.",             vi:"Chiếc bánh trông rất ngon."},
+  {en:"This pho tastes delicious.",            vi:"Bát phở này ngon lắm."},
+  {en:"The cake is very tasty.",               vi:"Chiếc bánh rất ngon miệng."},
+  {en:"This soup is too bland.",               vi:"Canh này nhạt quá."},
+  {en:"The food doesn't taste good.",          vi:"Đồ ăn này không ngon."},
+  {en:"How is the food?",                      vi:"Đồ ăn thế nào?"},
+  {en:"What does it taste like?",              vi:"Nó có vị như thế nào?"},
+  {en:"It tastes a bit sour.",                 vi:"Nó có vị hơi chua."},
+];
+
+const exFlavour = [
+  {en:"This dish is very spicy.",              vi:"Món này cay lắm."},
+  {en:"I don't like spicy food.",              vi:"Tôi không thích đồ ăn cay."},
+  {en:"The salad dressing is sour.",           vi:"Nước trộn salad có vị chua."},
+  {en:"This dessert is very sweet.",           vi:"Món tráng miệng này rất ngọt."},
+  {en:"The broth is too salty.",               vi:"Nước súp mặn quá."},
+  {en:"This dish is a bit salty.",             vi:"Món này hơi mặn."},
+  {en:"The fried chicken is crispy.",          vi:"Gà chiên giòn lắm."},
+  {en:"The bread is soft.",                    vi:"Bánh mì này mềm."},
+  {en:"The food is too oily.",                 vi:"Đồ ăn này quá nhiều dầu mỡ."},
+  {en:"Salad is healthy food.",                vi:"Salad là thực phẩm lành mạnh."},
+];
+
+const exQuestion = [
+  {en:"Is this dish spicy?",                   vi:"Món này có cay không?"},
+  {en:"Is the soup fresh?",                    vi:"Canh có tươi không?"},
+  {en:"How is the food?",                      vi:"Đồ ăn thế nào?"},
+  {en:"What does it taste like?",              vi:"Nó có vị như thế nào?"},
+  {en:"Does this taste sour to you?",          vi:"Bạn thấy cái này có vị chua không?"},
+  {en:"Is the food too spicy for you?",        vi:"Đồ ăn có quá cay với bạn không?"},
+];
+
+const dialogues = [
+  {title:"Hội thoại 1 – Ăn thử món mới",
+   lines:[
+     {label:"A",vi:"Thử thử canh này đi! Nó trông ngon lắm.",   en:"Try this soup! It looks delicious.",       color:"#1565c0"},
+     {label:"B",vi:"Ồ nhưng mà nóng quá!",                       en:"Oh, but it's too hot!",                   color:"#b7410e"},
+     {label:"A",vi:"Đúng rồi, đợi tí cho nguội nhé.",            en:"Right, wait a bit for it to cool down.",  color:"#1565c0"},
+     {label:"B",vi:"Được rồi. Ừm, canh này ngon thật!",          en:"Okay. Mmm, this soup is really delicious!", color:"#b7410e"},
+   ]},
+  {title:"Hội thoại 2 – Mua rau ở chợ",
+   lines:[
+     {label:"A",vi:"Rau này có tươi không?",                      en:"Is this vegetable fresh?",                color:"#2e7d32"},
+     {label:"B",vi:"Tươi lắm, tôi mới lấy về sáng nay.",          en:"Very fresh, I just got it this morning.", color:"#e65100"},
+     {label:"A",vi:"Còn mớ xà lách kia trông héo quá.",           en:"But that lettuce looks too wilted.",      color:"#2e7d32"},
+     {label:"B",vi:"Vậy thì lấy mớ này cho bạn, mới hơn.",        en:"Then take this one, it's fresher.",       color:"#e65100"},
+   ]},
+  {title:"Hội thoại 3 – Gọi đồ ăn nhà hàng",
+   lines:[
+     {label:"A",vi:"Món này có cay không?",                        en:"Is this dish spicy?",                    color:"#6a1b9a"},
+     {label:"B",vi:"Có, hơi cay. Bạn có ăn được đồ cay không?",   en:"Yes, a bit spicy. Can you eat spicy food?", color:"#00838f"},
+     {label:"A",vi:"Tôi không thích đồ cay. Có món nào không cay không?", en:"I don't like spicy food. Is there anything not spicy?", color:"#6a1b9a"},
+     {label:"B",vi:"Có, món gà hấp không cay và rất ngon.",        en:"Yes, the steamed chicken is not spicy and very delicious.", color:"#00838f"},
+   ]},
+  {title:"Hội thoại 4 – Nấu ăn tại nhà",
+   lines:[
+     {label:"A",vi:"Canh hôm nay thế nào?",                        en:"How is the soup today?",                 color:"#c0392b"},
+     {label:"B",vi:"Ngon, nhưng hơi mặn một chút.",                en:"Delicious, but a little salty.",         color:"#1565c0"},
+     {label:"A",vi:"Thật á? Để tôi nêm lại.",                      en:"Really? Let me fix it.",                 color:"#c0392b"},
+     {label:"B",vi:"Thêm nước vào thôi là được rồi.",              en:"Just add some water and it'll be fine.", color:"#1565c0"},
+   ]},
+  {title:"Hội thoại 5 – Đánh giá đồ ăn",
+   lines:[
+     {label:"A",vi:"Bạn thấy cá này thế nào?",                     en:"What do you think about this fish?",     color:"#e65100"},
+     {label:"B",vi:"Cá tươi lắm và nướng giòn vừa ăn.",            en:"The fish is very fresh and crispy.",     color:"#2e7d32"},
+     {label:"A",vi:"Nước chấm có vị chua ngọt đúng không?",         en:"The dipping sauce tastes sour and sweet, right?", color:"#e65100"},
+     {label:"B",vi:"Đúng rồi! Hợp vị với cá lắm.",                 en:"Exactly! It goes well with the fish.",   color:"#2e7d32"},
+   ]},
+];
+
+const quizData = [
+  {q:"'Tách cà phê này rất nóng.' – Câu đúng?",        opts:["This coffee very hot.","This coffee is very hot.","This coffee are very hot.","This coffee is hot very."],  ans:1},
+  {q:"'Canh nguội rồi.' – Câu đúng?",                  opts:["The soup cold.","The soup is cold.","The soup are cold.","The soup is colds."],                             ans:1},
+  {q:"'Cá này tươi đấy.' – Câu đúng?",                 opts:["This fish fresh.","This fish is fresh.","This fish are fresh.","This fish looks freshly."],                 ans:1},
+  {q:"'Rau xà lách bị héo rồi.' – Câu đúng?",          opts:["The lettuce is wilted.","The lettuce wilted.","The lettuce are wilt.","The lettuce is wilt."],              ans:0},
+  {q:"'Canh nóng quá.' – Dùng very hay too?",           opts:["The soup is very hot.","The soup is too hot.","The soup is so hot.","The soup is quite hot."],             ans:1},
+  {q:"'Món tráng miệng rất ngọt.' – Câu đúng?",         opts:["The dessert sweet very.","The dessert is very sweet.","The dessert is too sweet.","The dessert are sweet."], ans:1},
+  {q:"'Canh có vị mặn.' – Cách nói đúng?",             opts:["The soup taste salty.","The soup is tasting salty.","The soup tastes salty.","The soup tasting salty."],   ans:2},
+  {q:"'Gà chiên giòn.' – Câu đúng?",                   opts:["The chicken fried is crispy.","The fried chicken are crispy.","The fried chicken is crispy.","The fried chicken crispy."], ans:2},
+  {q:"'Mớ rau này trông héo quá.' – Câu đúng?",        opts:["This bunch looks too wilted.","This bunch look too wilted.","This bunch is looks wilted.","This bunch wilted too."], ans:0},
+  {q:"'Bạn có thể ăn đồ cay không?' – Câu đúng?",       opts:["Do you eat spicy food?","Can you eat spicy food?","Are you eating spicy food?","You can eat spicy food?"], ans:1},
+  {q:"Từ nào có nghĩa là 'nhạt nhẽo' về đồ ăn?",       opts:["bland","mild","smooth","plain"],                                                                            ans:0},
+  {q:"'very' và 'too' khác nhau như thế nào?",           opts:["Không khác gì","very = tích cực, too = tiêu cực","too = mạnh hơn very","very = lạnh, too = nóng"],        ans:1},
+  {q:"'This dish is ___ spicy for me.' (quá cay, không ăn được)",opts:["very","a bit","too","quite"],                                                                    ans:2},
+  {q:"'fresh' nghĩa là gì?",                             opts:["nguội","héo","tươi","giòn"],                                                                               ans:2},
+  {q:"'Đồ ăn thế nào?' – Câu đúng?",                    opts:["What is the food?","How is the food?","How does the food?","What the food like?"],                          ans:1},
+  {q:"'rotten' nghĩa là gì?",                            opts:["tươi","giòn","ngọt","thối, hỏng"],                                                                        ans:3},
+  {q:"'Bánh mì mềm.' – Câu đúng?",                      opts:["The bread is soft.","The bread is softly.","The bread soft.","The bread is softed."],                      ans:0},
+  {q:"'wilted' thường dùng cho cái gì?",                 opts:["Đồ ăn nóng","Thực vật bị héo úa","Đồ ăn mặn","Đồ ăn lạnh"],                                             ans:1},
+  {q:"'oily' nghĩa là gì?",                              opts:["giòn","mềm","nhiều dầu mỡ","ngọt"],                                                                       ans:2},
+  {q:"Câu nào SAI ngữ pháp?",                            opts:["The soup is cold.","This fish looks fresh.","The food are too salty.","The cake tastes sweet."],           ans:2},
+];
+
+const fillData = [
+  {answer:"hot",        before:"This coffee is very ",   after:".",                                    vi:"Tách cà phê này rất nóng."},
+  {answer:"cold",       before:"The soup is ",           after:".",                                    vi:"Canh nguội rồi."},
+  {answer:"fresh",      before:"This fish is ",          after:".",                                    vi:"Cá này tươi đấy."},
+  {answer:"wilted",     before:"The lettuce is ",        after:".",                                    vi:"Rau xà lách bị héo rồi."},
+  {answer:"delicious",  before:"This dish is very ",     after:".",                                    vi:"Món này rất ngon."},
+  {answer:"spicy",      before:"This dish is too ",      after:" for me.",                             vi:"Món này quá cay với tôi."},
+  {answer:"salty",      before:"The broth is too ",      after:".",                                    vi:"Nước súp mặn quá."},
+  {answer:"crispy",     before:"The fried chicken is ", after:".",                                    vi:"Gà chiên giòn lắm."},
+  {answer:"soft",       before:"The bread is ",          after:".",                                    vi:"Bánh mì này mềm."},
+  {answer:"wilted",     before:"This bunch of vegetables looks too ", after:".",                       vi:"Mớ rau này trông héo quá."},
+  {answer:"tastes",     before:"The soup ",              after:" salty.",                              vi:"Nước súp có vị mặn."},
+  {answer:"looks",      before:"The cake ",              after:" delicious.",                          vi:"Chiếc bánh trông ngon lắm."},
+  {answer:"too",        before:"The soup is ",           after:" hot. I can't eat it.",                vi:"Canh nóng quá. Tôi không ăn được."},
+  {answer:"very",       before:"This pho is ",           after:" delicious!",                          vi:"Bát phở này ngon thật!"},
+];
+
+const transData = [
+  {prompt:"Tách cà phê này rất nóng.",               answer:"this coffee is very hot",                    dir:"vi→en"},
+  {prompt:"The soup is cold.",                        answer:"canh nguội rồi",                             dir:"en→vi"},
+  {prompt:"Cá này tươi đấy.",                         answer:"this fish is fresh",                        dir:"vi→en"},
+  {prompt:"The lettuce is wilted.",                   answer:"rau xà lách bị héo rồi",                    dir:"en→vi"},
+  {prompt:"Món này rất ngon.",                        answer:"this dish is very delicious",               dir:"vi→en"},
+  {prompt:"This dish is too spicy.",                  answer:"món này quá cay",                           dir:"en→vi"},
+  {prompt:"Nước súp hơi mặn.",                        answer:"the broth is a bit salty",                  dir:"vi→en"},
+  {prompt:"The fried chicken is crispy.",             answer:"gà chiên giòn lắm",                         dir:"en→vi"},
+  {prompt:"Mớ rau này trông héo quá.",                answer:"this bunch of vegetables looks too wilted", dir:"vi→en"},
+  {prompt:"How is the food?",                         answer:"đồ ăn thế nào",                             dir:"en→vi"},
+  {prompt:"Tôi không thích đồ ăn cay.",               answer:"i don't like spicy food",                   dir:"vi→en"},
+  {prompt:"The cake looks delicious.",                answer:"chiếc bánh trông ngon lắm",                 dir:"en→vi"},
+];
+
+const speakingData = [
+  {en:"This coffee is very hot.",              vi:"Tách cà phê này rất nóng.",          color:"#b7410e"},
+  {en:"The soup is too hot.",                  vi:"Canh nóng quá.",                     color:"#b7410e"},
+  {en:"The soup is cold.",                     vi:"Canh nguội rồi.",                    color:"#1565c0"},
+  {en:"This fish is fresh.",                   vi:"Cá này tươi đấy.",                   color:"#2e7d32"},
+  {en:"I usually buy fresh food at the market.", vi:"Tôi thường mua thực phẩm tươi sống ở chợ.", color:"#2e7d32"},
+  {en:"The lettuce is wilted.",                vi:"Rau xà lách bị héo rồi.",            color:"#78909c"},
+  {en:"This bunch of vegetables looks too wilted.", vi:"Mớ rau này trông héo quá.",    color:"#78909c"},
+  {en:"This dish is very delicious.",          vi:"Món này rất ngon.",                  color:"#e65100"},
+  {en:"This dish is too spicy for me.",        vi:"Món này quá cay với tôi.",           color:"#c0392b"},
+  {en:"The broth is too salty.",               vi:"Nước súp mặn quá.",                  color:"#00838f"},
+  {en:"The fried chicken is crispy.",          vi:"Gà chiên giòn lắm.",                 color:"#6a1b9a"},
+  {en:"How is the food?",                      vi:"Đồ ăn thế nào?",                    color:"#f57f17"},
+  {en:"What does it taste like?",             vi:"Nó có vị như thế nào?",              color:"#f57f17"},
+  {en:"It tastes a bit sour.",                 vi:"Nó có vị hơi chua.",                color:"#f57f17"},
+];
+
+// ===== STATE =====
+let quizCorrect=0,quizAnswered=0,fillCorrect=0,fillChecked=false,transCorrect=0,transChecked=false,secondsLeft=3600,timerInterval;
+
+function init(){
+  buildVocabGrid();
+  buildVocabTable();
+  buildExamples();
+  buildDialogues();
+  buildQuiz();
+  buildFill();
+  buildTrans();
+  buildSpeaking();
+  buildQuickReview();
+  startTimer();
+}
+
+function startTimer(){
+  timerInterval=setInterval(()=>{
+    secondsLeft--;
+    const m=String(Math.floor(secondsLeft/60)).padStart(2,'0');
+    const s=String(secondsLeft%60).padStart(2,'0');
+    document.getElementById('timer-bar').textContent=`⏱ ${m}:${s}`;
+    if(secondsLeft<=0) clearInterval(timerInterval);
+  },1000);
+}
+
+function buildVocabGrid(){
+  document.getElementById('vocab-grid').innerHTML=vocabData.map(v=>`
+    <div class="vc" style="background:${v.color}18;border-color:${v.color}" onclick="speak('${v.en}')">
+      <div class="ve" style="color:${v.color}">${v.en}</div>
+      <div class="vp">${v.pron}</div>
+      <div class="vv">${v.vi}</div>
+    </div>`).join('');
+}
+
+function buildVocabTable(){
+  document.getElementById('vocab-tbody').innerHTML=vocabData.map(v=>`
+    <tr>
+      <td class="en">${v.en} <span style="font-size:.7rem;font-style:italic;color:#aaa">${v.pron}</span></td>
+      <td>${v.vi}</td>
+      <td style="color:#555;font-size:.8rem">${v.ex}</td>
+      <td><button class="play-btn" onclick="speak('${v.ex.replace(/'/g,"\\'")}')">▶</button></td>
+    </tr>`).join('');
+}
+
+function buildExamples(){
+  const groups=[
+    {id:'ex-hot-cold',   data:exHotCold,   color:'#b7410e'},
+    {id:'ex-fresh-wilted',data:exFreshWilted,color:'#2e7d32'},
+    {id:'ex-taste',      data:exTaste,     color:'#e65100'},
+    {id:'ex-flavour',    data:exFlavour,   color:'#6a1b9a'},
+    {id:'ex-question',   data:exQuestion,  color:'#00838f'},
+  ];
+  groups.forEach(g=>{
+    document.getElementById(g.id).innerHTML=g.data.map(e=>`
+      <div class="eb" style="background:${g.color}11;border-color:${g.color}">
+        <div class="en">${e.en} <button class="play-btn" onclick="speak('${e.en.replace(/'/g,"\\'")}')">▶</button></div>
+        <div class="vi">→ ${e.vi}</div>
+      </div>`).join('');
+  });
+}
+
+function buildDialogues(){
+  document.getElementById('dialogue-container').innerHTML=dialogues.map((d,i)=>`
+    <div class="dbox">
+      <div class="dtitle">💬 ${d.title}</div>
+      ${d.lines.map(l=>`
+        <div class="dline">
+          <span class="dlabel" style="background:${l.color}">${l.label}</span>
+          <div>
+            <div class="dvi">${l.vi}</div>
+            <div class="den">${l.en}</div>
+          </div>
+        </div>`).join('')}
+      <button class="pdlg" onclick="speakDlg(${i})">▶ Nghe hội thoại</button>
+    </div>`).join('');
+}
+
+async function speakDlg(i){
+  for(const l of dialogues[i].lines){
+    speak(l.en);
+    await new Promise(r=>setTimeout(r, l.en.length*65+900));
+  }
+}
+
+function buildQuiz(){
+  document.getElementById('quiz-container').innerHTML=quizData.map((q,i)=>`
+    <div class="quiz-item" id="qi-${i}">
+      <div class="quiz-q">${i+1}. ${q.q}</div>
+      <div class="quiz-opts">
+        ${q.opts.map((o,j)=>`<button class="qopt" id="qo-${i}-${j}" onclick="answerQuiz(${i},${j})">${o}</button>`).join('')}
+      </div>
+      <div class="qfb" id="qf-${i}"></div>
+    </div>`).join('');
+}
+
+function answerQuiz(qi,choice){
+  const item=document.getElementById(`qi-${qi}`);
+  if(item.dataset.answered) return;
+  item.dataset.answered='1';
+  const q=quizData[qi];
+  item.querySelectorAll('.qopt').forEach(b=>b.disabled=true);
+  const fb=document.getElementById(`qf-${qi}`);
+  if(choice===q.ans){
+    document.getElementById(`qo-${qi}-${choice}`).classList.add('sel-ok');
+    item.classList.add('answered-ok');
+    fb.textContent='✅ Đúng!'; fb.className='qfb show ok'; quizCorrect++;
+  } else {
+    document.getElementById(`qo-${qi}-${choice}`).classList.add('sel-fail');
+    item.classList.add('answered-fail');
+    fb.textContent='❌ Sai! Hãy ghi nhớ.'; fb.className='qfb show fail';
+  }
+  quizAnswered++;
+  document.getElementById('quiz-score').textContent=`${quizCorrect} / ${quizAnswered}`;
+  if(quizAnswered===quizData.length){
+    const pct=Math.round((quizCorrect/quizData.length)*100);
+    if(pct<80) document.getElementById('quiz-retry-section').style.display='block';
+    else document.getElementById('quiz-done-btn').style.display='block';
+  }
+}
+
+function retryQuiz(){
+  quizCorrect=0; quizAnswered=0;
+  document.getElementById('quiz-score').textContent='0 / 0';
+  document.getElementById('quiz-retry-section').style.display='none';
+  document.getElementById('quiz-done-btn').style.display='none';
+  buildQuiz();
+}
+
+function buildFill(){
+  document.getElementById('fill-container').innerHTML=fillData.map((f,i)=>`
+    <div class="fill-item" id="fi-${i}">
+      <div class="fill-q">${i+1}. ${f.before}<input type="text" id="finp-${i}" placeholder="...">${f.after}</div>
+      <div class="fill-vi">${f.vi}</div>
+      <div class="fill-ans" id="fa-${i}">❌ Đáp án: <strong>${f.answer}</strong></div>
+    </div>`).join('');
+  fillChecked=false;
+  document.getElementById('retry-fill-btn').style.display='none';
+  document.getElementById('fill-score-display').style.display='none';
+}
+
+function checkFill(){
+  fillCorrect=0;
+  fillData.forEach((f,i)=>{
+    const inp=document.getElementById(`finp-${i}`);
+    const item=document.getElementById(`fi-${i}`);
+    const ans=document.getElementById(`fa-${i}`);
+    const val=inp.value.trim().toLowerCase().replace(/\s+/g,' ');
+    inp.disabled=true;
+    if(val===f.answer.toLowerCase()){
+      item.classList.add('correct'); item.classList.remove('wrong');
+      ans.classList.remove('show-wrong'); fillCorrect++;
+    } else {
+      item.classList.add('wrong'); item.classList.remove('correct');
+      ans.classList.add('show-wrong');
+    }
+  });
+  fillChecked=true;
+  const pct=Math.round((fillCorrect/fillData.length)*100);
+  const el=document.getElementById('fill-score-display');
+  el.style.display='block';
+  el.innerHTML=`Điểm điền từ: <span style="color:${pct>=70?'#2e7d32':'#c0392b'}">${fillCorrect}/${fillData.length} (${pct}%)</span>`;
+  if(pct<70){
+    el.innerHTML+=` – <span style="color:#c0392b">Hãy làm lại nhé!</span>`;
+    document.getElementById('retry-fill-btn').style.display='inline-flex';
+  }
+}
+
+function retryFill(){
+  fillData.forEach((f,i)=>{
+    const inp=document.getElementById(`finp-${i}`);
+    inp.value=''; inp.disabled=false;
+    const item=document.getElementById(`fi-${i}`);
+    item.classList.remove('correct','wrong');
+    document.getElementById(`fa-${i}`).classList.remove('show-wrong');
+  });
+  fillChecked=false; fillCorrect=0;
+  document.getElementById('retry-fill-btn').style.display='none';
+  document.getElementById('fill-score-display').style.display='none';
+}
+
+function buildTrans(){
+  document.getElementById('trans-container').innerHTML=transData.map((t,i)=>`
+    <div class="trans-item" id="ti-${i}">
+      <div class="trans-lang">${t.dir==='vi→en'?'🇻🇳 Tiếng Việt → Tiếng Anh':'🇬🇧 Tiếng Anh → Tiếng Việt'}</div>
+      <div class="trans-q">${t.prompt}</div>
+      <input class="trans-input" type="text" id="tinp-${i}" placeholder="Nhập bản dịch của bạn...">
+      <div class="trans-ans" id="ta-${i}">❌ Đáp án gợi ý: <strong>${t.answer}</strong></div>
+    </div>`).join('');
+  transChecked=false;
+  document.getElementById('retry-trans-btn').style.display='none';
+  document.getElementById('trans-score-display').style.display='none';
+}
+
+function normalize(s){return s.trim().toLowerCase().replace(/[.?!,]/g,'').replace(/\s+/g,' ');}
+
+function checkTrans(){
+  transCorrect=0;
+  transData.forEach((t,i)=>{
+    const inp=document.getElementById(`tinp-${i}`);
+    const item=document.getElementById(`ti-${i}`);
+    const ans=document.getElementById(`ta-${i}`);
+    const val=normalize(inp.value);
+    const correct=normalize(t.answer);
+    inp.disabled=true;
+    const kw=correct.split(' ').filter(w=>w.length>2);
+    const ratio=kw.length>0?kw.filter(w=>val.includes(w)).length/kw.length:0;
+    if(ratio>=0.7){
+      item.classList.add('correct'); item.classList.remove('wrong');
+      ans.classList.remove('show'); transCorrect++;
+    } else {
+      item.classList.add('wrong'); item.classList.remove('correct');
+      ans.classList.add('show');
+    }
+  });
+  transChecked=true;
+  const pct=Math.round((transCorrect/transData.length)*100);
+  const el=document.getElementById('trans-score-display');
+  el.style.display='block';
+  el.innerHTML=`Điểm dịch câu: <span style="color:${pct>=70?'#2e7d32':'#c0392b'}">${transCorrect}/${transData.length} (${pct}%)</span>`;
+  if(pct<70){
+    el.innerHTML+=` – <span style="color:#c0392b">Hãy làm lại nhé!</span>`;
+    document.getElementById('retry-trans-btn').style.display='inline-flex';
+  }
+}
+
+function retryTrans(){
+  transData.forEach((t,i)=>{
+    const inp=document.getElementById(`tinp-${i}`);
+    inp.value=''; inp.disabled=false;
+    const item=document.getElementById(`ti-${i}`);
+    item.classList.remove('correct','wrong');
+    document.getElementById(`ta-${i}`).classList.remove('show');
+  });
+  transChecked=false; transCorrect=0;
+  document.getElementById('retry-trans-btn').style.display='none';
+  document.getElementById('trans-score-display').style.display='none';
+}
+
+function buildSpeaking(){
+  document.getElementById('speaking-container').innerHTML=speakingData.map((s,i)=>`
+    <div class="speak-card" style="background:${s.color}">
+      <div class="slbl">CÂU ${i+1}</div>
+      <div class="sen-en">${s.en}</div>
+      <div class="sen-vi">${s.vi}</div>
+      <button class="hear-btn" onclick="speak('${s.en.replace(/'/g,"\\'")}')">▶ Nghe mẫu</button>
+    </div>`).join('');
+}
+
+function buildQuickReview(){
+  document.getElementById('quick-review').innerHTML=vocabData.map(v=>
+    `<div>🍽️ <strong style="color:${v.color}">${v.en}</strong> ${v.pron} – ${v.vi}</div>`
+  ).join('');
+}
+
+function speak(text){
+  if(!window.speechSynthesis) return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='en-US'; u.rate=0.85;
+  speechSynthesis.speak(u);
+}
+
+function goPhase(n){
+  document.querySelectorAll('.phase').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.phase-tab').forEach((t,i)=>{
+    t.classList.remove('active','done');
+    if(i<n) t.classList.add('done');
+  });
+  document.getElementById(`phase-${n}`).classList.add('active');
+  document.querySelectorAll('.phase-tab')[n].classList.add('active');
+  document.getElementById('progress-bar').style.width=Math.round((n/8)*100)+'%';
+  window.scrollTo(0,0);
+  if(n===8) showResult();
+}
+
+function showResult(){
+  const qT=quizData.length, fT=fillData.length, tT=transData.length;
+  const total=quizCorrect+fillCorrect+transCorrect;
+  const max=qT+fT+tT;
+  const pct=Math.round((total/max)*100);
+  document.getElementById('final-score').textContent=pct+'%';
+  let msg,desc;
+  if(pct>=90){msg='🏆 Xuất sắc!';desc='Bạn đã nắm vững các tính từ mô tả đồ ăn!';}
+  else if(pct>=75){msg='👍 Tốt lắm!';desc='Ôn thêm từ vựng và cách dùng very/too nhé!';}
+  else if(pct>=55){msg='📚 Cần ôn thêm!';desc='Hãy học lại bảng từ vựng và làm lại bài tập!';}
+  else{msg='💪 Tiếp tục cố gắng!';desc='Bắt đầu lại từ lý thuyết, luyện thêm mỗi ngày!';}
+  document.getElementById('final-msg').textContent=msg;
+  document.getElementById('final-desc').textContent=desc;
+  document.getElementById('detail-score').innerHTML=
+    `🧠 Quiz: <strong>${quizCorrect}/${qT}</strong> &nbsp;|&nbsp; ✏️ Điền từ: <strong>${fillCorrect}/${fT}</strong> &nbsp;|&nbsp; 🔄 Dịch câu: <strong>${transCorrect}/${tT}</strong> &nbsp;|&nbsp; Tổng: <strong>${total}/${max} (${pct}%)</strong>`;
+  clearInterval(timerInterval);
+}
+
+function restartLesson(){
+  quizCorrect=0; quizAnswered=0; fillCorrect=0; fillChecked=false; transCorrect=0; transChecked=false;
+  secondsLeft=3600; clearInterval(timerInterval);
+  buildQuiz(); buildFill(); buildTrans();
+  document.getElementById('quiz-score').textContent='0 / 0';
+  document.getElementById('quiz-retry-section').style.display='none';
+  document.getElementById('quiz-done-btn').style.display='none';
+  goPhase(0); startTimer();
+}
+
+init();
+</script>
+</body>
+</html>

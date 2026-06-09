@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 24 – Động Từ Thêm Đuôi "-ED" trong Quá Khứ</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{--c1:#b7410e;--c2:#1565c0;--c3:#2e7d32;--c4:#6a1b9a;--c5:#00838f;--yellow:#FFD93D;--bg:#fafbff;--dark:#0d1b2a;--gray:#78909c;--radius:18px;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--dark);min-height:100vh;}
+  header{background:var(--dark);color:white;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 3px 14px rgba(0,0,0,.3);}
+  header h1{font-family:'Baloo 2',cursive;font-size:1.05rem;font-weight:800;text-align:center;flex:1;}
+  header h1 span{color:var(--yellow);}
+  #timer-bar{font-size:.95rem;font-weight:700;background:var(--yellow);color:var(--dark);padding:5px 14px;border-radius:30px;white-space:nowrap;}
+  .back-btn{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.25);color:white;padding:5px 13px;border-radius:30px;font-size:.78rem;font-weight:700;text-decoration:none;transition:all .2s;white-space:nowrap;}
+  .back-btn:hover{background:rgba(255,255,255,.22);}
+  #progress-wrap{background:#e9ecef;height:8px;}
+  #progress-bar{height:8px;background:linear-gradient(90deg,var(--c1),var(--c2),var(--c3),var(--c4));transition:width .6s ease;border-radius:0 4px 4px 0;}
+  #phase-nav{display:flex;gap:5px;padding:10px 16px;overflow-x:auto;background:white;border-bottom:2px solid #f1f3f4;}
+  .phase-tab{flex-shrink:0;padding:5px 11px;border-radius:20px;font-size:.72rem;font-weight:700;border:2px solid #dee2e6;background:white;cursor:pointer;transition:all .2s;color:var(--gray);}
+  .phase-tab.active{background:var(--dark);color:white;border-color:var(--dark);}
+  .phase-tab.done{background:var(--c3);color:white;border-color:var(--c3);}
+  main{padding:18px 14px 48px;max-width:780px;margin:0 auto;}
+  .phase{display:none;animation:fadeIn .4s ease;}
+  .phase.active{display:block;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+  .section-header{border-radius:var(--radius) var(--radius) 0 0;padding:13px 18px;}
+  .section-header .phase-label{font-size:.66rem;letter-spacing:2px;text-transform:uppercase;color:var(--yellow);font-weight:700;}
+  .section-header h2{font-family:'Baloo 2',cursive;font-size:1.2rem;font-weight:800;color:white;}
+  .section-header .duration{font-size:.76rem;color:rgba(255,255,255,.5);margin-top:1px;}
+  .section-body{background:white;border-radius:0 0 var(--radius) var(--radius);padding:18px;margin-bottom:20px;box-shadow:0 4px 18px rgba(0,0,0,.07);}
+  .formula-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+  .fc{border-radius:12px;padding:12px 14px;}
+  .fc h3{font-family:'Baloo 2',cursive;font-size:.92rem;font-weight:800;margin-bottom:6px;color:white;}
+  .fc .fb{background:rgba(255,255,255,.2);border-radius:7px;padding:7px 10px;font-size:.8rem;font-weight:700;font-family:monospace;color:white;margin-bottom:5px;line-height:1.6;}
+  .fc .fn{font-size:.75rem;color:rgba(255,255,255,.88);line-height:1.7;}
+  .tip-box{background:#fff8e1;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:.82rem;border-left:4px solid var(--yellow);line-height:1.75;}
+  .tip-box strong{color:#e65100;}
+  .tip-red{background:#fce4ec;border-left-color:var(--c1);}
+  .tip-red strong{color:var(--c1);}
+  .tip-green{background:#e8f5e9;border-left-color:var(--c3);}
+  .tip-green strong{color:var(--c3);}
+  .tip-blue{background:#e3f2fd;border-left-color:var(--c2);}
+  .tip-blue strong{color:var(--c2);}
+
+  /* PRONUNCIATION RULES */
+  .pron-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:14px;}
+  .pron-card{border-radius:11px;padding:11px 12px;border:2px solid;text-align:center;}
+  .pron-card .pt{font-family:'Baloo 2',cursive;font-size:1.05rem;font-weight:800;}
+  .pron-card .ps{font-size:.72rem;font-weight:700;margin:3px 0;}
+  .pron-card .pe{font-size:.7rem;color:#555;line-height:1.5;}
+
+  /* VERB TABLE */
+  .verb-table{width:100%;border-collapse:collapse;margin-bottom:14px;font-size:.83rem;}
+  .verb-table th{background:var(--dark);color:white;padding:8px 10px;text-align:left;font-weight:800;}
+  .verb-table td{padding:8px 10px;border-bottom:1px solid #e9ecef;vertical-align:middle;}
+  .verb-table tr:hover td{background:#f1f8e9;}
+  .vbase{font-weight:700;color:var(--c2);}
+  .vpast{font-weight:800;color:var(--c1);font-size:.9rem;}
+  .vpron{font-style:italic;color:#aaa;font-size:.75rem;}
+  .play-btn{background:none;border:1px solid #dee2e6;border-radius:20px;padding:2px 8px;font-size:.68rem;font-weight:700;cursor:pointer;color:var(--c3);font-family:'Nunito',sans-serif;}
+  .play-btn:hover{background:var(--c3);color:white;border-color:var(--c3);}
+  .pron-badge{font-size:.62rem;font-weight:800;padding:1px 7px;border-radius:6px;color:white;margin-left:4px;vertical-align:middle;}
+
+  .ex-title{font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;padding:4px 12px;border-radius:20px;color:white;display:inline-block;margin-bottom:8px;}
+  .eb{border-radius:11px;padding:11px 14px;margin-bottom:8px;border-left:4px solid;}
+  .eb .en{font-size:.93rem;font-weight:700;margin-bottom:2px;}
+  .eb .vi{font-size:.81rem;color:#495057;margin-bottom:5px;}
+  .divider{height:1px;background:#e9ecef;margin:14px 0;}
+
+  .dbox{background:#f8f9fa;border-radius:13px;padding:14px;margin-bottom:11px;border:2px solid #e9ecef;}
+  .dtitle{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--gray);margin-bottom:9px;}
+  .dline{display:flex;gap:7px;margin-bottom:7px;align-items:flex-start;}
+  .dlabel{font-size:.7rem;font-weight:800;padding:2px 7px;border-radius:7px;color:white;flex-shrink:0;margin-top:2px;min-width:24px;text-align:center;}
+  .dvi{font-size:.84rem;font-weight:700;color:#1565c0;}
+  .den{font-size:.84rem;font-weight:700;color:#212121;}
+  .pdlg{margin-top:7px;background:#2e7d32;color:white;border:none;border-radius:20px;padding:5px 13px;font-size:.74rem;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;display:inline-flex;align-items:center;gap:4px;}
+
+  .quiz-item{background:#f8f9fa;border-radius:13px;padding:14px;margin-bottom:12px;border:2px solid transparent;transition:border-color .3s;}
+  .quiz-item.answered-ok{border-color:#2e7d32;background:#f1f8e9;}
+  .quiz-item.answered-fail{border-color:#c0392b;background:#fbe9e7;}
+  .quiz-q{font-size:.9rem;font-weight:700;margin-bottom:10px;}
+  .quiz-opts{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+  .qopt{background:white;border:2px solid #dee2e6;border-radius:9px;padding:7px 9px;font-size:.81rem;font-weight:700;cursor:pointer;transition:all .2s;font-family:'Nunito',sans-serif;text-align:center;}
+  .qopt:hover:not(:disabled){border-color:#1565c0;color:#1565c0;}
+  .qopt.sel-ok{background:#2e7d32;color:white;border-color:#2e7d32;}
+  .qopt.sel-fail{background:#c0392b;color:white;border-color:#c0392b;}
+  .qopt:disabled{cursor:default;}
+  .qfb{margin-top:6px;font-size:.77rem;font-weight:700;display:none;}
+  .qfb.show{display:block;}
+  .qfb.ok{color:#2e7d32;}
+  .qfb.fail{color:#c0392b;}
+
+  .fill-item{background:#f8f9fa;border-radius:12px;padding:13px;margin-bottom:10px;border:2px solid transparent;}
+  .fill-item.correct{border-color:#2e7d32;background:#f1f8e9;}
+  .fill-item.wrong{border-color:#c0392b;background:#fbe9e7;}
+  .fill-q{font-size:.9rem;font-weight:700;margin-bottom:6px;line-height:2;}
+  .fill-q input{border:2px solid #1565c0;border-radius:7px;padding:2px 8px;font-size:.86rem;font-family:'Nunito',sans-serif;font-weight:700;width:140px;text-align:center;outline:none;background:white;}
+  .fill-vi{font-size:.78rem;color:var(--gray);margin-bottom:4px;}
+  .fill-ans{font-size:.78rem;font-weight:700;margin-top:4px;display:none;}
+  .fill-ans.show-wrong{display:block;color:#c0392b;}
+
+  .trans-item{background:#f8f9fa;border-radius:12px;padding:13px;margin-bottom:10px;border:2px solid transparent;}
+  .trans-item.correct{border-color:#2e7d32;background:#f1f8e9;}
+  .trans-item.wrong{border-color:#c0392b;background:#fbe9e7;}
+  .trans-lang{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;color:var(--gray);}
+  .trans-q{font-size:.92rem;font-weight:700;margin-bottom:6px;color:var(--dark);}
+  .trans-input{width:100%;border:2px solid #1565c0;border-radius:8px;padding:6px 10px;font-size:.86rem;font-family:'Nunito',sans-serif;font-weight:700;outline:none;background:white;}
+  .trans-ans{font-size:.78rem;font-weight:700;margin-top:4px;display:none;color:#c0392b;}
+  .trans-ans.show{display:block;}
+
+  .speak-card{border-radius:12px;padding:13px 16px;margin-bottom:9px;color:white;}
+  .slbl{font-size:.66rem;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:3px;}
+  .sen-en{font-size:.97rem;font-weight:800;margin-bottom:2px;}
+  .sen-vi{font-size:.8rem;color:rgba(255,255,255,.75);margin-bottom:9px;}
+  .hear-btn{background:var(--yellow);color:var(--dark);border:none;border-radius:20px;padding:6px 14px;font-weight:800;font-size:.8rem;cursor:pointer;font-family:'Nunito',sans-serif;transition:transform .15s;}
+  .hear-btn:hover{transform:scale(1.04);}
+
+  #score-section{text-align:center;padding:24px 12px;}
+  .score-circle{width:120px;height:120px;border-radius:50%;background:linear-gradient(135deg,var(--c1),var(--c2));display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 6px 20px rgba(21,101,192,.3);}
+  .score-circle .num{font-family:'Baloo 2',cursive;font-size:2rem;font-weight:800;color:white;line-height:1;}
+  .score-circle .lbl{font-size:.7rem;font-weight:700;color:rgba(255,255,255,.8);}
+  #score-section h2{font-family:'Baloo 2',cursive;font-size:1.4rem;font-weight:800;margin-bottom:6px;}
+  #score-section p{color:var(--gray);font-size:.86rem;max-width:340px;margin:0 auto 16px;}
+  .score-inline{background:#f1f3f5;border-radius:9px;padding:8px 14px;margin-bottom:12px;font-size:.81rem;font-weight:700;display:flex;align-items:center;gap:7px;}
+  .score-badge{background:var(--yellow);color:var(--dark);border-radius:20px;padding:2px 11px;font-weight:800;font-size:.81rem;}
+  .btn-next{background:var(--c2);color:white;border:none;border-radius:11px;padding:10px 24px;font-size:.9rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;margin-top:12px;display:inline-flex;align-items:center;gap:6px;transition:all .2s;}
+  .btn-next:hover{opacity:.88;}
+  .btn-check{background:var(--c3);color:white;border:none;border-radius:11px;padding:9px 20px;font-size:.86rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;margin-top:10px;display:inline-flex;align-items:center;gap:5px;}
+  .btn-primary{background:var(--dark);color:white;border:none;border-radius:11px;padding:10px 24px;font-size:.9rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;display:inline-flex;align-items:center;gap:6px;}
+  .retry-btn{background:#c0392b;color:white;border:none;border-radius:11px;padding:9px 20px;font-size:.86rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;margin-top:8px;display:inline-flex;align-items:center;gap:5px;margin-right:8px;}
+  @media(max-width:480px){.formula-grid{grid-template-columns:1fr;}.quiz-opts{grid-template-columns:1fr;}.verb-table{font-size:.75rem;}.pron-grid{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="back-btn">&#8592; Trang chủ</a>
+  <h1>📝 <span>ĐỘNG TỪ THÊM "-ED"</span> trong Quá Khứ</h1>
+  <div id="timer-bar">⏱ 60:00</div>
+</header>
+<div id="progress-wrap"><div id="progress-bar" style="width:0%"></div></div>
+
+<nav id="phase-nav">
+  <button class="phase-tab active" onclick="goPhase(0)">1. Lý thuyết</button>
+  <button class="phase-tab" onclick="goPhase(1)">2. Bảng ĐT</button>
+  <button class="phase-tab" onclick="goPhase(2)">3. Câu mẫu</button>
+  <button class="phase-tab" onclick="goPhase(3)">4. Hội thoại</button>
+  <button class="phase-tab" onclick="goPhase(4)">5. Quiz</button>
+  <button class="phase-tab" onclick="goPhase(5)">6. Điền từ</button>
+  <button class="phase-tab" onclick="goPhase(6)">7. Dịch câu</button>
+  <button class="phase-tab" onclick="goPhase(7)">8. Nói</button>
+  <button class="phase-tab" onclick="goPhase(8)">9. Kết quả</button>
+</nav>
+
+<main>
+
+<!-- PHASE 0: LÝ THUYẾT -->
+<div class="phase active" id="phase-0">
+  <div class="section-header" style="background:var(--dark)">
+    <div class="phase-label">📖 Giai đoạn 1 – 8 phút</div>
+    <h2>Động từ có quy tắc – Thêm "-ED" trong quá khứ</h2>
+    <div class="duration">work/worked · play/played · clean/cleaned · wait/waited · live/lived + nhiều hơn</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box">
+      <strong>📌 Hôm nay học gì?</strong><br>
+      ✅ Động từ <strong>có quy tắc</strong>: thêm <strong>-ED</strong> để tạo dạng quá khứ<br>
+      📌 Học <strong>10 động từ</strong> thông dụng + 3 cách phát âm đuôi <strong>-ED</strong><br>
+      🗓️ Từ khóa thời gian quá khứ: <strong>yesterday, last night, last week, last Saturday, in 2019, ago...</strong>
+    </div>
+
+    <!-- CẤU TRÚC -->
+    <div class="formula-grid">
+      <div class="fc" style="background:var(--c2)">
+        <h3>✅ Khẳng định</h3>
+        <div class="fb">S + V-ed + ...</div>
+        <div class="fn">→ I <strong>worked</strong> all day yesterday.<br>→ She <strong>played</strong> the piano last night.<br>→ They <strong>cleaned</strong> the classroom.</div>
+      </div>
+      <div class="fc" style="background:var(--c1)">
+        <h3>❌ Phủ định</h3>
+        <div class="fb">S + didn't + V (nguyên mẫu)</div>
+        <div class="fn">→ I <strong>didn't work</strong> yesterday.<br>→ She <strong>didn't play</strong> the piano.<br>→ Luôn dùng V1 sau "didn't"!</div>
+      </div>
+      <div class="fc" style="background:var(--c3)">
+        <h3>❓ Câu hỏi Yes/No</h3>
+        <div class="fb">Did + S + V (nguyên mẫu)?</div>
+        <div class="fn">→ <strong>Did</strong> you <strong>work</strong> yesterday?<br>→ Yes, I did. / No, I didn't.<br>→ <strong>Did</strong> she <strong>play</strong> the piano?</div>
+      </div>
+      <div class="fc" style="background:var(--c4)">
+        <h3>❓ Câu hỏi WH-</h3>
+        <div class="fb">WH- + did + S + V1?</div>
+        <div class="fn">→ <strong>What did</strong> you <strong>do</strong> yesterday?<br>→ <strong>Where did</strong> you <strong>live</strong> before?<br>→ <strong>When did</strong> she <strong>clean</strong> the house?</div>
+      </div>
+    </div>
+
+    <!-- PHÁT ÂM -ED -->
+    <div style="font-size:.72rem;font-weight:800;text-transform:uppercase;color:var(--gray);margin-bottom:9px;letter-spacing:1.5px;">🔊 3 CÁCH PHÁT ÂM ĐUÔI -ED</div>
+    <div class="pron-grid">
+      <div class="pron-card" style="background:#fff3e0;border-color:#e65100">
+        <div class="pt" style="color:#e65100">/t/</div>
+        <div class="ps" style="color:#e65100">Sau âm vô thanh</div>
+        <div class="pe">p, k, f, s, sh, ch<br><strong>worked /wɜːrkt/</strong><br>played → /pleɪd/ ❌<br><em>ex: worked, cooked, washed</em></div>
+      </div>
+      <div class="pron-card" style="background:#e3f2fd;border-color:#1565c0">
+        <div class="pt" style="color:#1565c0">/d/</div>
+        <div class="ps" style="color:#1565c0">Sau âm hữu thanh</div>
+        <div class="pe">nguyên âm + b,g,v,z,m,n...<br><strong>played /pleɪd/</strong><br><strong>lived /lɪvd/</strong><br><em>ex: played, lived, cleaned</em></div>
+      </div>
+      <div class="pron-card" style="background:#f1f8e9;border-color:#2e7d32">
+        <div class="pt" style="color:#2e7d32">/ɪd/</div>
+        <div class="ps" style="color:#2e7d32">Sau âm /t/ hoặc /d/</div>
+        <div class="pe">Kết thúc bằng t hoặc d<br><strong>waited /ˈweɪtɪd/</strong><br><strong>needed /ˈniːdɪd/</strong><br><em>ex: waited, wanted, needed</em></div>
+      </div>
+    </div>
+
+    <!-- QUY TẮC CHÍNH TẢ -->
+    <div class="tip-box tip-blue">
+      <strong>📝 Quy tắc chính tả khi thêm -ED:</strong><br>
+      • Động từ thường: thêm trực tiếp → <strong>work → worked</strong>, <strong>play → played</strong><br>
+      • Kết thúc bằng -e: chỉ thêm -d → <strong>live → lived</strong>, <strong>love → loved</strong><br>
+      • Kết thúc bằng phụ âm + y: đổi y→i rồi thêm -ed → <strong>study → studied</strong><br>
+      • Phụ âm ngắn (CVC): nhân đôi phụ âm → <strong>stop → stopped</strong>
+    </div>
+
+    <div class="tip-box tip-red">
+      <strong>⚠️ Lỗi hay gặp:</strong><br>
+      ❌ Yesterday, I <s>work</s> all day. &nbsp;→&nbsp; ✅ Yesterday, I <strong>worked</strong> all day.<br>
+      ❌ She <s>didn't played</s> the piano. &nbsp;→&nbsp; ✅ She <strong>didn't play</strong> the piano.<br>
+      ❌ <s>Did</s> she <s>played</s>? &nbsp;→&nbsp; ✅ <strong>Did</strong> she <strong>play</strong>? (sau Did dùng V1)
+    </div>
+
+    <button class="btn-next" onclick="goPhase(1)">Tiếp theo: Bảng động từ →</button>
+  </div>
+</div>
+
+<!-- PHASE 1: BẢNG ĐỘNG TỪ -->
+<div class="phase" id="phase-1">
+  <div class="section-header" style="background:var(--c1)">
+    <div class="phase-label">📝 Giai đoạn 2 – 8 phút</div>
+    <h2>Bảng Động Từ Có Quy Tắc (-ED)</h2>
+    <div class="duration">Nhấn ▶ nghe phát âm dạng quá khứ. Chú ý màu phát âm!</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box">Nhìn V1 → tự ghép -ED → nhấn ▶ nghe phát âm. Chú ý 3 cách đọc đuôi -ed!</div>
+    <table class="verb-table">
+      <thead><tr><th>V1 (Hiện tại)</th><th>V2 (Quá khứ)</th><th>Nghĩa</th><th>Phát âm V2</th><th>Nghe</th></tr></thead>
+      <tbody id="verb-tbody"></tbody>
+    </table>
+    <button class="btn-next" onclick="goPhase(2)">Tiếp theo: Câu mẫu →</button>
+  </div>
+</div>
+
+<!-- PHASE 2: CÂU MẪU -->
+<div class="phase" id="phase-2">
+  <div class="section-header" style="background:var(--c2)">
+    <div class="phase-label">🗣️ Giai đoạn 3 – 8 phút</div>
+    <h2>Câu mẫu & Phát âm</h2>
+    <div class="duration">Nhấn ▶ nghe, sau đó đọc to theo</div>
+  </div>
+  <div class="section-body">
+    <span class="ex-title" style="background:var(--c2)">✅ Khẳng định – V-ed</span>
+    <div id="ex-pos"></div>
+    <div class="divider"></div>
+    <span class="ex-title" style="background:var(--c1)">❌ Phủ định – didn't + V1</span>
+    <div id="ex-neg"></div>
+    <div class="divider"></div>
+    <span class="ex-title" style="background:var(--c3)">❓ Câu hỏi – Did / WH-</span>
+    <div id="ex-q"></div>
+    <div class="divider"></div>
+    <span class="ex-title" style="background:var(--c4)">📅 Câu kết hợp thời gian</span>
+    <div id="ex-time"></div>
+    <button class="btn-next" onclick="goPhase(3)">Tiếp theo: Hội thoại →</button>
+  </div>
+</div>
+
+<!-- PHASE 3: HỘI THOẠI -->
+<div class="phase" id="phase-3">
+  <div class="section-header" style="background:var(--c3)">
+    <div class="phase-label">💬 Giai đoạn 4 – 7 phút</div>
+    <h2>Hội thoại thực tế</h2>
+    <div class="duration">Nghe và luyện theo – nhấn ▶ để nghe toàn bộ</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box"><strong>Cách luyện:</strong> Đọc tiếng Việt → đoán tiếng Anh → nhấn ▶ nghe toàn bộ để kiểm tra!</div>
+    <div id="dialogue-container"></div>
+    <button class="btn-next" onclick="goPhase(4)">Tiếp theo: Quiz →</button>
+  </div>
+</div>
+
+<!-- PHASE 4: QUIZ -->
+<div class="phase" id="phase-4">
+  <div class="section-header" style="background:var(--dark)">
+    <div class="phase-label">🧠 Giai đoạn 5 – 8 phút</div>
+    <h2>Trắc nghiệm</h2>
+    <div class="duration">Chọn đáp án đúng – không có gợi ý!</div>
+  </div>
+  <div class="section-body">
+    <div class="score-inline">Điểm: <span class="score-badge" id="quiz-score">0 / 0</span></div>
+    <div class="tip-box tip-red"><strong>⚠️ Lưu ý:</strong> Không có gợi ý đáp án. Hãy suy nghĩ kỹ trước khi chọn!</div>
+    <div id="quiz-container"></div>
+    <div id="quiz-retry-section" style="display:none;margin-top:12px;">
+      <button class="retry-btn" onclick="retryQuiz()">🔄 Làm lại Quiz</button>
+      <button class="btn-next" onclick="goPhase(5)" style="margin-top:0">Tiếp theo →</button>
+    </div>
+    <div id="quiz-done-btn" style="display:none">
+      <button class="btn-next" onclick="goPhase(5)">Tiếp theo: Điền từ →</button>
+    </div>
+  </div>
+</div>
+
+<!-- PHASE 5: FILL -->
+<div class="phase" id="phase-5">
+  <div class="section-header" style="background:var(--c1)">
+    <div class="phase-label">✏️ Giai đoạn 6 – 7 phút</div>
+    <h2>Điền vào ô trống</h2>
+    <div class="duration">Điền dạng -ed đúng – không có gợi ý!</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box tip-red"><strong>⚠️ Lưu ý:</strong> Điền đầy đủ tất cả ô, sau đó mới nhấn kiểm tra!</div>
+    <div id="fill-container"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">
+      <button class="btn-check" onclick="checkFill()">✅ Kiểm tra tất cả</button>
+      <button class="retry-btn" onclick="retryFill()" id="retry-fill-btn" style="display:none">🔄 Làm lại</button>
+    </div>
+    <div id="fill-score-display" style="margin-top:10px;font-weight:700;font-size:.9rem;display:none;"></div>
+    <button class="btn-next" onclick="goPhase(6)" style="margin-top:14px">Tiếp theo: Dịch câu →</button>
+  </div>
+</div>
+
+<!-- PHASE 6: DỊCH CÂU -->
+<div class="phase" id="phase-6">
+  <div class="section-header" style="background:var(--c4)">
+    <div class="phase-label">🔄 Giai đoạn 7 – 7 phút</div>
+    <h2>Dịch câu</h2>
+    <div class="duration">Dịch 2 chiều Việt ↔ Anh – không có gợi ý!</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box"><strong>Hướng dẫn:</strong> Dịch câu vào ô. Nhấn "Kiểm tra" sau khi hoàn thành tất cả.</div>
+    <div id="trans-container"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">
+      <button class="btn-check" onclick="checkTrans()">✅ Kiểm tra tất cả</button>
+      <button class="retry-btn" onclick="retryTrans()" id="retry-trans-btn" style="display:none">🔄 Làm lại</button>
+    </div>
+    <div id="trans-score-display" style="margin-top:10px;font-weight:700;font-size:.9rem;display:none;"></div>
+    <button class="btn-next" onclick="goPhase(7)" style="margin-top:14px">Tiếp theo: Nói →</button>
+  </div>
+</div>
+
+<!-- PHASE 7: SPEAKING -->
+<div class="phase" id="phase-7">
+  <div class="section-header" style="background:var(--c5)">
+    <div class="phase-label">🎤 Giai đoạn 8 – 7 phút</div>
+    <h2>Luyện Nói</h2>
+    <div class="duration">Đọc to trước → Nhấn ▶ nghe mẫu → Luyện lại!</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box"><strong>Hướng dẫn:</strong> Nhìn câu → Tự đọc to → Nhấn ▶ so sánh → Luyện đến khi tự tin!</div>
+    <div id="speaking-container"></div>
+    <button class="btn-next" onclick="goPhase(8)">Xem kết quả →</button>
+  </div>
+</div>
+
+<!-- PHASE 8: RESULT -->
+<div class="phase" id="phase-8">
+  <div class="section-header" style="background:var(--dark)">
+    <div class="phase-label">🏆 Kết thúc bài học</div>
+    <h2>Tổng kết</h2>
+    <div class="duration">Kết quả Quiz + Điền từ + Dịch câu</div>
+  </div>
+  <div class="section-body">
+    <div id="score-section">
+      <div class="score-circle">
+        <div class="num" id="final-score">—</div>
+        <div class="lbl">điểm</div>
+      </div>
+      <h2 id="final-msg">Hoàn thành!</h2>
+      <p id="final-desc"></p>
+      <div id="detail-score" style="margin:12px 0;font-size:.85rem;font-weight:700;background:#f8f9fa;border-radius:10px;padding:12px 16px;text-align:left;"></div>
+      <div style="background:#f8f9fa;border-radius:13px;padding:14px;text-align:left;margin:14px 0;">
+        <h3 style="font-size:.86rem;font-weight:800;margin-bottom:10px;">📋 Ôn nhanh toàn bộ V-ED hôm nay:</h3>
+        <div id="quick-review" style="font-size:.82rem;line-height:2.3;"></div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:8px;">
+        <button class="btn-primary" onclick="restartLesson()">🔄 Học lại từ đầu</button>
+        <a href="index.html" class="back-btn" style="padding:10px 20px;font-size:.86rem;border-radius:11px;">🏠 Trang chủ</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+// ===== DATA =====
+
+// pronColor: t=orange, d=blue, id=green
+const verbData = [
+  {v1:"work",  v2:"worked",  vi:"làm việc",      pron:"/wɜːrkt/",     pronType:"t"},
+  {v1:"play",  v2:"played",  vi:"chơi / chơi nhạc", pron:"/pleɪd/",   pronType:"d"},
+  {v1:"clean", v2:"cleaned", vi:"dọn dẹp",         pron:"/kliːnd/",    pronType:"d"},
+  {v1:"wait",  v2:"waited",  vi:"chờ đợi",          pron:"/ˈweɪtɪd/",  pronType:"id"},
+  {v1:"live",  v2:"lived",   vi:"sống / ở",         pron:"/lɪvd/",     pronType:"d"},
+  {v1:"walk",  v2:"walked",  vi:"đi bộ",             pron:"/wɔːkt/",    pronType:"t"},
+  {v1:"cook",  v2:"cooked",  vi:"nấu ăn",            pron:"/kʊkt/",     pronType:"t"},
+  {v1:"watch", v2:"watched", vi:"xem / theo dõi",    pron:"/wɒtʃt/",    pronType:"t"},
+  {v1:"study", v2:"studied", vi:"học tập / nghiên cứu", pron:"/ˈstʌdid/", pronType:"d"},
+  {v1:"move",  v2:"moved",   vi:"chuyển / di chuyển",  pron:"/muːvd/",   pronType:"d"},
+  {v1:"need",  v2:"needed",  vi:"cần",               pron:"/ˈniːdɪd/",  pronType:"id"},
+  {v1:"want",  v2:"wanted",  vi:"muốn",              pron:"/ˈwɒntɪd/",  pronType:"id"},
+  {v1:"visit", v2:"visited", vi:"thăm / đến thăm",   pron:"/ˈvɪzɪtɪd/", pronType:"id"},
+  {v1:"love",  v2:"loved",   vi:"yêu thích",          pron:"/lʌvd/",     pronType:"d"},
+];
+
+const pronColors = {t:"#e65100", d:"#1565c0", id:"#2e7d32"};
+const pronLabels = {t:"/t/", d:"/d/", id:"/ɪd/"};
+
+const exPos = [
+  {en:"Yesterday, I worked all day.",                vi:"Hôm qua, tôi đã làm việc cả ngày."},
+  {en:"I worked with the clients last week.",        vi:"Tuần trước tôi đã làm việc với khách hàng."},
+  {en:"Last Saturday, I worked at the company.",     vi:"Thứ 7 trước, tôi làm việc ở công ty."},
+  {en:"We played table tennis yesterday.",           vi:"Hôm qua, chúng tôi đã chơi bóng bàn."},
+  {en:"She played the piano yesterday morning.",     vi:"Cô ấy đã chơi piano sáng hôm qua."},
+  {en:"Last weekend, we played badminton together.", vi:"Cuối tuần trước, chúng tôi đã chơi cầu lông cùng nhau."},
+  {en:"I cleaned my bedroom.",                       vi:"Tôi đã dọn phòng ngủ của mình."},
+  {en:"He cleaned the house.",                       vi:"Anh ấy đã dọn nhà rồi."},
+  {en:"When Lan got home, she cleaned the kitchen.", vi:"Khi Lan về nhà, cô ấy dọn bếp."},
+  {en:"Last night, I waited for her.",               vi:"Đêm qua, tôi đã chờ cô ấy."},
+  {en:"Last Sunday, we waited here for two hours.",  vi:"Chủ nhật tuần trước, chúng tôi đã chờ ở đây 2 tiếng."},
+  {en:"I lived in Hanoi.",                           vi:"Tôi đã sống ở Hà Nội."},
+  {en:"I lived in Da Nang in 2019, then I moved to Nha Trang in 2023.", vi:"Tôi đã sống ở Đà Nẵng năm 2019, rồi chuyển vào Nha Trang năm 2023."},
+  {en:"She walked to school every day last year.",   vi:"Năm ngoái, cô ấy đã đi bộ đến trường mỗi ngày."},
+  {en:"He cooked dinner for us last Saturday.",      vi:"Thứ 7 trước, anh ấy đã nấu bữa tối cho chúng tôi."},
+];
+
+const exNeg = [
+  {en:"I didn't work yesterday.",                    vi:"Hôm qua tôi không làm việc."},
+  {en:"She didn't play the piano last night.",       vi:"Tối qua cô ấy không chơi piano."},
+  {en:"He didn't clean the house.",                  vi:"Anh ấy không dọn nhà."},
+  {en:"We didn't wait for a long time.",             vi:"Chúng tôi không chờ lâu."},
+  {en:"I didn't live in Hanoi before.",              vi:"Trước đây tôi không sống ở Hà Nội."},
+  {en:"She didn't cook dinner last night.",          vi:"Tối qua cô ấy không nấu bữa tối."},
+];
+
+const exQ = [
+  {en:"Did you work yesterday?",                     vi:"Hôm qua bạn có làm việc không?"},
+  {en:"Did she play the piano last night?",           vi:"Tối qua cô ấy có chơi piano không?"},
+  {en:"Did he clean the house?",                     vi:"Anh ấy có dọn nhà không?"},
+  {en:"Did you wait for a long time?",               vi:"Bạn có chờ lâu không?"},
+  {en:"Where did you live before?",                  vi:"Trước đây bạn sống ở đâu?"},
+  {en:"What did you do last weekend?",               vi:"Cuối tuần trước bạn làm gì?"},
+  {en:"When did she move to Da Nang?",               vi:"Cô ấy chuyển vào Đà Nẵng khi nào?"},
+];
+
+const exTime = [
+  {en:"Last Saturday, I worked at the company, then I went home.", vi:"Thứ 7 trước, tôi làm việc ở công ty rồi sau đó về nhà."},
+  {en:"Last weekend, I met my friend and we played badminton together.", vi:"Cuối tuần trước, tôi gặp bạn và chúng tôi chơi cầu lông cùng nhau."},
+  {en:"When Lan got home, she made dinner, then she cleaned the kitchen.", vi:"Khi Lan về nhà, cô ấy nấu bữa tối, sau đó dọn bếp."},
+  {en:"I waited for him to finish work and we had dinner together.", vi:"Tôi đã chờ anh ấy tan làm và cùng đi ăn tối."},
+  {en:"I lived in Da Nang in 2019, then I moved to Nha Trang in 2023.", vi:"Tôi đã sống ở Đà Nẵng năm 2019, rồi chuyển vào Nha Trang năm 2023."},
+];
+
+const dialogues = [
+  {title:"Hội thoại 1 – Cuối tuần của bạn thế nào?",
+   lines:[
+     {label:"A",vi:"Cuối tuần bạn đã làm gì vậy?",         en:"What did you do last weekend?",           color:"#1565c0"},
+     {label:"B",vi:"Tôi gặp bạn và chúng tôi chơi cầu lông.", en:"I met my friend and we played badminton.", color:"#2e7d32"},
+     {label:"A",vi:"Hay đấy! Bạn chơi ở đâu vậy?",         en:"Nice! Where did you play?",               color:"#1565c0"},
+     {label:"B",vi:"Chúng tôi chơi ở công viên gần nhà.",   en:"We played at the park near my house.",    color:"#2e7d32"},
+   ]},
+  {title:"Hội thoại 2 – Hôm qua làm gì?",
+   lines:[
+     {label:"A",vi:"Hôm qua bạn có làm việc không?",        en:"Did you work yesterday?",                 color:"#b7410e"},
+     {label:"B",vi:"Có, tôi làm việc cả ngày.",              en:"Yes, I worked all day.",                  color:"#6a1b9a"},
+     {label:"A",vi:"Còn tối qua thì sao?",                   en:"What about last night?",                  color:"#b7410e"},
+     {label:"B",vi:"Tôi đã dọn nhà và nấu bữa tối.",         en:"I cleaned the house and cooked dinner.",  color:"#6a1b9a"},
+   ]},
+  {title:"Hội thoại 3 – Chờ ai vậy?",
+   lines:[
+     {label:"A",vi:"Tối qua bạn đã chờ ai vậy?",            en:"Who did you wait for last night?",        color:"#00838f"},
+     {label:"B",vi:"Tôi đã chờ anh ấy tan làm.",            en:"I waited for him to finish work.",        color:"#c0392b"},
+     {label:"A",vi:"Rồi các bạn đã làm gì?",                en:"What did you do after that?",             color:"#00838f"},
+     {label:"B",vi:"Chúng tôi đã cùng đi ăn tối.",           en:"We had dinner together.",                 color:"#c0392b"},
+   ]},
+  {title:"Hội thoại 4 – Bạn sống ở đâu trước?",
+   lines:[
+     {label:"A",vi:"Bạn từng sống ở Đà Nẵng phải không?",   en:"Did you live in Da Nang before?",         color:"#e65100"},
+     {label:"B",vi:"Đúng, tôi sống ở đó năm 2019.",          en:"Yes, I lived there in 2019.",             color:"#1565c0"},
+     {label:"A",vi:"Vậy khi nào bạn chuyển đi?",             en:"When did you move?",                      color:"#e65100"},
+     {label:"B",vi:"Tôi chuyển vào Nha Trang năm 2023.",     en:"I moved to Nha Trang in 2023.",           color:"#1565c0"},
+   ]},
+  {title:"Hội thoại 5 – Khi Lan về nhà",
+   lines:[
+     {label:"A",vi:"Khi Lan về nhà, cô ấy làm gì?",          en:"What did Lan do when she got home?",     color:"#2e7d32"},
+     {label:"B",vi:"Cô ấy nấu bữa tối rồi dọn bếp.",         en:"She made dinner, then cleaned the kitchen.", color:"#6a1b9a"},
+     {label:"A",vi:"Cô ấy có chơi piano không?",              en:"Did she play the piano?",                 color:"#2e7d32"},
+     {label:"B",vi:"Không, tối qua cô ấy không chơi piano.", en:"No, she didn't play the piano last night.", color:"#6a1b9a"},
+   ]},
+];
+
+const quizData = [
+  {q:"I ___ all day yesterday. (work → quá khứ)",         opts:["work","works","worked","workes"],           ans:2},
+  {q:"We ___ table tennis yesterday. (play → quá khứ)",   opts:["play","played","plaied","playing"],         ans:1},
+  {q:"She ___ my bedroom. (clean → quá khứ)",             opts:["cleaned","cleaned","cleans","cleaning"],    ans:0},
+  {q:"Last night, I ___ for her. (wait → quá khứ)",       opts:["waitted","waited","waits","waite"],         ans:1},
+  {q:"I ___ in Hanoi. (live → quá khứ)",                  opts:["liveed","liven","lived","living"],          ans:2},
+  {q:"He ___ to school. (walk → quá khứ)",                opts:["walked","walkt","walkes","walking"],        ans:0},
+  {q:"She ___ dinner. (cook → quá khứ)",                  opts:["cookt","cooked","cooks","coocking"],        ans:1},
+  {q:"I ___ a movie last night. (watch → quá khứ)",       opts:["watchd","watched","watchted","watches"],   ans:1},
+  {q:"She ___ English last year. (study → quá khứ)",      opts:["studyed","studied","studyed","studid"],     ans:1},
+  {q:"They ___ to a new house. (move → quá khứ)",         opts:["moveed","moved","moven","movd"],            ans:1},
+  {q:"Phủ định đúng: She ___ play the piano.",            opts:["didn't played","don't play","didn't play","not played"], ans:2},
+  {q:"Câu hỏi đúng: ___ you work yesterday?",             opts:["Do","Does","Did","Have"],                   ans:2},
+  {q:"'worked' đọc đuôi -ED là âm gì?",                   opts:["/d/","/ɪd/","/t/","/ed/"],                 ans:2},
+  {q:"'waited' đọc đuôi -ED là âm gì?",                   opts:["/t/","/d/","/ɪd/","/id/"],                 ans:2},
+  {q:"'played' đọc đuôi -ED là âm gì?",                   opts:["/t/","/d/","/ɪd/","/ed/"],                 ans:1},
+  {q:"'study → studied' áp dụng quy tắc gì?",            opts:["Nhân đôi phụ âm","Đổi y→i rồi thêm -ed","Chỉ thêm -d","Thêm -ed bình thường"], ans:1},
+  {q:"'live → lived': tại sao chỉ thêm -d?",             opts:["Kết thúc bằng -e","Kết thúc bằng -y","Phụ âm ngắn","Không có lý do"], ans:0},
+  {q:"Câu nào ĐÚNG ngữ pháp?",                            opts:["She didn't cleaned the house.","She didn't clean the house.","She didn't cleans the house.","She not cleaned the house."], ans:1},
+  {q:"'Hôm qua, tôi đã nấu bữa tối.' – Câu đúng?",       opts:["Yesterday, I cook dinner.","Yesterday, I cooked dinner.","Yesterday, I cookes dinner.","Yesterday, I did cook dinner."], ans:1},
+  {q:"'Cô ấy có chơi cầu lông không?' – Câu đúng?",       opts:["Did she played badminton?","Did she plays badminton?","Did she play badminton?","Does she play badminton?"], ans:2},
+];
+
+const fillData = [
+  {answer:"worked",      before:"Yesterday, I ",       after:" all day.",                          vi:"Hôm qua, tôi đã làm việc cả ngày."},
+  {answer:"played",      before:"We ",                 after:" table tennis yesterday.",            vi:"Hôm qua, chúng tôi đã chơi bóng bàn."},
+  {answer:"cleaned",     before:"He ",                 after:" the house.",                         vi:"Anh ấy đã dọn nhà rồi."},
+  {answer:"waited",      before:"Last night, I ",      after:" for her.",                           vi:"Đêm qua, tôi đã chờ cô ấy."},
+  {answer:"lived",       before:"I ",                  after:" in Hanoi.",                          vi:"Tôi đã sống ở Hà Nội."},
+  {answer:"walked",      before:"She ",                after:" to school every day last year.",     vi:"Năm ngoái, cô ấy đi bộ đến trường mỗi ngày."},
+  {answer:"cooked",      before:"He ",                 after:" dinner for us last Saturday.",       vi:"Thứ 7 trước, anh ấy nấu bữa tối cho chúng tôi."},
+  {answer:"watched",     before:"I ",                  after:" a movie last night.",                vi:"Tối qua tôi đã xem phim."},
+  {answer:"studied",     before:"She ",                after:" English very hard last year.",       vi:"Năm ngoái, cô ấy đã học tiếng Anh rất chăm."},
+  {answer:"moved",       before:"I ",                  after:" to Nha Trang in 2023.",              vi:"Tôi đã chuyển vào Nha Trang năm 2023."},
+  {answer:"didn't play", before:"She ",                after:" the piano last night.",              vi:"Tối qua cô ấy không chơi piano."},
+  {answer:"didn't work", before:"I ",                  after:" yesterday.",                         vi:"Hôm qua tôi không làm việc."},
+  {answer:"Did",         before:"",                    after:" you clean your room?",              vi:"Bạn có dọn phòng không?"},
+  {answer:"did",         before:"Where ",              after:" you live before?",                   vi:"Trước đây bạn sống ở đâu?"},
+];
+
+const transData = [
+  {prompt:"Hôm qua, tôi đã làm việc cả ngày.",              answer:"yesterday i worked all day",                     dir:"vi→en"},
+  {prompt:"We played table tennis yesterday.",               answer:"hôm qua chúng tôi đã chơi bóng bàn",            dir:"en→vi"},
+  {prompt:"Anh ấy đã dọn nhà rồi.",                         answer:"he cleaned the house",                           dir:"vi→en"},
+  {prompt:"Last night, I waited for her.",                   answer:"đêm qua tôi đã chờ cô ấy",                      dir:"en→vi"},
+  {prompt:"Tôi đã sống ở Đà Nẵng năm 2019.",                answer:"i lived in da nang in 2019",                     dir:"vi→en"},
+  {prompt:"She didn't play the piano last night.",           answer:"tối qua cô ấy không chơi piano",                dir:"en→vi"},
+  {prompt:"Hôm qua bạn có làm việc không?",                  answer:"did you work yesterday",                        dir:"vi→en"},
+  {prompt:"What did you do last weekend?",                   answer:"cuối tuần trước bạn làm gì",                    dir:"en→vi"},
+  {prompt:"Khi Lan về nhà, cô ấy nấu bữa tối rồi dọn bếp.", answer:"when lan got home she made dinner then cleaned the kitchen", dir:"vi→en"},
+  {prompt:"I waited for him to finish work and we had dinner together.", answer:"tôi đã chờ anh ấy tan làm và cùng đi ăn tối", dir:"en→vi"},
+  {prompt:"Tôi chuyển vào Nha Trang năm 2023.",              answer:"i moved to nha trang in 2023",                  dir:"vi→en"},
+  {prompt:"Did she play badminton last weekend?",            answer:"cuối tuần trước cô ấy có chơi cầu lông không",  dir:"en→vi"},
+];
+
+const speakingData = [
+  {en:"Yesterday, I worked all day.",                        vi:"Hôm qua, tôi đã làm việc cả ngày.",          color:"#b7410e"},
+  {en:"I worked with the clients.",                          vi:"Tôi đã làm việc với khách hàng rồi.",         color:"#b7410e"},
+  {en:"We played table tennis yesterday.",                   vi:"Hôm qua, chúng tôi đã chơi bóng bàn.",        color:"#1565c0"},
+  {en:"She played the piano yesterday morning.",             vi:"Cô ấy đã chơi piano sáng hôm qua.",           color:"#1565c0"},
+  {en:"I cleaned my bedroom.",                               vi:"Tôi đã dọn phòng ngủ của mình.",              color:"#2e7d32"},
+  {en:"He cleaned the house.",                               vi:"Anh ấy đã dọn nhà rồi.",                      color:"#2e7d32"},
+  {en:"Last night, I waited for her.",                       vi:"Đêm qua, tôi đã chờ cô ấy.",                  color:"#6a1b9a"},
+  {en:"I waited for him to finish work and we had dinner together.", vi:"Tôi chờ anh ấy tan làm và cùng đi ăn tối.", color:"#6a1b9a"},
+  {en:"I lived in Hanoi.",                                   vi:"Tôi đã sống ở Hà Nội.",                       color:"#00838f"},
+  {en:"I lived in Da Nang in 2019, then I moved to Nha Trang in 2023.", vi:"Tôi sống ở Đà Nẵng năm 2019, rồi chuyển vào Nha Trang năm 2023.", color:"#00838f"},
+  {en:"She didn't play the piano last night.",               vi:"Tối qua cô ấy không chơi piano.",              color:"#c0392b"},
+  {en:"Did you work yesterday?",                             vi:"Hôm qua bạn có làm việc không?",               color:"#c0392b"},
+  {en:"When Lan got home, she made dinner, then she cleaned the kitchen.", vi:"Khi Lan về nhà, cô ấy nấu bữa tối rồi dọn bếp.", color:"#e65100"},
+  {en:"Where did you live before?",                          vi:"Trước đây bạn sống ở đâu?",                   color:"#e65100"},
+];
+
+// ===== STATE =====
+let quizCorrect=0,quizAnswered=0,fillCorrect=0,fillChecked=false,transCorrect=0,transChecked=false,secondsLeft=3600,timerInterval;
+
+function init(){
+  buildVerbTable();
+  buildExamples();
+  buildDialogues();
+  buildQuiz();
+  buildFill();
+  buildTrans();
+  buildSpeaking();
+  buildQuickReview();
+  startTimer();
+}
+
+function startTimer(){
+  timerInterval=setInterval(()=>{
+    secondsLeft--;
+    const m=String(Math.floor(secondsLeft/60)).padStart(2,'0');
+    const s=String(secondsLeft%60).padStart(2,'0');
+    document.getElementById('timer-bar').textContent=`⏱ ${m}:${s}`;
+    if(secondsLeft<=0) clearInterval(timerInterval);
+  },1000);
+}
+
+function buildVerbTable(){
+  document.getElementById('verb-tbody').innerHTML=verbData.map(v=>{
+    const pColor=pronColors[v.pronType];
+    const pLabel=pronLabels[v.pronType];
+    return `<tr>
+      <td class="vbase">${v.v1}</td>
+      <td class="vpast">${v.v2}</td>
+      <td>${v.vi}</td>
+      <td class="vpron">${v.pron} <span class="pron-badge" style="background:${pColor}">${pLabel}</span></td>
+      <td><button class="play-btn" onclick="speak('${v.v2}')">▶</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function buildExamples(){
+  const groups=[
+    {id:'ex-pos',  data:exPos,  color:'#1565c0'},
+    {id:'ex-neg',  data:exNeg,  color:'#b7410e'},
+    {id:'ex-q',    data:exQ,    color:'#2e7d32'},
+    {id:'ex-time', data:exTime, color:'#6a1b9a'},
+  ];
+  groups.forEach(g=>{
+    document.getElementById(g.id).innerHTML=g.data.map(e=>`
+      <div class="eb" style="background:${g.color}11;border-color:${g.color}">
+        <div class="en">${e.en} <button class="play-btn" onclick="speak('${e.en.replace(/'/g,"\\'")}')">▶</button></div>
+        <div class="vi">→ ${e.vi}</div>
+      </div>`).join('');
+  });
+}
+
+function buildDialogues(){
+  document.getElementById('dialogue-container').innerHTML=dialogues.map((d,i)=>`
+    <div class="dbox">
+      <div class="dtitle">💬 ${d.title}</div>
+      ${d.lines.map(l=>`
+        <div class="dline">
+          <span class="dlabel" style="background:${l.color}">${l.label}</span>
+          <div>
+            <div class="dvi">${l.vi}</div>
+            <div class="den">${l.en}</div>
+          </div>
+        </div>`).join('')}
+      <button class="pdlg" onclick="speakDlg(${i})">▶ Nghe hội thoại</button>
+    </div>`).join('');
+}
+
+async function speakDlg(i){
+  for(const l of dialogues[i].lines){
+    speak(l.en);
+    await new Promise(r=>setTimeout(r, l.en.length*65+900));
+  }
+}
+
+function buildQuiz(){
+  document.getElementById('quiz-container').innerHTML=quizData.map((q,i)=>`
+    <div class="quiz-item" id="qi-${i}">
+      <div class="quiz-q">${i+1}. ${q.q}</div>
+      <div class="quiz-opts">
+        ${q.opts.map((o,j)=>`<button class="qopt" id="qo-${i}-${j}" onclick="answerQuiz(${i},${j})">${o}</button>`).join('')}
+      </div>
+      <div class="qfb" id="qf-${i}"></div>
+    </div>`).join('');
+}
+
+function answerQuiz(qi,choice){
+  const item=document.getElementById(`qi-${qi}`);
+  if(item.dataset.answered) return;
+  item.dataset.answered='1';
+  const q=quizData[qi];
+  item.querySelectorAll('.qopt').forEach(b=>b.disabled=true);
+  const fb=document.getElementById(`qf-${qi}`);
+  if(choice===q.ans){
+    document.getElementById(`qo-${qi}-${choice}`).classList.add('sel-ok');
+    item.classList.add('answered-ok');
+    fb.textContent='✅ Đúng!'; fb.className='qfb show ok'; quizCorrect++;
+  } else {
+    document.getElementById(`qo-${qi}-${choice}`).classList.add('sel-fail');
+    item.classList.add('answered-fail');
+    fb.textContent='❌ Sai! Hãy ghi nhớ.'; fb.className='qfb show fail';
+  }
+  quizAnswered++;
+  document.getElementById('quiz-score').textContent=`${quizCorrect} / ${quizAnswered}`;
+  if(quizAnswered===quizData.length){
+    const pct=Math.round((quizCorrect/quizData.length)*100);
+    if(pct<80) document.getElementById('quiz-retry-section').style.display='block';
+    else document.getElementById('quiz-done-btn').style.display='block';
+  }
+}
+
+function retryQuiz(){
+  quizCorrect=0; quizAnswered=0;
+  document.getElementById('quiz-score').textContent='0 / 0';
+  document.getElementById('quiz-retry-section').style.display='none';
+  document.getElementById('quiz-done-btn').style.display='none';
+  buildQuiz();
+}
+
+function buildFill(){
+  document.getElementById('fill-container').innerHTML=fillData.map((f,i)=>`
+    <div class="fill-item" id="fi-${i}">
+      <div class="fill-q">${i+1}. ${f.before}<input type="text" id="finp-${i}" placeholder="...">${f.after}</div>
+      <div class="fill-vi">${f.vi}</div>
+      <div class="fill-ans" id="fa-${i}">❌ Đáp án: <strong>${f.answer}</strong></div>
+    </div>`).join('');
+  fillChecked=false;
+  document.getElementById('retry-fill-btn').style.display='none';
+  document.getElementById('fill-score-display').style.display='none';
+}
+
+function checkFill(){
+  fillCorrect=0;
+  fillData.forEach((f,i)=>{
+    const inp=document.getElementById(`finp-${i}`);
+    const item=document.getElementById(`fi-${i}`);
+    const ans=document.getElementById(`fa-${i}`);
+    const val=inp.value.trim().toLowerCase().replace(/\s+/g,' ');
+    inp.disabled=true;
+    if(val===f.answer.toLowerCase()){
+      item.classList.add('correct'); item.classList.remove('wrong');
+      ans.classList.remove('show-wrong'); fillCorrect++;
+    } else {
+      item.classList.add('wrong'); item.classList.remove('correct');
+      ans.classList.add('show-wrong');
+    }
+  });
+  fillChecked=true;
+  const pct=Math.round((fillCorrect/fillData.length)*100);
+  const el=document.getElementById('fill-score-display');
+  el.style.display='block';
+  el.innerHTML=`Điểm điền từ: <span style="color:${pct>=70?'#2e7d32':'#c0392b'}">${fillCorrect}/${fillData.length} (${pct}%)</span>`;
+  if(pct<70){
+    el.innerHTML+=` – <span style="color:#c0392b">Hãy làm lại nhé!</span>`;
+    document.getElementById('retry-fill-btn').style.display='inline-flex';
+  }
+}
+
+function retryFill(){
+  fillData.forEach((f,i)=>{
+    const inp=document.getElementById(`finp-${i}`);
+    inp.value=''; inp.disabled=false;
+    const item=document.getElementById(`fi-${i}`);
+    item.classList.remove('correct','wrong');
+    document.getElementById(`fa-${i}`).classList.remove('show-wrong');
+  });
+  fillChecked=false; fillCorrect=0;
+  document.getElementById('retry-fill-btn').style.display='none';
+  document.getElementById('fill-score-display').style.display='none';
+}
+
+function buildTrans(){
+  document.getElementById('trans-container').innerHTML=transData.map((t,i)=>`
+    <div class="trans-item" id="ti-${i}">
+      <div class="trans-lang">${t.dir==='vi→en'?'🇻🇳 Tiếng Việt → Tiếng Anh':'🇬🇧 Tiếng Anh → Tiếng Việt'}</div>
+      <div class="trans-q">${t.prompt}</div>
+      <input class="trans-input" type="text" id="tinp-${i}" placeholder="Nhập bản dịch của bạn...">
+      <div class="trans-ans" id="ta-${i}">❌ Đáp án gợi ý: <strong>${t.answer}</strong></div>
+    </div>`).join('');
+  transChecked=false;
+  document.getElementById('retry-trans-btn').style.display='none';
+  document.getElementById('trans-score-display').style.display='none';
+}
+
+function normalize(s){return s.trim().toLowerCase().replace(/[.?!,]/g,'').replace(/\s+/g,' ');}
+
+function checkTrans(){
+  transCorrect=0;
+  transData.forEach((t,i)=>{
+    const inp=document.getElementById(`tinp-${i}`);
+    const item=document.getElementById(`ti-${i}`);
+    const ans=document.getElementById(`ta-${i}`);
+    const val=normalize(inp.value);
+    const correct=normalize(t.answer);
+    inp.disabled=true;
+    const kw=correct.split(' ').filter(w=>w.length>2);
+    const ratio=kw.length>0?kw.filter(w=>val.includes(w)).length/kw.length:0;
+    if(ratio>=0.7){
+      item.classList.add('correct'); item.classList.remove('wrong');
+      ans.classList.remove('show'); transCorrect++;
+    } else {
+      item.classList.add('wrong'); item.classList.remove('correct');
+      ans.classList.add('show');
+    }
+  });
+  transChecked=true;
+  const pct=Math.round((transCorrect/transData.length)*100);
+  const el=document.getElementById('trans-score-display');
+  el.style.display='block';
+  el.innerHTML=`Điểm dịch câu: <span style="color:${pct>=70?'#2e7d32':'#c0392b'}">${transCorrect}/${transData.length} (${pct}%)</span>`;
+  if(pct<70){
+    el.innerHTML+=` – <span style="color:#c0392b">Hãy làm lại nhé!</span>`;
+    document.getElementById('retry-trans-btn').style.display='inline-flex';
+  }
+}
+
+function retryTrans(){
+  transData.forEach((t,i)=>{
+    const inp=document.getElementById(`tinp-${i}`);
+    inp.value=''; inp.disabled=false;
+    const item=document.getElementById(`ti-${i}`);
+    item.classList.remove('correct','wrong');
+    document.getElementById(`ta-${i}`).classList.remove('show');
+  });
+  transChecked=false; transCorrect=0;
+  document.getElementById('retry-trans-btn').style.display='none';
+  document.getElementById('trans-score-display').style.display='none';
+}
+
+function buildSpeaking(){
+  document.getElementById('speaking-container').innerHTML=speakingData.map((s,i)=>`
+    <div class="speak-card" style="background:${s.color}">
+      <div class="slbl">CÂU ${i+1}</div>
+      <div class="sen-en">${s.en}</div>
+      <div class="sen-vi">${s.vi}</div>
+      <button class="hear-btn" onclick="speak('${s.en.replace(/'/g,"\\'")}')">▶ Nghe mẫu</button>
+    </div>`).join('');
+}
+
+function buildQuickReview(){
+  document.getElementById('quick-review').innerHTML=verbData.map(v=>{
+    const pColor=pronColors[v.pronType];
+    const pLabel=pronLabels[v.pronType];
+    return `<div>📝 <strong>${v.v1}</strong> → <strong style="color:#b7410e">${v.v2}</strong> <span style="background:${pColor};color:white;border-radius:5px;padding:1px 6px;font-size:.65rem;font-weight:800;">${pLabel}</span> – ${v.vi}</div>`;
+  }).join('');
+}
+
+function speak(text){
+  if(!window.speechSynthesis) return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='en-US'; u.rate=0.85;
+  speechSynthesis.speak(u);
+}
+
+function goPhase(n){
+  document.querySelectorAll('.phase').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.phase-tab').forEach((t,i)=>{
+    t.classList.remove('active','done');
+    if(i<n) t.classList.add('done');
+  });
+  document.getElementById(`phase-${n}`).classList.add('active');
+  document.querySelectorAll('.phase-tab')[n].classList.add('active');
+  document.getElementById('progress-bar').style.width=Math.round((n/8)*100)+'%';
+  window.scrollTo(0,0);
+  if(n===8) showResult();
+}
+
+function showResult(){
+  const qT=quizData.length, fT=fillData.length, tT=transData.length;
+  const total=quizCorrect+fillCorrect+transCorrect;
+  const max=qT+fT+tT;
+  const pct=Math.round((total/max)*100);
+  document.getElementById('final-score').textContent=pct+'%';
+  let msg,desc;
+  if(pct>=90){msg='🏆 Xuất sắc!';desc='Bạn đã nắm vững động từ có quy tắc -ED!';}
+  else if(pct>=75){msg='👍 Tốt lắm!';desc='Ôn thêm cách phát âm -ED và các quy tắc chính tả nhé!';}
+  else if(pct>=55){msg='📚 Cần ôn thêm!';desc='Hãy học lại bảng động từ -ED và làm lại bài tập!';}
+  else{msg='💪 Tiếp tục cố gắng!';desc='Bắt đầu lại từ lý thuyết, luyện thêm mỗi ngày!';}
+  document.getElementById('final-msg').textContent=msg;
+  document.getElementById('final-desc').textContent=desc;
+  document.getElementById('detail-score').innerHTML=
+    `🧠 Quiz: <strong>${quizCorrect}/${qT}</strong> &nbsp;|&nbsp; ✏️ Điền từ: <strong>${fillCorrect}/${fT}</strong> &nbsp;|&nbsp; 🔄 Dịch câu: <strong>${transCorrect}/${tT}</strong> &nbsp;|&nbsp; Tổng: <strong>${total}/${max} (${pct}%)</strong>`;
+  clearInterval(timerInterval);
+}
+
+function restartLesson(){
+  quizCorrect=0; quizAnswered=0; fillCorrect=0; fillChecked=false; transCorrect=0; transChecked=false;
+  secondsLeft=3600; clearInterval(timerInterval);
+  buildQuiz(); buildFill(); buildTrans();
+  document.getElementById('quiz-score').textContent='0 / 0';
+  document.getElementById('quiz-retry-section').style.display='none';
+  document.getElementById('quiz-done-btn').style.display='none';
+  goPhase(0); startTimer();
+}
+
+init();
+</script>
+</body>
+</html>
