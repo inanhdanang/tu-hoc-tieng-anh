@@ -1,669 +1,457 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tự Học Tiếng Anh – 1 Giờ Mỗi Ngày</title>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tự Học Tiếng Anh – 1 Giờ Mỗi Ngày</title>
+  <meta name="description" content="Chương trình tự học tiếng Anh 30 ngày, mỗi ngày 1 giờ." />
+  <meta name="theme-color" content="#1a56db" />
 
-<!-- ============================================================
-     🎯 ĐỂ THÊM BÀI HỌC MỚI: Chỉ cần thêm vào mảng LESSONS bên dưới
-     KHÔNG cần sửa gì khác!
-     ============================================================ -->
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
 
-<style>
-:root {
-  --primary: #0d1b2a;
-  --accent:  #FFD93D;
-  --green:   #2f9e44;
-  --blue:    #1971c2;
-  --orange:  #e67700;
-  --red:     #c92a2a;
-  --bg:      #f0f4f8;
-  --card:    #ffffff;
-  --radius:  18px;
-  --shadow:  0 4px 24px rgba(13,27,42,0.10);
-}
+  <style>
+    :root {
+      --blue:    #1a56db;
+      --blue-dk: #1240a8;
+      --blue-lt: #e8f0fe;
+      --green:   #0d9e6e;
+      --amber:   #d97706;
+      --red:     #dc2626;
+      --gray-50: #f8fafc;
+      --gray-100:#f1f5f9;
+      --gray-200:#e2e8f0;
+      --gray-400:#94a3b8;
+      --gray-600:#475569;
+      --gray-800:#1e293b;
+      --white:   #ffffff;
+      --radius:  12px;
+      --shadow:  0 2px 12px rgba(0,0,0,.08);
+    }
 
-*{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--primary);min-height:100vh;}
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ── HEADER ── */
-.site-header{
-  background:var(--primary);
-  color:white;
-  padding:0;
-  position:sticky;top:0;z-index:200;
-  box-shadow:0 3px 18px rgba(0,0,0,0.35);
-}
-.header-inner{
-  max-width:900px;margin:0 auto;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:14px 20px;
-}
-.logo{
-  font-family:'Baloo 2',cursive;
-  font-size:1.4rem;font-weight:800;
-  display:flex;align-items:center;gap:10px;
-}
-.logo .flag{font-size:1.6rem;}
-.logo em{color:var(--accent);font-style:normal;}
-.header-stats{
-  display:flex;gap:12px;align-items:center;
-}
-.stat-pill{
-  background:rgba(255,255,255,0.10);
-  border:1px solid rgba(255,255,255,0.18);
-  border-radius:30px;
-  padding:5px 14px;
-  font-size:.78rem;font-weight:700;
-  display:flex;align-items:center;gap:5px;
-}
-.stat-pill .num{color:var(--accent);font-size:1rem;font-weight:900;}
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--gray-50);
+      color: var(--gray-800);
+      min-height: 100dvh;
+    }
 
-/* ── HERO ── */
-.hero{
-  background:linear-gradient(135deg,#0d1b2a 60%,#1a3a5c 100%);
-  color:white;
-  padding:48px 20px 56px;
-  text-align:center;
-  position:relative;overflow:hidden;
-}
-.hero::before{
-  content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse 60% 80% at 50% 120%,rgba(255,217,61,0.12),transparent);
-}
-.hero-badge{
-  display:inline-block;
-  background:var(--accent);
-  color:var(--primary);
-  font-size:.72rem;font-weight:900;
-  letter-spacing:2px;text-transform:uppercase;
-  padding:5px 16px;border-radius:30px;
-  margin-bottom:16px;
-}
-.hero h1{
-  font-family:'Baloo 2',cursive;
-  font-size:clamp(1.8rem,5vw,2.8rem);
-  font-weight:800;line-height:1.2;
-  margin-bottom:12px;
-}
-.hero h1 span{color:var(--accent);}
-.hero p{
-  font-size:1rem;color:rgba(255,255,255,.70);
-  max-width:520px;margin:0 auto 28px;line-height:1.7;
-}
-.hero-features{
-  display:flex;gap:12px;justify-content:center;flex-wrap:wrap;
-  margin-bottom:0;
-}
-.hero-feat{
-  background:rgba(255,255,255,.08);
-  border:1px solid rgba(255,255,255,.15);
-  border-radius:12px;
-  padding:10px 16px;
-  font-size:.82rem;font-weight:700;
-  display:flex;align-items:center;gap:7px;
-}
+    /* ── Header ── */
+    header {
+      background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dk) 100%);
+      color: var(--white);
+      padding: 24px 16px 20px;
+      text-align: center;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 16px rgba(26,86,219,.35);
+    }
+    header h1 { font-size: 1.35rem; font-weight: 700; letter-spacing: -.3px; }
+    header p  { font-size: .82rem; opacity: .85; margin-top: 2px; }
 
-/* ── PROGRESS RIBBON ── */
-.progress-ribbon{
-  background:white;
-  border-bottom:2px solid #e9ecef;
-  padding:14px 20px;
-}
-.progress-inner{max-width:900px;margin:0 auto;}
-.progress-label{
-  display:flex;justify-content:space-between;align-items:center;
-  margin-bottom:8px;
-  font-size:.82rem;font-weight:700;color:#868e96;
-}
-.progress-label strong{color:var(--primary);}
-.prog-bar-wrap{background:#e9ecef;height:10px;border-radius:10px;overflow:hidden;}
-.prog-bar-fill{
-  height:100%;
-  border-radius:10px;
-  background:linear-gradient(90deg,var(--green),var(--blue),var(--orange));
-  transition:width .8s cubic-bezier(.4,0,.2,1);
-}
+    .stats-row {
+      display: flex; justify-content: center; gap: 20px;
+      margin-top: 14px;
+    }
+    .stat { text-align: center; }
+    .stat .val { font-size: 1.5rem; font-weight: 800; line-height: 1; }
+    .stat .lbl { font-size: .7rem; opacity: .75; margin-top: 2px; }
 
-/* ── MAIN LAYOUT ── */
-main{max-width:900px;margin:0 auto;padding:32px 16px 64px;}
+    /* ── Progress bar ── */
+    .progress-wrap {
+      background: rgba(255,255,255,.2);
+      border-radius: 99px; height: 8px;
+      margin: 14px 16px 0;
+      overflow: hidden;
+    }
+    .progress-bar {
+      background: #7dd3fc;
+      height: 100%; border-radius: 99px;
+      transition: width .5s ease;
+    }
+    .progress-label {
+      font-size: .72rem; opacity: .8; margin-top: 4px; text-align: center;
+    }
 
-/* ── SECTION TITLE ── */
-.section-title{
-  font-family:'Baloo 2',cursive;
-  font-size:1.1rem;font-weight:800;
-  color:var(--primary);
-  margin-bottom:18px;
-  display:flex;align-items:center;gap:10px;
-}
-.section-title::after{
-  content:'';flex:1;height:2px;
-  background:linear-gradient(90deg,#e9ecef,transparent);
-  border-radius:2px;
-}
+    /* ── Search / filter ── */
+    .toolbar {
+      padding: 14px 16px 8px;
+      display: flex; gap: 10px; flex-wrap: wrap;
+    }
+    .search-box {
+      flex: 1; min-width: 160px;
+      display: flex; align-items: center;
+      background: var(--white); border: 1.5px solid var(--gray-200);
+      border-radius: var(--radius); padding: 0 12px;
+      box-shadow: var(--shadow);
+    }
+    .search-box input {
+      border: none; outline: none; flex: 1;
+      font-size: .9rem; padding: 10px 8px 10px 0;
+      background: transparent; color: var(--gray-800);
+    }
+    .search-box span { color: var(--gray-400); font-size: 1rem; }
 
-/* ── LESSON GRID ── */
-.lesson-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
-  gap:16px;
-  margin-bottom:40px;
-}
+    .filter-btns { display: flex; gap: 6px; }
+    .filter-btn {
+      border: 1.5px solid var(--gray-200); background: var(--white);
+      border-radius: 99px; padding: 8px 14px;
+      font-size: .8rem; cursor: pointer; color: var(--gray-600);
+      transition: all .18s; font-weight: 500;
+    }
+    .filter-btn.active {
+      background: var(--blue); border-color: var(--blue);
+      color: var(--white);
+    }
 
-/* ── LESSON CARD ── */
-.lesson-card{
-  background:var(--card);
-  border-radius:var(--radius);
-  box-shadow:var(--shadow);
-  overflow:hidden;
-  border:2px solid transparent;
-  transition:all .22s cubic-bezier(.4,0,.2,1);
-  cursor:pointer;
-  text-decoration:none;
-  color:inherit;
-  display:flex;flex-direction:column;
-}
-.lesson-card:hover{
-  transform:translateY(-4px);
-  box-shadow:0 10px 36px rgba(13,27,42,0.15);
-  border-color:var(--accent);
-}
-.card-top{
-  height:7px;
-  background:linear-gradient(90deg,var(--green),var(--blue));
-}
-.card-top.col-2{background:linear-gradient(90deg,var(--blue),var(--orange));}
-.card-top.col-3{background:linear-gradient(90deg,var(--orange),var(--red));}
-.card-top.col-4{background:linear-gradient(90deg,var(--red),#9c36b5);}
-.card-top.col-5{background:linear-gradient(90deg,#9c36b5,var(--green));}
+    /* ── Grid ── */
+    .section-title {
+      padding: 6px 16px 4px;
+      font-size: .78rem; font-weight: 700;
+      color: var(--gray-400); text-transform: uppercase; letter-spacing: .05em;
+    }
 
-.card-body{padding:16px 18px;flex:1;}
-.day-badge{
-  display:inline-flex;align-items:center;gap:4px;
-  background:#f1f3f5;
-  border-radius:20px;
-  padding:3px 10px;
-  font-size:.68rem;font-weight:900;
-  letter-spacing:1px;text-transform:uppercase;
-  color:#868e96;
-  margin-bottom:10px;
-}
-.card-title{
-  font-family:'Baloo 2',cursive;
-  font-size:1rem;font-weight:800;
-  line-height:1.3;
-  margin-bottom:6px;
-  color:var(--primary);
-}
-.card-phases{
-  display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px;
-}
-.phase-dot{
-  font-size:.64rem;font-weight:700;
-  padding:2px 8px;border-radius:10px;
-  background:#f8f9fa;color:#868e96;
-}
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 12px; padding: 8px 16px 100px;
+    }
 
-.card-footer{
-  padding:10px 18px 14px;
-  display:flex;align-items:center;justify-content:space-between;
-}
-.start-btn{
-  background:var(--primary);
-  color:white;
-  border:none;border-radius:10px;
-  padding:7px 16px;
-  font-size:.78rem;font-weight:800;
-  cursor:pointer;
-  font-family:'Nunito',sans-serif;
-  display:flex;align-items:center;gap:5px;
-  transition:background .2s;
-}
-.start-btn:hover{background:#1a3a5c;}
-.lesson-card:hover .start-btn{background:var(--blue);}
-.card-duration{font-size:.74rem;color:#adb5bd;font-weight:700;}
+    /* ── Card ── */
+    .card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform .18s, box-shadow .18s;
+      position: relative;
+      border: 1.5px solid var(--gray-200);
+      text-decoration: none; color: inherit;
+      display: flex; flex-direction: column;
+    }
+    .card:hover  { transform: translateY(-3px); box-shadow: 0 6px 24px rgba(0,0,0,.13); }
+    .card:active { transform: scale(.97); }
 
-/* ── COMING SOON CARD ── */
-.lesson-card.coming-soon{
-  opacity:.55;cursor:default;
-}
-.lesson-card.coming-soon:hover{
-  transform:none;
-  box-shadow:var(--shadow);
-  border-color:transparent;
-}
+    .card-top {
+      height: 6px;
+      background: var(--gray-200);
+    }
+    .card-top.done   { background: var(--green); }
+    .card-top.active { background: var(--blue); }
 
-/* ── HOW TO UPDATE ── */
-.update-box{
-  background:linear-gradient(135deg,#f8fffe,#e6fcf5);
-  border:2px dashed var(--green);
-  border-radius:var(--radius);
-  padding:24px 28px;
-  margin-bottom:40px;
-}
-.update-box h3{
-  font-family:'Baloo 2',cursive;
-  font-size:1.1rem;font-weight:800;
-  color:var(--green);
-  margin-bottom:12px;
-  display:flex;align-items:center;gap:8px;
-}
-.update-box ol{
-  padding-left:20px;
-  font-size:.88rem;line-height:2;
-  color:#2b8a3e;font-weight:600;
-}
-.code-snippet{
-  background:#0d1b2a;
-  color:#a9dc76;
-  border-radius:10px;
-  padding:12px 16px;
-  font-family:monospace;
-  font-size:.82rem;
-  margin-top:14px;
-  line-height:1.8;
-  overflow-x:auto;
-}
-.code-snippet .cmt{color:#7c7c7c;}
-.code-snippet .key{color:#FFD93D;}
-.code-snippet .str{color:#ff6188;}
-.code-snippet .num{color:#fc9867;}
+    .card-body { padding: 12px 12px 10px; flex: 1; }
+    .card-day  { font-size: .68rem; font-weight: 700; color: var(--blue); text-transform: uppercase; letter-spacing: .05em; }
+    .card-title { font-size: .92rem; font-weight: 700; margin-top: 2px; line-height: 1.3; }
+    .card-topic { font-size: .75rem; color: var(--gray-600); margin-top: 4px; line-height: 1.4; }
 
-/* ── FOOTER ── */
-.site-footer{
-  background:var(--primary);
-  color:rgba(255,255,255,.5);
-  text-align:center;
-  padding:24px 20px;
-  font-size:.8rem;
-  font-weight:600;
-}
-.site-footer strong{color:var(--accent);}
+    .card-footer {
+      padding: 8px 12px;
+      border-top: 1px solid var(--gray-100);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .phases {
+      display: flex; gap: 3px; flex-wrap: wrap;
+    }
+    .phase-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--gray-200);
+    }
+    .phase-dot.done { background: var(--green); }
 
-/* ── RESPONSIVE ── */
-@media(max-width:600px){
-  .header-stats{display:none;}
-  .hero{padding:32px 16px 40px;}
-  .hero-features{gap:8px;}
-  .hero-feat{font-size:.76rem;padding:8px 12px;}
-  .lesson-grid{grid-template-columns:1fr 1fr;}
-}
-@media(max-width:420px){
-  .lesson-grid{grid-template-columns:1fr;}
-}
-</style>
+    .badge {
+      font-size: .65rem; font-weight: 700; padding: 2px 7px;
+      border-radius: 99px; text-transform: uppercase;
+    }
+    .badge-done   { background: #d1fae5; color: #065f46; }
+    .badge-active { background: var(--blue-lt); color: var(--blue-dk); }
+    .badge-new    { background: var(--gray-100); color: var(--gray-400); }
+
+    /* ── Empty state ── */
+    .empty { text-align: center; padding: 60px 24px; color: var(--gray-400); }
+    .empty .ico { font-size: 2.5rem; }
+    .empty p { margin-top: 8px; font-size: .9rem; }
+
+    /* ── Offline banner ── */
+    #offline-banner {
+      display: none;
+      background: var(--amber); color: var(--white);
+      text-align: center; padding: 8px;
+      font-size: .82rem; font-weight: 600;
+    }
+
+    /* ── Install prompt ── */
+    #install-bar {
+      display: none;
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: var(--blue-dk); color: var(--white);
+      padding: 14px 16px;
+      display: none; align-items: center; justify-content: space-between;
+      gap: 10px; z-index: 200;
+      box-shadow: 0 -4px 16px rgba(0,0,0,.2);
+    }
+    #install-bar p { font-size: .85rem; flex: 1; }
+    #install-bar .btn-install {
+      background: var(--white); color: var(--blue-dk);
+      border: none; border-radius: 8px;
+      padding: 8px 18px; font-weight: 700; cursor: pointer; font-size: .85rem;
+    }
+    #install-bar .btn-close {
+      background: transparent; color: rgba(255,255,255,.6);
+      border: none; font-size: 1.3rem; cursor: pointer; padding: 0 4px;
+    }
+  </style>
 </head>
 <body>
 
-<!-- ════════════════════════════════════════════════════════
-     📌 DỮ LIỆU BÀI HỌC – CHỈ CẦN CHỈNH SỬA PHẦN NÀY
-     Để thêm bài mới: copy 1 object {} và paste thêm vào cuối
-     ════════════════════════════════════════════════════════ -->
-<script>
-// ╔══════════════════════════════════════════════════════════════╗
-// ║  DANH SÁCH BÀI HỌC – THÊM BÀI MỚI VÀO ĐÂY                 ║
-// ║  Mỗi bài học là 1 object {} trong mảng bên dưới             ║
-// ╚══════════════════════════════════════════════════════════════╝
-const LESSONS = [
-  {
-    day: 1,
-    title: "ALL / MOST / SOME / NONE",
-    topic: "Lượng từ",
-    url: "Day1.html",          // ← đường dẫn tới file HTML của bài
-    phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ trống","Nói"],
-  },
-  {
-    day: 2,
-    title: "HAVE/HAS + EVER",
-    topic: "Thì hiện tại hoàn thành",
-    url: "Day2.html",
-    phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ trống","Nói"],
-  },
-  {
-    day: 3,
-    title: "Đại Từ Tân Ngữ",
-    topic: "Me / You / Him / Her...",
-    url: "Day3.html",
-    phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ trống","Nói"],
-  },
-  {
-    day: 4,
-    title: "DIDN'T & DID",
-    topic: "Câu phủ định & câu hỏi quá khứ",
-    url: "Day4.html",
-    phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ trống","Nói"],
-  },
-  {
-    day: 5,
-    title: "Must / Have to / Have got to",
-    topic: "Diễn đạt sự bắt buộc",
-    url: "Day5.html",
-    phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ trống","Nói"],
-  },
-  {
-    day: 6,
-    title: "Some / Any / No",
-    topic: "Đại từ bất định",
-    url: "Day6.html",
-    phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ trống","Nói"],
-  },
-  {
-    day: 7,
-    title: "WHERE IS / WHERE ARE",
-    topic: "Hỏi vị trí",
-    url: "Day7.html",
-    phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ trống","Nói"],
-  },
-  {
-    day: 8,
-    title: "Quần Áo & Giày Dép",
-    topic: "Clothing Vocabulary",
-    url: "Day8.html",
-    phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ trống","Nói"],
-  },
-  {
-    day: 9,
-    title: "Động Từ Bất Quy Tắc",
-    topic: "Irregular Verbs (Past Tense)",
-    url: "Day9.html",
-    phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ trống","Nói"],
-  },
-  {
-    day: 10,
-    title: "Accessories – Phụ Kiện",
-    topic: "Từ vựng về phụ kiện",
-    url: "Day10.html",
-    phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ trống","Nói"],
-  },
-  {
-    day: 11,
-    title: "Câu Giao Tiếp Ngắn",
-    topic: "Short Communication Phrases",
-    url: "Day11.html",
-    phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ trống","Nói"],
-  },
-  {
-    day: 12,
-    title: "Tính Từ Đuôi -ED & -ING",
-    topic: "Bored vs Boring...",
-    url: "Day12.html",
-    phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ trống","Nói"],
-  },
-  {
-    day: 13,
-    title: "Hỏi Tuổi & Hôn Nhân",
-    topic: "Age & Marital Status",
-    url: "Day13.html",
-    phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ trống","Nói"],
-  },
-  {
-    day: 14,
-    title: "Many / Much / A Lot Of",
-    topic: "Diễn đạt số lượng",
-    url: "Day14.html",
-    phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ trống","Nói"],
-  },
-  {
-    day: 15,
-    title: "WAS / WERE",
-    topic: "Động từ To Be quá khứ",
-    url: "Day15.html",
-    phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ trống","Nói"],
-  },
-  {
-    day: 16,
-    title: "Some / No / Any",
-    topic: "ĐẠI TỪ BẤT ĐỊNH",
-    url: "Day16.html",
-    phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ trống","Nói"],
-  },
-  {
-    day: 17,
-    title: "Find / Write / Meet/ Breake",
-    topic: "Động Từ Bất Quy Tắc – Quá Khứ",
-    url: "Day17.html",
-    phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ trống","Nói"],
-  },
-  {
-    day: 18,
-    title: "WHERE",
-    topic: "WHERE + Giới từ vị trí",
-    url: "Day18.html",
-    phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ trống","Nói"],
-  },
-  {
-    day: 19,
-    title: "Sweet / Sour / Salty/ Bitter",
-    topic: "Khẩu Vị – Trong Tiếng Anh",
-    url: "Day19.html",
-    phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ trống","Nói"],
-  },
-  {
-    day: 20,
-    title: "Spicy/ Bland / Savory/ Greasy",
-    topic: "🌶️ Khẩu Vị Tiếng Anh P2",
-    url: "Day20.html",
-    phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ trống","Nói"],
-  },
-  {
-    day: 21,
-    title: "0-10 / 11-19 / 20-99",
-    topic: "SỐ ĐẾM trong Tiếng Anh",
-    url: "Day21.html",
-    phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ trống","Nói"],
-  },
-     
-  // ═══════════════════════════════════════════════════════════
-  // ✅ THÊM BÀI HỌC MỚI VÀO ĐÂY – Copy và sửa 4 dòng:
-  //
-  // {
-  //   day: 16,
-  //   title: "Tên bài học tiếng Anh",
-  //   topic: "Mô tả ngắn / chủ điểm",
-  //   url: "Day16.html",
-  //   phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ trống","Nói"],
-  // },
-  //
-  // ═══════════════════════════════════════════════════════════
-];
+<div id="offline-banner">📡 Đang offline — nội dung đã được lưu cache sẵn</div>
 
-// Màu dải trên thẻ (tự xoay vòng)
-const CARD_COLORS = ["","col-2","col-3","col-4","col-5"];
+<header>
+  <h1>🇺🇸 Tự Học Tiếng Anh</h1>
+  <p>1 giờ mỗi ngày · 30 ngày hoàn thành</p>
 
-// ═══════════════════════════════════════════════════════════
-// ⚡ LAZY RENDERING – hoạt động mượt với 300+ bài học
-//    Chỉ render card khi người dùng cuộn đến vùng đó
-// ═══════════════════════════════════════════════════════════
-const BATCH_SIZE = 30;
-let renderedCount = 0;
-let filteredLessons = [];
-let scrollObserver = null;
-
-function makeCardHTML(lesson, i){
-  const colorClass = CARD_COLORS[i % CARD_COLORS.length];
-  return '<a href="'+lesson.url+'" class="lesson-card" aria-label="Học bài '+lesson.day+': '+lesson.title+'">'
-    +'<div class="card-top '+colorClass+'"></div>'
-    +'<div class="card-body">'
-    +'<div class="day-badge">📅 Ngày '+lesson.day+'</div>'
-    +'<div class="card-title">'+lesson.title+'</div>'
-    +'<div style="font-size:.78rem;color:#868e96;font-weight:600;margin-bottom:10px;">'+lesson.topic+'</div>'
-    +'<div class="card-phases">'+lesson.phases.map(function(p){return '<span class="phase-dot">'+p+'</span>';}).join('')+'</div>'
-    +'</div>'
-    +'<div class="card-footer">'
-    +'<button class="start-btn" onclick="event.preventDefault();window.location.href=\''+lesson.url+'\'" >▶ Học ngay</button>'
-    +'<span class="card-duration">⏱ ~60 phút</span>'
-    +'</div></a>';
-}
-
-function renderNextBatch(){
-  var grid = document.getElementById('lesson-grid');
-  var end = Math.min(renderedCount + BATCH_SIZE, filteredLessons.length);
-  var frag = document.createDocumentFragment();
-  for(var i = renderedCount; i < end; i++){
-    var tmp = document.createElement('div');
-    tmp.innerHTML = makeCardHTML(filteredLessons[i], i);
-    frag.appendChild(tmp.firstChild);
-  }
-  var old = document.getElementById('load-sentinel');
-  if(old) old.remove();
-  grid.appendChild(frag);
-  renderedCount = end;
-  var rc = document.getElementById('rendered-count');
-  if(rc) rc.textContent = renderedCount;
-  if(renderedCount < filteredLessons.length){
-    var sentinel = document.createElement('div');
-    sentinel.id = 'load-sentinel';
-    sentinel.style.cssText = 'height:1px;grid-column:1/-1;';
-    grid.appendChild(sentinel);
-    if(scrollObserver) scrollObserver.observe(sentinel);
-  } else {
-    var hint = document.getElementById('load-more-hint');
-    if(hint) hint.style.display = 'none';
-  }
-}
-
-function initLazyLoader(lessons){
-  filteredLessons = lessons;
-  renderedCount = 0;
-  var grid = document.getElementById('lesson-grid');
-  grid.innerHTML = '';
-  if(scrollObserver) scrollObserver.disconnect();
-  scrollObserver = new IntersectionObserver(function(entries){
-    if(entries[0].isIntersecting) renderNextBatch();
-  },{rootMargin:'300px'});
-  renderNextBatch();
-}
-
-function filterLessons(query){
-  var q = query.trim().toLowerCase();
-  var lessons = q ? LESSONS.filter(function(l){
-    return l.title.toLowerCase().indexOf(q)>=0 ||
-           l.topic.toLowerCase().indexOf(q)>=0 ||
-           String(l.day).indexOf(q)>=0;
-  }) : LESSONS;
-  initLazyLoader(lessons);
-  var fc = document.getElementById('filter-count');
-  if(fc) fc.textContent = lessons.length;
-  if(q && lessons.length===0){
-    document.getElementById('lesson-grid').innerHTML =
-      '<p style="grid-column:1/-1;text-align:center;padding:40px 20px;color:#868e96;font-weight:700;font-size:1rem;">🔍 Không tìm thấy bài nào. Thử từ khác!</p>';
-  }
-}
-
-function buildSite(){
-  var total = LESSONS.length;
-  document.getElementById('total-lessons').textContent = total;
-  var fc = document.getElementById('filter-count');
-  if(fc) fc.textContent = total;
-  // Progress bar tự động (mục tiêu = 300 hoặc total nếu lớn hơn)
-  var target = Math.max(300, total);
-  var pct = Math.min(100, Math.round(total/target*100));
-  document.getElementById('prog-fill').style.width = pct+'%';
-  document.getElementById('prog-label-pct').textContent = pct+'%';
-  document.getElementById('prog-label-days').textContent = total+'/'+target+' bài';
-  // Search
-  var searchEl = document.getElementById('lesson-search');
-  if(searchEl) searchEl.addEventListener('input', function(e){ filterLessons(e.target.value); });
-  initLazyLoader(LESSONS);
-}
-
-document.addEventListener('DOMContentLoaded', buildSite);
-</script>
-
-<!-- ══════════════ HEADER ══════════════ -->
-<header class="site-header">
-  <div class="header-inner">
-    <div class="logo">
-      <span class="flag">🇺🇸</span>
-      Tự Học <em>Tiếng Anh</em>
-    </div>
-    <div class="header-stats">
-      <div class="stat-pill">
-        📚 <span class="num" id="total-lessons">0</span> bài học
-      </div>
-      <div class="stat-pill">
-        ⏱ 1 giờ / ngày
-      </div>
-    </div>
+  <div class="stats-row">
+    <div class="stat"><div class="val" id="s-done">0</div><div class="lbl">Đã học</div></div>
+    <div class="stat"><div class="val">30</div><div class="lbl">Tổng bài</div></div>
+    <div class="stat"><div class="val" id="s-pct">0%</div><div class="lbl">Hoàn thành</div></div>
   </div>
+
+  <div class="progress-wrap">
+    <div class="progress-bar" id="prog-bar" style="width:0%"></div>
+  </div>
+  <div class="progress-label" id="prog-label">0/30 bài · 0% hoàn thành</div>
 </header>
 
-<!-- ══════════════ HERO ══════════════ -->
-<section class="hero">
-  <div class="hero-badge">🎓 Chương trình tự học</div>
-  <h1>Học <span>Tiếng Anh</span><br>Mỗi Ngày 1 Giờ</h1>
-  <p>Mỗi bài học được thiết kế để học trong <strong>1 giờ</strong> — từ lý thuyết đến quiz, luyện nói và kết quả. Kiên trì mỗi ngày, tiến bộ từng bước!</p>
-  <div class="hero-features">
-    <div class="hero-feat">📖 Lý thuyết rõ ràng</div>
-    <div class="hero-feat">🎯 Quiz tương tác</div>
-    <div class="hero-feat">🗣️ Luyện nói</div>
-    <div class="hero-feat">✅ Theo dõi tiến độ</div>
+<div class="toolbar">
+  <div class="search-box">
+    <span>🔍</span>
+    <input id="search" type="search" placeholder="Tìm bài học..." autocomplete="off" />
   </div>
-</section>
-
-<!-- ══════════════ PROGRESS ══════════════ -->
-<div class="progress-ribbon">
-  <div class="progress-inner">
-    <div class="progress-label">
-      <strong>Tiến độ lộ trình 30 ngày</strong>
-      <span><span id="prog-label-days">0/30 bài</span> · <span id="prog-label-pct">0%</span> hoàn thành</span>
-    </div>
-    <div class="prog-bar-wrap">
-      <div class="prog-bar-fill" id="prog-fill" style="width:0%"></div>
-    </div>
+  <div class="filter-btns">
+    <button class="filter-btn active" data-f="all">Tất cả</button>
+    <button class="filter-btn" data-f="done">✅ Xong</button>
+    <button class="filter-btn" data-f="todo">📖 Chưa học</button>
   </div>
 </div>
 
-<!-- ══════════════ MAIN ══════════════ -->
-<main>
+<div class="section-title" id="count-label">📚 Tất cả 30 bài học</div>
+<div class="grid" id="grid"></div>
+<div class="empty" id="empty" style="display:none">
+  <div class="ico">🔎</div>
+  <p>Không tìm thấy bài học nào</p>
+</div>
 
-  <!-- LESSON GRID -->
-  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:18px;">
-    <div class="section-title" style="margin-bottom:0;">📚 Tất cả bài học</div>
-    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-      <span style="font-size:.78rem;color:#868e96;font-weight:700;">Hiển thị <span id="rendered-count">0</span>/<span id="filter-count">0</span> bài</span>
-      <input id="lesson-search" type="search" placeholder="🔍 Tìm bài học..." autocomplete="off"
-        style="padding:7px 14px;border-radius:30px;border:2px solid #dee2e6;font-size:.84rem;font-family:inherit;font-weight:600;outline:none;min-width:180px;transition:border .2s;"
-        onfocus="this.style.borderColor='#1971c2'" onblur="this.style.borderColor='#dee2e6'">
-    </div>
-  </div>
-  <div class="lesson-grid" id="lesson-grid">
-    <!-- Cards được lazy render bằng JavaScript – hỗ trợ 300+ bài -->
-  </div>
-  <div id="load-more-hint" style="text-align:center;padding:16px 0;color:#868e96;font-size:.82rem;font-weight:700;">
-    ↓ Cuộn xuống để tải thêm bài học...
-  </div>
+<div id="install-bar">
+  <p>📲 Cài app để học offline không cần mạng!</p>
+  <button class="btn-install" id="btn-install">Cài ngay</button>
+  <button class="btn-close" id="btn-close-install">✕</button>
+</div>
 
-  <!-- HOW TO ADD NEW LESSONS -->
-  <div class="update-box">
-    <h3>➕ Cách thêm bài học mới (Day16, Day17...)</h3>
-    <ol>
-      <li>Upload file <strong>Day16.html</strong> vào cùng thư mục với website này</li>
-      <li>Mở file <strong>index.html</strong>, tìm phần <code>LESSONS = [</code></li>
-      <li>Copy 1 object mẫu bên dưới và thêm vào cuối danh sách</li>
-      <li>Lưu lại — bài mới sẽ tự xuất hiện trên trang chủ!</li>
-    </ol>
-    <div class="code-snippet">
-<span class="cmt">// Thêm vào cuối mảng LESSONS, trước dấu ];</span><br>
-{<br>
-&nbsp;&nbsp;<span class="key">day:</span> <span class="num">16</span>,<br>
-&nbsp;&nbsp;<span class="key">title:</span> <span class="str">"Tên bài học"</span>,<br>
-&nbsp;&nbsp;<span class="key">topic:</span> <span class="str">"Chủ điểm / mô tả ngắn"</span>,<br>
-&nbsp;&nbsp;<span class="key">url:</span> <span class="str">"Day16.html"</span>,<br>
-&nbsp;&nbsp;<span class="key">phases:</span> [<span class="str">"Lý thuyết"</span>,<span class="str">"Từ vựng"</span>,<span class="str">"Câu mẫu"</span>,<span class="str">"Quiz"</span>,<span class="str">"Điền chỗ trống"</span>,<span class="str">"Nói"</span>],<br>
-},
-    </div>
-  </div>
+<script>
+// ─────────────────────────────────────────
+//  DANH SÁCH 30 BÀI HỌC ĐẦY ĐỦ
+// ─────────────────────────────────────────
+const LESSONS = [
+  { day:  1, title: "Giới thiệu bản thân",       topic: "Cách tự giới thiệu tên, nghề nghiệp, quê quán",             url: "Day1.html",  phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ","Nói"] },
+  { day:  2, title: "Hỏi & đáp cơ bản",          topic: "Câu hỏi Yes/No và Wh-questions thường gặp",                 url: "Day2.html",  phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ","Nói"] },
+  { day:  3, title: "Số đếm & thời gian",         topic: "Số 1–100, ngày tháng, giờ giấc",                            url: "Day3.html",  phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ","Nói"] },
+  { day:  4, title: "Gia đình",                   topic: "Từ vựng về các thành viên trong gia đình",                  url: "Day4.html",  phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ","Nói"] },
+  { day:  5, title: "Thức ăn & đồ uống",          topic: "Gọi món, mô tả món ăn yêu thích",                          url: "Day5.html",  phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ","Nói"] },
+  { day:  6, title: "Màu sắc & hình dạng",        topic: "Mô tả đồ vật bằng màu sắc và hình dạng",                   url: "Day6.html",  phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ","Nói"] },
+  { day:  7, title: "Địa điểm & chỉ đường",       topic: "Hỏi và chỉ đường, địa chỉ, phương hướng",                  url: "Day7.html",  phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ","Nói"] },
+  { day:  8, title: "Mua sắm",                    topic: "Hỏi giá, mặc cả, thanh toán tại cửa hàng",                 url: "Day8.html",  phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ","Nói"] },
+  { day:  9, title: "Thời tiết",                  topic: "Mô tả và hỏi về thời tiết hàng ngày",                      url: "Day9.html",  phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ","Nói"] },
+  { day: 10, title: "Sở thích & hoạt động",       topic: "Chia sẻ sở thích, thói quen rảnh rỗi",                     url: "Day10.html", phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ","Nói"] },
+  { day: 11, title: "Thì hiện tại đơn",           topic: "Cấu trúc, cách dùng và bài tập thì hiện tại đơn",          url: "Day11.html", phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ","Nói"] },
+  { day: 12, title: "Thì hiện tại tiếp diễn",     topic: "Diễn đạt hành động đang xảy ra lúc nói",                   url: "Day12.html", phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ","Nói"] },
+  { day: 13, title: "Thì quá khứ đơn",            topic: "Kể chuyện đã xảy ra, động từ bất quy tắc",                 url: "Day13.html", phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ","Nói"] },
+  { day: 14, title: "Thì tương lai",              topic: "Will, be going to và kế hoạch tương lai",                   url: "Day14.html", phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ","Nói"] },
+  { day: 15, title: "Động từ khuyết thiếu",       topic: "Can, must, should, may — nghĩa và cách dùng",              url: "Day15.html", phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ","Nói"] },
+  { day: 16, title: "Tính từ & so sánh",          topic: "So sánh hơn, so sánh nhất, tính từ mô tả",                 url: "Day16.html", phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ","Nói"] },
+  { day: 17, title: "Giới từ chỉ nơi chốn",       topic: "In, on, at, next to, between, behind…",                    url: "Day17.html", phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ","Nói"] },
+  { day: 18, title: "Cơ thể & sức khỏe",          topic: "Từ vựng cơ thể, triệu chứng, khám bệnh",                  url: "Day18.html", phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ","Nói"] },
+  { day: 19, title: "Công việc & nghề nghiệp",    topic: "Mô tả công việc, phỏng vấn xin việc cơ bản",              url: "Day19.html", phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ","Nói"] },
+  { day: 20, title: "Điện thoại & email",         topic: "Giao tiếp qua điện thoại, viết email cơ bản",              url: "Day20.html", phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ","Nói"] },
+  { day: 21, title: "Du lịch & đặt phòng",        topic: "Đặt vé, khách sạn, hỏi thăm tại sân bay",                 url: "Day21.html", phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ","Nói"] },
+  { day: 22, title: "Giáo dục & học tập",         topic: "Trường lớp, môn học, mô tả quá trình học",                 url: "Day22.html", phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ","Nói"] },
+  { day: 23, title: "Cảm xúc & cảm nhận",         topic: "Biểu đạt cảm xúc, phản ứng, đồng cảm",                   url: "Day23.html", phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ","Nói"] },
+  { day: 24, title: "Nhà cửa & nội thất",         topic: "Mô tả căn phòng, đồ nội thất, thuê nhà",                  url: "Day24.html", phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ","Nói"] },
+  { day: 25, title: "Môi trường & thiên nhiên",   topic: "Động vật, thực vật, bảo vệ môi trường",                   url: "Day25.html", phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ","Nói"] },
+  { day: 26, title: "Tin tức & truyền thông",     topic: "Đọc tin tức, nói về sự kiện thời sự",                     url: "Day26.html", phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ","Nói"] },
+  { day: 27, title: "Thể thao & vận động",        topic: "Từ vựng thể thao, nói về môn thể thao yêu thích",         url: "Day27.html", phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ","Nói"] },
+  { day: 28, title: "Công nghệ & mạng xã hội",   topic: "Từ vựng IT, mô tả thói quen dùng mạng",                   url: "Day28.html", phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ","Nói"] },
+  { day: 29, title: "Ôn tập ngữ pháp tổng hợp",  topic: "Ôn lại toàn bộ thì và cấu trúc câu đã học",               url: "Day29.html", phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ","Nói"] },
+  { day: 30, title: "Tổng kết & kiểm tra cuối",  topic: "Bài kiểm tra tổng hợp 30 ngày — Đánh giá trình độ",       url: "Day30.html", phases: ["Lý thuyết","Từ vựng","Câu mẫu","Quiz","Điền chỗ","Nói"] },
+];
 
-</main>
+// ─────────────────────────────────────────
+//  STORAGE — lưu tiến độ vào localStorage
+// ─────────────────────────────────────────
+const STORE_KEY = 'tienganh_progress_v1';
 
-<!-- ══════════════ FOOTER ══════════════ -->
-<footer class="site-footer">
-  <p>🎓 Chương trình <strong>Tự Học Tiếng Anh – 1 Giờ Mỗi Ngày</strong></p>
-  <p style="margin-top:6px;font-size:.74rem;">Kiên trì mỗi ngày · Tiến bộ từng bước · Không bỏ cuộc 💪</p>
-</footer>
+function loadProgress() {
+  try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; }
+  catch { return {}; }
+}
+function saveProgress(obj) {
+  localStorage.setItem(STORE_KEY, JSON.stringify(obj));
+}
 
+let progress = loadProgress();   // { "Day1": { done: true, phases: [true,false,...] }, ... }
+
+function isDone(lesson) {
+  const k = `Day${lesson.day}`;
+  return progress[k]?.done === true;
+}
+
+// ─────────────────────────────────────────
+//  RENDER
+// ─────────────────────────────────────────
+let currentFilter = 'all';
+let searchQ = '';
+
+function render() {
+  const grid  = document.getElementById('grid');
+  const empty = document.getElementById('empty');
+  const label = document.getElementById('count-label');
+
+  let filtered = LESSONS.filter(l => {
+    const q = searchQ.trim().toLowerCase();
+    const match = !q || l.title.toLowerCase().includes(q) || l.topic.toLowerCase().includes(q) || String(l.day).includes(q);
+    const done = isDone(l);
+    if (currentFilter === 'done' && !done) return false;
+    if (currentFilter === 'todo' &&  done) return false;
+    return match;
+  });
+
+  label.textContent = `📚 ${
+    currentFilter === 'all'  ? 'Tất cả' :
+    currentFilter === 'done' ? '✅ Đã hoàn thành' : '📖 Chưa học'
+  } — ${filtered.length} bài`;
+
+  grid.innerHTML = '';
+
+  if (!filtered.length) { empty.style.display = ''; return; }
+  empty.style.display = 'none';
+
+  filtered.forEach(l => {
+    const done = isDone(l);
+    const k    = `Day${l.day}`;
+    const phDone = progress[k]?.phases || [];
+    const nextDay = LESSONS.find(x => !isDone(x));
+    const isNext  = nextDay?.day === l.day;
+
+    const card = document.createElement('a');
+    card.href  = l.url;
+    card.className = 'card';
+
+    const topCls = done ? 'done' : (isNext ? 'active' : '');
+    const badge  = done
+      ? `<span class="badge badge-done">✓ Xong</span>`
+      : (isNext ? `<span class="badge badge-active">👈 Tiếp theo</span>` : `<span class="badge badge-new">Chưa học</span>`);
+
+    const dots = l.phases.map((_, i) =>
+      `<div class="phase-dot${phDone[i] ? ' done' : ''}"></div>`
+    ).join('');
+
+    card.innerHTML = `
+      <div class="card-top ${topCls}"></div>
+      <div class="card-body">
+        <div class="card-day">Ngày ${l.day}</div>
+        <div class="card-title">${l.title}</div>
+        <div class="card-topic">${l.topic}</div>
+      </div>
+      <div class="card-footer">
+        <div class="phases">${dots}</div>
+        ${badge}
+      </div>
+    `;
+
+    grid.appendChild(card);
+  });
+
+  updateStats();
+}
+
+function updateStats() {
+  const done = LESSONS.filter(isDone).length;
+  const pct  = Math.round(done / LESSONS.length * 100);
+  document.getElementById('s-done').textContent = done;
+  document.getElementById('s-pct').textContent  = pct + '%';
+  document.getElementById('prog-bar').style.width = pct + '%';
+  document.getElementById('prog-label').textContent = `${done}/30 bài · ${pct}% hoàn thành`;
+}
+
+// ─────────────────────────────────────────
+//  EVENTS
+// ─────────────────────────────────────────
+document.getElementById('search').addEventListener('input', e => {
+  searchQ = e.target.value;
+  render();
+});
+
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter = btn.dataset.f;
+    render();
+  });
+});
+
+// ─────────────────────────────────────────
+//  PWA — Service Worker
+// ─────────────────────────────────────────
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js')
+      .then(r => console.log('SW registered', r.scope))
+      .catch(e => console.log('SW error', e));
+  });
+}
+
+// ─────────────────────────────────────────
+//  PWA — Install prompt
+// ─────────────────────────────────────────
+let deferredPrompt;
+const installBar   = document.getElementById('install-bar');
+const btnInstall   = document.getElementById('btn-install');
+const btnCloseInst = document.getElementById('btn-close-install');
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  installBar.style.display = 'flex';
+});
+
+btnInstall.addEventListener('click', async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  installBar.style.display = 'none';
+});
+
+btnCloseInst.addEventListener('click', () => {
+  installBar.style.display = 'none';
+});
+
+// ─────────────────────────────────────────
+//  Offline banner
+// ─────────────────────────────────────────
+window.addEventListener('offline', () => {
+  document.getElementById('offline-banner').style.display = 'block';
+});
+window.addEventListener('online', () => {
+  document.getElementById('offline-banner').style.display = 'none';
+});
+
+// ─────────────────────────────────────────
+//  INIT
+// ─────────────────────────────────────────
+render();
+</script>
 </body>
 </html>
