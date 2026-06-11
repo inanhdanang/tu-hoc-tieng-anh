@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 58 – IT'S + ADJ + TO V – Thật … khi / để làm gì</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{--c1:#b7410e;--c2:#1565c0;--c3:#2e7d32;--c4:#6a1b9a;--c5:#00838f;--yellow:#FFD93D;--bg:#fafbff;--dark:#0d1b2a;--gray:#78909c;--radius:18px;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--dark);min-height:100vh;}
+  header{background:var(--dark);color:white;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 3px 14px rgba(0,0,0,.3);}
+  header h1{font-family:'Baloo 2',cursive;font-size:1.05rem;font-weight:800;}
+  header h1 span{color:var(--yellow);}
+  #timer-bar{font-size:.95rem;font-weight:700;background:var(--yellow);color:var(--dark);padding:5px 14px;border-radius:30px;white-space:nowrap;}
+  #progress-wrap{background:#e9ecef;height:8px;}
+  #progress-bar{height:8px;background:linear-gradient(90deg,var(--c1),var(--c2),var(--c3),var(--c4));transition:width .6s ease;border-radius:0 4px 4px 0;}
+  #phase-nav{display:flex;gap:5px;padding:10px 16px;overflow-x:auto;background:white;border-bottom:2px solid #f1f3f4;}
+  .phase-tab{flex-shrink:0;padding:5px 11px;border-radius:20px;font-size:.72rem;font-weight:700;border:2px solid #dee2e6;background:white;cursor:pointer;transition:all .2s;color:var(--gray);}
+  .phase-tab.active{background:var(--dark);color:white;border-color:var(--dark);}
+  .phase-tab.done{background:var(--c3);color:white;border-color:var(--c3);}
+  main{padding:18px 14px 48px;max-width:780px;margin:0 auto;}
+  .phase{display:none;animation:fadeIn .4s ease;}
+  .phase.active{display:block;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+  .section-header{border-radius:var(--radius) var(--radius) 0 0;padding:13px 18px;}
+  .section-header .phase-label{font-size:.66rem;letter-spacing:2px;text-transform:uppercase;color:var(--yellow);font-weight:700;}
+  .section-header h2{font-family:'Baloo 2',cursive;font-size:1.2rem;font-weight:800;color:white;}
+  .section-header .duration{font-size:.76rem;color:rgba(255,255,255,.5);margin-top:1px;}
+  .section-body{background:white;border-radius:0 0 var(--radius) var(--radius);padding:18px;margin-bottom:20px;box-shadow:0 4px 18px rgba(0,0,0,.07);}
+
+  /* FORMULA BOX */
+  .formula-box{border-radius:13px;padding:14px 18px;margin-bottom:14px;border:3px solid;}
+  .formula-box .fb-title{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;}
+  .formula-box .fb-formula{font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;margin-bottom:8px;letter-spacing:.5px;}
+  .formula-box .fb-ex{font-size:.84rem;line-height:2;}
+  .formula-box .fb-note{font-size:.78rem;margin-top:8px;border-top:1px solid rgba(0,0,0,.08);padding-top:8px;line-height:1.8;}
+
+  /* ADJ CARDS */
+  .adj-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+  .adj-card{border-radius:13px;padding:13px 15px;cursor:pointer;transition:transform .15s;}
+  .adj-card:hover{transform:scale(1.02);}
+  .adj-card .ac-word{font-family:'Baloo 2',cursive;font-size:1.05rem;font-weight:800;color:white;margin-bottom:2px;}
+  .adj-card .ac-pron{font-size:.72rem;font-style:italic;color:rgba(255,255,255,.75);margin-bottom:4px;}
+  .adj-card .ac-vi{font-size:.8rem;color:rgba(255,255,255,.9);font-weight:700;margin-bottom:6px;}
+  .adj-card .ac-ex{font-size:.72rem;color:rgba(255,255,255,.7);line-height:1.6;border-top:1px solid rgba(255,255,255,.2);padding-top:5px;}
+
+  .tip-box{background:#fff8e1;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:.82rem;border-left:4px solid var(--yellow);line-height:1.75;}
+  .tip-box strong{color:#e65100;}
+  .tip-box.blue{background:#e3f2fd;border-left-color:var(--c2);}
+  .tip-box.blue strong{color:var(--c2);}
+
+  /* TABLE */
+  .adj-table{width:100%;border-collapse:collapse;font-size:.82rem;margin-bottom:14px;}
+  .adj-table th{background:var(--dark);color:white;padding:8px 10px;text-align:left;font-weight:800;}
+  .adj-table td{padding:8px 10px;border-bottom:1px solid #e9ecef;vertical-align:middle;}
+  .adj-table tr:hover td{background:#f8f9fa;}
+  .adj-word{font-weight:800;font-size:.9rem;}
+  .play-btn{background:none;border:1px solid #dee2e6;border-radius:20px;padding:2px 8px;font-size:.68rem;font-weight:700;cursor:pointer;color:var(--c3);font-family:'Nunito',sans-serif;}
+  .play-btn:hover{background:var(--c3);color:white;border-color:var(--c3);}
+
+  .ex-title{font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;padding:4px 12px;border-radius:20px;color:white;display:inline-block;margin-bottom:8px;}
+  .eb{border-radius:11px;padding:11px 14px;margin-bottom:8px;border-left:4px solid;}
+  .eb .en{font-size:.93rem;font-weight:700;margin-bottom:2px;}
+  .eb .vi{font-size:.81rem;color:#495057;margin-bottom:6px;}
+  .psm{border:none;border-radius:20px;padding:4px 12px;font-size:.72rem;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;color:white;}
+  .divider{height:1px;background:#e9ecef;margin:14px 0;}
+
+  .dbox{background:#f8f9fa;border-radius:13px;padding:14px;margin-bottom:11px;border:2px solid #e9ecef;}
+  .dtitle{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--gray);margin-bottom:9px;}
+  .dline{display:flex;gap:7px;margin-bottom:7px;align-items:flex-start;}
+  .dlabel{font-size:.7rem;font-weight:800;padding:2px 7px;border-radius:7px;color:white;flex-shrink:0;margin-top:2px;min-width:24px;text-align:center;}
+  .dvi{font-size:.84rem;font-weight:700;color:#1565c0;}
+  .den{font-size:.84rem;font-weight:700;color:#212121;}
+  .pdlg{margin-top:7px;background:#2e7d32;color:white;border:none;border-radius:20px;padding:5px 13px;font-size:.74rem;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;display:inline-flex;align-items:center;gap:4px;}
+
+  .quiz-item{background:#f8f9fa;border-radius:13px;padding:14px;margin-bottom:12px;border:2px solid transparent;transition:border-color .3s;}
+  .quiz-item.answered-ok{border-color:#2e7d32;background:#f1f8e9;}
+  .quiz-item.answered-fail{border-color:#c0392b;background:#fbe9e7;}
+  .quiz-q{font-size:.9rem;font-weight:700;margin-bottom:10px;}
+  .quiz-opts{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+  .qopt{background:white;border:2px solid #dee2e6;border-radius:9px;padding:7px 9px;font-size:.81rem;font-weight:700;cursor:pointer;transition:all .2s;font-family:'Nunito',sans-serif;text-align:center;}
+  .qopt:hover:not(:disabled){border-color:#1565c0;color:#1565c0;}
+  .qopt.sel-ok{background:#2e7d32;color:white;border-color:#2e7d32;}
+  .qopt.sel-fail{background:#c0392b;color:white;border-color:#c0392b;}
+  .qopt:disabled{cursor:default;}
+  .qfb{margin-top:6px;font-size:.77rem;font-weight:700;display:none;}
+  .qfb.show{display:block;}
+  .qfb.ok{color:#2e7d32;}
+  .qfb.fail{color:#c0392b;}
+
+  .fill-item{background:#f8f9fa;border-radius:12px;padding:13px;margin-bottom:10px;border:2px solid transparent;}
+  .fill-item.correct{border-color:#2e7d32;background:#f1f8e9;}
+  .fill-item.wrong{border-color:#c0392b;background:#fbe9e7;}
+  .fill-q{font-size:.9rem;font-weight:700;margin-bottom:6px;line-height:2;}
+  .fill-q input{border:2px solid #1565c0;border-radius:7px;padding:2px 8px;font-size:.86rem;font-family:'Nunito',sans-serif;font-weight:700;width:130px;text-align:center;outline:none;background:white;}
+  .fill-vi{font-size:.78rem;color:var(--gray);margin-bottom:4px;}
+  .fill-ans{font-size:.78rem;font-weight:700;margin-top:4px;display:none;}
+  .fill-ans.show-wrong{display:block;color:#c0392b;}
+
+  .trans-item{background:#f8f9fa;border-radius:12px;padding:13px;margin-bottom:10px;border:2px solid transparent;}
+  .trans-item.correct{border-color:#2e7d32;background:#f1f8e9;}
+  .trans-item.wrong{border-color:#c0392b;background:#fbe9e7;}
+  .trans-lang{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;color:var(--gray);}
+  .trans-q{font-size:.92rem;font-weight:700;margin-bottom:6px;color:var(--dark);}
+  .trans-input{width:100%;border:2px solid #1565c0;border-radius:8px;padding:6px 10px;font-size:.86rem;font-family:'Nunito',sans-serif;font-weight:700;outline:none;background:white;}
+  .trans-ans{font-size:.78rem;font-weight:700;margin-top:4px;display:none;color:#c0392b;}
+  .trans-ans.show{display:block;}
+
+  .speak-card{border-radius:12px;padding:13px 16px;margin-bottom:9px;color:white;}
+  .slbl{font-size:.66rem;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:3px;}
+  .sen-en{font-size:.97rem;font-weight:800;margin-bottom:2px;}
+  .sen-vi{font-size:.8rem;color:rgba(255,255,255,.7);margin-bottom:9px;}
+  .hear-btn{background:var(--yellow);color:var(--dark);border:none;border-radius:20px;padding:6px 14px;font-weight:800;font-size:.8rem;cursor:pointer;font-family:'Nunito',sans-serif;transition:transform .15s;}
+  .hear-btn:hover{transform:scale(1.04);}
+
+  #score-section{text-align:center;padding:24px 12px;}
+  .score-circle{width:120px;height:120px;border-radius:50%;background:linear-gradient(135deg,var(--c1),var(--c2));display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 6px 20px rgba(21,101,192,.3);}
+  .score-circle .num{font-family:'Baloo 2',cursive;font-size:2rem;font-weight:800;color:white;line-height:1;}
+  .score-circle .lbl{font-size:.7rem;font-weight:700;color:rgba(255,255,255,.8);}
+  #score-section h2{font-family:'Baloo 2',cursive;font-size:1.4rem;font-weight:800;margin-bottom:6px;}
+  #score-section p{color:var(--gray);font-size:.86rem;max-width:340px;margin:0 auto 16px;}
+  .score-inline{background:#f1f3f5;border-radius:9px;padding:8px 14px;margin-bottom:12px;font-size:.81rem;font-weight:700;display:flex;align-items:center;gap:7px;}
+  .score-badge{background:var(--yellow);color:var(--dark);border-radius:20px;padding:2px 11px;font-weight:800;font-size:.81rem;}
+  .btn-next{background:var(--c2);color:white;border:none;border-radius:11px;padding:10px 24px;font-size:.9rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;margin-top:12px;display:inline-flex;align-items:center;gap:6px;transition:all .2s;}
+  .btn-next:hover{opacity:.88;}
+  .btn-check{background:var(--c3);color:white;border:none;border-radius:11px;padding:9px 20px;font-size:.86rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;margin-top:10px;display:inline-flex;align-items:center;gap:5px;}
+  .btn-primary{background:var(--dark);color:white;border:none;border-radius:11px;padding:10px 24px;font-size:.9rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;display:inline-flex;align-items:center;gap:6px;}
+  .retry-btn{background:#c0392b;color:white;border:none;border-radius:11px;padding:9px 20px;font-size:.86rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;margin-top:8px;display:inline-flex;align-items:center;gap:5px;margin-right:8px;}
+  @media(max-width:480px){.adj-grid{grid-template-columns:1fr;}.quiz-opts{grid-template-columns:1fr;}}
+  .back-btn{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.25);color:white;padding:5px 13px;border-radius:30px;font-size:.78rem;font-weight:700;text-decoration:none;transition:all .2s;white-space:nowrap;}
+  .back-btn:hover{background:rgba(255,255,255,.22);}
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="back-btn">&#8592; Trang chủ</a>
+  <h1>📝 <span>IT'S + ADJ + TO V</span> – Thật … khi / để làm gì</h1>
+  <div id="timer-bar">⏱ 60:00</div>
+</header>
+<div id="progress-wrap"><div id="progress-bar" style="width:0%"></div></div>
+
+<nav id="phase-nav">
+  <button class="phase-tab active" onclick="goPhase(0)">1. Lý thuyết</button>
+  <button class="phase-tab" onclick="goPhase(1)">2. Tính từ</button>
+  <button class="phase-tab" onclick="goPhase(2)">3. Ví dụ</button>
+  <button class="phase-tab" onclick="goPhase(3)">4. Hội thoại</button>
+  <button class="phase-tab" onclick="goPhase(4)">5. Quiz</button>
+  <button class="phase-tab" onclick="goPhase(5)">6. Điền từ</button>
+  <button class="phase-tab" onclick="goPhase(6)">7. Dịch câu</button>
+  <button class="phase-tab" onclick="goPhase(7)">8. Nói</button>
+  <button class="phase-tab" onclick="goPhase(8)">9. Kết quả</button>
+</nav>
+
+<main>
+
+<!-- PHASE 0: LÝ THUYẾT -->
+<div class="phase active" id="phase-0">
+  <div class="section-header" style="background:var(--dark)">
+    <div class="phase-label">📖 Giai đoạn 1 – 8 phút</div>
+    <h2>It's + Adj + to V nguyên thể</h2>
+    <div class="duration">"Thật là … khi / để làm gì đó" · Adj: tính từ · V: động từ</div>
+  </div>
+  <div class="section-body">
+
+    <!-- CẤU TRÚC CHÍNH -->
+    <div class="formula-box" style="background:#fff8e1;border-color:#e65100">
+      <div class="fb-title" style="color:#e65100">📐 Cấu trúc cơ bản</div>
+      <div class="fb-formula" style="color:#0d1b2a">It's &nbsp;+&nbsp; <span style="color:#b7410e">Adj (tính từ)</span> &nbsp;+&nbsp; <span style="color:#1565c0">to + V (động từ nguyên thể)</span></div>
+      <div class="fb-ex">
+        ✅ <strong>It is easy to learn English.</strong> → Thật dễ để học tiếng Anh.<br>
+        ✅ <strong>It's difficult to fix this car.</strong> → Thật khó để sửa chiếc xe này.<br>
+        ✅ <strong>It's dangerous to drive fast.</strong> → Thật nguy hiểm khi lái xe nhanh.<br>
+        ✅ <strong>It's good to sleep early.</strong> → Thật tốt khi ngủ sớm.<br>
+        ✅ <strong>It's healthy to play sports.</strong> → Thật tốt cho sức khỏe khi chơi thể thao.
+      </div>
+      <div class="fb-note">
+        💡 <strong>Lưu ý:</strong> "It" ở đây là <em>chủ ngữ hình thức</em>, không chỉ người hay vật cụ thể. <br>
+        "It's" = It is (có thể viết tắt). &nbsp;&nbsp; "to V" = động từ nguyên thể (to learn, to go, to eat…)
+      </div>
+    </div>
+
+    <!-- DẠNG PHỦ ĐỊNH & CÂU HỎI -->
+    <div class="formula-box" style="background:#e3f2fd;border-color:var(--c2)">
+      <div class="fb-title" style="color:var(--c2)">🔄 Các dạng mở rộng</div>
+      <div class="fb-formula" style="color:var(--dark);font-size:.95rem">
+        ❌ Phủ định: &nbsp;<span style="color:#c0392b">It's NOT + Adj + to V</span><br>
+        ❓ Câu hỏi: &nbsp;<span style="color:#2e7d32">Is it + Adj + to V?</span><br>
+        👤 Chỉ rõ ai: <span style="color:#6a1b9a">It's + Adj + FOR + người + to V</span>
+      </div>
+      <div class="fb-ex" style="font-size:.81rem">
+        ❌ <strong>It's not easy to learn Chinese.</strong> → Không dễ để học tiếng Trung.<br>
+        ❓ <strong>Is it safe to swim here?</strong> → Ở đây có an toàn để bơi không?<br>
+        👤 <strong>It's easy for me to learn English.</strong> → Thật dễ đối với tôi khi học tiếng Anh.
+      </div>
+    </div>
+
+    <!-- 4 TÍNH TỪ CHÍNH -->
+    <div class="tip-box">
+      <strong>📌 Bài học hôm nay:</strong> Luyện 4 tính từ thông dụng nhất trong cấu trúc này:<br>
+      🟡 <strong>easy</strong> (dễ) &nbsp;·&nbsp; 🔴 <strong>difficult</strong> (khó) &nbsp;·&nbsp; 🟢 <strong>good</strong> (tốt) &nbsp;·&nbsp; 🟤 <strong>healthy</strong> (tốt cho sức khỏe) &nbsp;·&nbsp; ⚫ <strong>dangerous</strong> (nguy hiểm)
+    </div>
+
+    <button class="btn-next" onclick="goPhase(1)">Tiếp theo: Tính từ →</button>
+  </div>
+</div>
+
+<!-- PHASE 1: TÍNH TỪ -->
+<div class="phase" id="phase-1">
+  <div class="section-header" style="background:var(--c1)">
+    <div class="phase-label">📝 Giai đoạn 2 – 7 phút</div>
+    <h2>Tính từ & Phát âm</h2>
+    <div class="duration">Nhấn vào thẻ để nghe · Học ví dụ câu mẫu</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box"><strong>Cách học:</strong> Nhìn tính từ → nhớ nghĩa → nhấn thẻ để nghe phát âm!</div>
+    <div class="adj-grid" id="adj-cards"></div>
+    <table class="adj-table">
+      <thead><tr><th>Tính từ</th><th>Phát âm</th><th>Nghĩa</th><th>Ví dụ câu</th><th>Nghe</th></tr></thead>
+      <tbody id="adj-tbody"></tbody>
+    </table>
+    <button class="btn-next" onclick="goPhase(2)">Tiếp theo: Ví dụ →</button>
+  </div>
+</div>
+
+<!-- PHASE 2: VÍ DỤ -->
+<div class="phase" id="phase-2">
+  <div class="section-header" style="background:var(--c2)">
+    <div class="phase-label">🗣️ Giai đoạn 3 – 8 phút</div>
+    <h2>Ví dụ thực tế theo từng tính từ</h2>
+    <div class="duration">Nghe và đọc theo từng câu</div>
+  </div>
+  <div class="section-body" id="examples-body">
+  </div>
+</div>
+
+<!-- PHASE 3: HỘI THOẠI -->
+<div class="phase" id="phase-3">
+  <div class="section-header" style="background:var(--c3)">
+    <div class="phase-label">💬 Giai đoạn 4 – 7 phút</div>
+    <h2>Hội thoại thực tế</h2>
+    <div class="duration">Nghe và luyện theo</div>
+  </div>
+  <div class="section-body">
+    <div id="dialogue-container"></div>
+    <button class="btn-next" onclick="goPhase(4)">Tiếp theo: Quiz →</button>
+  </div>
+</div>
+
+<!-- PHASE 4: QUIZ -->
+<div class="phase" id="phase-4">
+  <div class="section-header" style="background:var(--dark)">
+    <div class="phase-label">🧠 Giai đoạn 5 – 8 phút</div>
+    <h2>Trắc nghiệm</h2>
+    <div class="duration">Chọn đáp án đúng – không có gợi ý!</div>
+  </div>
+  <div class="section-body">
+    <div class="score-inline">Điểm: <span class="score-badge" id="quiz-score">0 / 0</span></div>
+    <div class="tip-box" style="background:#fce4ec;border-left-color:#c0392b"><strong style="color:#c0392b">⚠️</strong> Không có gợi ý. Hãy suy nghĩ kỹ trước khi chọn!</div>
+    <div id="quiz-container"></div>
+    <div id="quiz-retry-section" style="display:none;margin-top:12px;">
+      <button class="retry-btn" onclick="retryQuiz()">🔄 Làm lại Quiz</button>
+      <button class="btn-next" onclick="goPhase(5)" style="margin-top:0">Tiếp theo: Điền từ →</button>
+    </div>
+    <div id="quiz-done-btn" style="display:none">
+      <button class="btn-next" onclick="goPhase(5)">Tiếp theo: Điền từ →</button>
+    </div>
+  </div>
+</div>
+
+<!-- PHASE 5: ĐIỀN TỪ -->
+<div class="phase" id="phase-5">
+  <div class="section-header" style="background:var(--c1)">
+    <div class="phase-label">✏️ Giai đoạn 6 – 7 phút</div>
+    <h2>Điền vào ô trống</h2>
+    <div class="duration">Điền tính từ đúng vào cấu trúc – không có gợi ý!</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box" style="background:#fce4ec;border-left-color:#c0392b"><strong style="color:#c0392b">⚠️</strong> Điền đầy đủ rồi mới nhấn kiểm tra!</div>
+    <div id="fill-container"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">
+      <button class="btn-check" onclick="checkFill()">✅ Kiểm tra tất cả</button>
+      <button class="retry-btn" onclick="retryFill()" id="retry-fill-btn" style="display:none">🔄 Làm lại</button>
+    </div>
+    <div id="fill-score-display" style="margin-top:10px;font-weight:700;font-size:.9rem;display:none;"></div>
+    <button class="btn-next" onclick="goPhase(6)" style="margin-top:12px">Tiếp theo: Dịch câu →</button>
+  </div>
+</div>
+
+<!-- PHASE 6: DỊCH CÂU -->
+<div class="phase" id="phase-6">
+  <div class="section-header" style="background:var(--c4)">
+    <div class="phase-label">🔄 Giai đoạn 7 – 7 phút</div>
+    <h2>Dịch câu</h2>
+    <div class="duration">Dịch 2 chiều Việt ↔ Anh – không có gợi ý!</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box"><strong>Hướng dẫn:</strong> Dùng đúng cấu trúc <strong>It's + Adj + to V</strong> khi dịch sang tiếng Anh!</div>
+    <div id="trans-container"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">
+      <button class="btn-check" onclick="checkTrans()">✅ Kiểm tra tất cả</button>
+      <button class="retry-btn" onclick="retryTrans()" id="retry-trans-btn" style="display:none">🔄 Làm lại</button>
+    </div>
+    <div id="trans-score-display" style="margin-top:10px;font-weight:700;font-size:.9rem;display:none;"></div>
+    <button class="btn-next" onclick="goPhase(7)" style="margin-top:12px">Tiếp theo: Nói →</button>
+  </div>
+</div>
+
+<!-- PHASE 7: SPEAKING -->
+<div class="phase" id="phase-7">
+  <div class="section-header" style="background:var(--c5)">
+    <div class="phase-label">🎤 Giai đoạn 8 – 7 phút</div>
+    <h2>Luyện Nói</h2>
+    <div class="duration">Đọc to → Nhấn ▶ nghe mẫu → So sánh</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box"><strong>Hướng dẫn:</strong> Nhìn câu → Đọc to trước → Nhấn ▶ nghe bản mẫu → Luyện lại!</div>
+    <div id="speaking-container"></div>
+    <button class="btn-next" onclick="goPhase(8)">Xem kết quả →</button>
+  </div>
+</div>
+
+<!-- PHASE 8: KẾT QUẢ -->
+<div class="phase" id="phase-8">
+  <div class="section-header" style="background:var(--dark)">
+    <div class="phase-label">🏆 Kết thúc bài học</div>
+    <h2>Tổng kết</h2>
+    <div class="duration">Quiz + Điền từ + Dịch câu</div>
+  </div>
+  <div class="section-body">
+    <div id="score-section">
+      <div class="score-circle">
+        <div class="num" id="final-score">—</div>
+        <div class="lbl">điểm</div>
+      </div>
+      <h2 id="final-msg">Hoàn thành!</h2>
+      <p id="final-desc"></p>
+      <div id="detail-score" style="margin:12px 0;font-size:.85rem;font-weight:700;background:#f8f9fa;border-radius:10px;padding:12px 16px;text-align:left;"></div>
+      <div style="background:#f8f9fa;border-radius:13px;padding:14px;text-align:left;margin:14px 0;">
+        <h3 style="font-size:.86rem;font-weight:800;margin-bottom:10px;">📋 Ôn nhanh cấu trúc:</h3>
+        <div id="quick-review" style="font-size:.82rem;line-height:2.3;"></div>
+      </div>
+      <button class="btn-primary" onclick="restartLesson()">🔄 Học lại từ đầu</button>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+// ===== DATA =====
+const adjData = [
+  {word:"easy",      pron:"/ˈiːzi/",         vi:"dễ",                  color:"#2e7d32",  ex1:"It is easy to learn English.",    ex2:"It is easy to understand this lesson."},
+  {word:"difficult", pron:"/ˈdɪfɪkəlt/",     vi:"khó",                 color:"#b7410e",  ex1:"It is difficult to learn English.", ex2:"It's difficult to fix this car."},
+  {word:"good",      pron:"/ɡʊd/",            vi:"tốt",                 color:"#1565c0",  ex1:"It is good to sleep early.",       ex2:"It's good to read books."},
+  {word:"healthy",   pron:"/ˈhel.θi/",        vi:"tốt cho sức khỏe",   color:"#00838f",  ex1:"It's healthy to play sports.",     ex2:"It's healthy to walk every day."},
+  {word:"dangerous", pron:"/ˈdeɪn.dʒr.əs/",  vi:"nguy hiểm",           color:"#c0392b",  ex1:"It's dangerous to drive fast.",    ex2:"It's dangerous to swim alone."},
+];
+
+const examplesData = [
+  {adj:"easy /ˈiːzi/ – dễ", color:"#2e7d32", bg:"#f1f8e9", sentences:[
+    {en:"It is easy to learn English.",        vi:"Thật dễ để học tiếng Anh."},
+    {en:"It is easy to understand this lesson.",vi:"Thật dễ để hiểu bài này."},
+    {en:"It is easy to speak English.",        vi:"Thật dễ để nói tiếng Anh."},
+    {en:"It is easy to learn new words.",      vi:"Thật dễ để học từ mới."},
+    {en:"It's easy to cook this dish.",        vi:"Thật dễ để nấu món này."},
+    {en:"Is it easy to use this app?",         vi:"Có dễ để dùng ứng dụng này không?"},
+  ]},
+  {adj:"difficult /ˈdɪfɪkəlt/ – khó", color:"#b7410e", bg:"#fbe9e7", sentences:[
+    {en:"It is difficult to learn English.",   vi:"Thật khó để học tiếng Anh."},
+    {en:"It's difficult to understand this lesson.", vi:"Thật khó để hiểu bài này."},
+    {en:"It's difficult to fix this car.",     vi:"Thật khó để sửa chiếc xe này."},
+    {en:"It's difficult to hear him speak.",   vi:"Thật khó để nghe anh ta nói."},
+    {en:"It's not difficult to make friends.", vi:"Không khó để kết bạn."},
+    {en:"Is it difficult to find a job here?", vi:"Có khó để tìm việc làm ở đây không?"},
+  ]},
+  {adj:"good /ɡʊd/ – tốt", color:"#1565c0", bg:"#e3f2fd", sentences:[
+    {en:"It is good to sleep early.",          vi:"Thật tốt khi ngủ sớm."},
+    {en:"It is good to learn English.",        vi:"Thật tốt khi học tiếng Anh."},
+    {en:"It's good to read books.",            vi:"Thật tốt khi đọc sách."},
+    {en:"It's good to exercise every day.",    vi:"Thật tốt khi tập thể dục mỗi ngày."},
+    {en:"It's good to drink water regularly.", vi:"Thật tốt khi uống nước thường xuyên."},
+    {en:"Is it good to eat late at night?",    vi:"Có tốt khi ăn khuya không?"},
+  ]},
+  {adj:"healthy /ˈhel.θi/ – tốt cho sức khỏe", color:"#00838f", bg:"#e0f7fa", sentences:[
+    {en:"It's healthy to play sports.",        vi:"Thật tốt cho sức khỏe khi chơi thể thao."},
+    {en:"It's healthy to sleep early.",        vi:"Thật tốt cho sức khỏe khi ngủ sớm."},
+    {en:"It's healthy to exercise.",           vi:"Thật tốt cho sức khỏe khi tập thể dục."},
+    {en:"It's healthy to walk every day.",     vi:"Thật tốt cho sức khỏe khi đi bộ mỗi ngày."},
+    {en:"It's healthy to eat vegetables.",     vi:"Thật tốt cho sức khỏe khi ăn rau củ."},
+    {en:"Is it healthy to drink coffee every day?", vi:"Có tốt cho sức khỏe khi uống cà phê mỗi ngày không?"},
+  ]},
+  {adj:"dangerous /ˈdeɪn.dʒr.əs/ – nguy hiểm", color:"#c0392b", bg:"#fce4ec", sentences:[
+    {en:"It's dangerous to drive fast.",       vi:"Thật nguy hiểm khi lái xe nhanh."},
+    {en:"It's dangerous to swim alone.",       vi:"Thật nguy hiểm khi bơi một mình."},
+    {en:"It's dangerous to go out at night.",  vi:"Thật nguy hiểm khi đi ra ngoài ban đêm."},
+    {en:"It's dangerous to play with fire.",   vi:"Thật nguy hiểm khi chơi với lửa."},
+    {en:"It's dangerous to use a phone while driving.", vi:"Thật nguy hiểm khi dùng điện thoại lúc lái xe."},
+    {en:"Is it dangerous to climb that mountain?", vi:"Có nguy hiểm khi leo núi đó không?"},
+  ]},
+];
+
+const dialogues = [
+  {title:"Hội thoại 1 – Học tiếng Anh",
+   lines:[
+     {label:"A",vi:"Bạn nghĩ học tiếng Anh có khó không?",   en:"Do you think it's difficult to learn English?", color:"#1565c0"},
+     {label:"B",vi:"Ban đầu thì khó, nhưng thật dễ khi bạn luyện tập mỗi ngày.", en:"It's difficult at first, but it's easy to improve if you practice every day.", color:"#b7410e"},
+     {label:"A",vi:"Đó là lý do tôi học mỗi buổi sáng.",     en:"That's why I study every morning.",             color:"#1565c0"},
+     {label:"B",vi:"Thật tốt khi học từ sớm như vậy!",       en:"It's good to study early like that!",           color:"#b7410e"},
+   ]},
+  {title:"Hội thoại 2 – Sức khoẻ",
+   lines:[
+     {label:"A",vi:"Bạn thường làm gì để giữ sức khỏe?",     en:"What do you usually do to stay healthy?",       color:"#1565c0"},
+     {label:"B",vi:"Thật tốt cho sức khỏe khi đi bộ mỗi ngày. Tôi đi bộ 30 phút.", en:"It's healthy to walk every day. I walk for 30 minutes.", color:"#00838f"},
+     {label:"A",vi:"Tôi cũng nghĩ thật tốt khi chơi thể thao.", en:"I also think it's good to play sports.",     color:"#1565c0"},
+     {label:"B",vi:"Đúng vậy! Và thật nguy hiểm khi ngồi nhiều quá.", en:"Exactly! And it's dangerous to sit too much.",color:"#00838f"},
+   ]},
+  {title:"Hội thoại 3 – An toàn giao thông",
+   lines:[
+     {label:"A",vi:"Thật nguy hiểm khi lái xe nhanh.",        en:"It's dangerous to drive fast.",                 color:"#c0392b"},
+     {label:"B",vi:"Đúng rồi! Và thật nguy hiểm khi dùng điện thoại lúc lái xe.", en:"Right! And it's dangerous to use a phone while driving.", color:"#1565c0"},
+     {label:"A",vi:"Nhiều người không hiểu điều đó. Thật khó để thay đổi thói quen của họ.", en:"Many people don't understand that. It's difficult to change their habits.", color:"#c0392b"},
+   ]},
+  {title:"Hội thoại 4 – Lời khuyên",
+   lines:[
+     {label:"A",vi:"Tôi muốn sống khỏe hơn. Bạn có lời khuyên gì không?", en:"I want to be healthier. Do you have any advice?", color:"#1565c0"},
+     {label:"B",vi:"Thật tốt khi ngủ sớm và dậy sớm.",       en:"It's good to sleep early and wake up early.",   color:"#2e7d32"},
+     {label:"A",vi:"Còn gì nữa không?",                       en:"Anything else?",                               color:"#1565c0"},
+     {label:"B",vi:"Thật tốt cho sức khỏe khi ăn rau và tập thể dục. Và thật nguy hiểm khi ăn quá nhiều đồ ngọt.", en:"It's healthy to eat vegetables and exercise. And it's dangerous to eat too much sugar.", color:"#2e7d32"},
+   ]},
+  {title:"Hội thoại 5 – Nấu ăn",
+   lines:[
+     {label:"A",vi:"Bạn có biết nấu ăn không?",               en:"Do you know how to cook?",                     color:"#1565c0"},
+     {label:"B",vi:"Có chứ! Thật dễ để nấu cơm và canh.",    en:"Yes! It's easy to cook rice and soup.",        color:"#b7410e"},
+     {label:"A",vi:"Tôi thấy thật khó để nấu ăn ngon.",      en:"I find it difficult to cook delicious food.",  color:"#1565c0"},
+     {label:"B",vi:"Thật tốt khi tự nấu ăn ở nhà. Vừa ngon vừa tốt cho sức khỏe!", en:"It's good to cook at home. It's both delicious and healthy!", color:"#b7410e"},
+   ]},
+];
+
+const quizData = [
+  {q:"'easy' /ˈiːzi/ nghĩa là gì?",          opts:["khó","dễ","tốt","nguy hiểm"],          ans:1},
+  {q:"'difficult' /ˈdɪfɪkəlt/ nghĩa là gì?", opts:["dễ","khó","tốt cho sức khỏe","an toàn"],ans:1},
+  {q:"'dangerous' /ˈdeɪn.dʒr.əs/ nghĩa là gì?", opts:["tốt","dễ","nguy hiểm","khỏe mạnh"],ans:2},
+  {q:"'healthy' /ˈhel.θi/ nghĩa là gì?",     opts:["nguy hiểm","khó","tốt","tốt cho sức khỏe"],ans:3},
+  {q:"Chọn câu đúng cấu trúc 'It's + Adj + to V':", opts:["It's easy learning English.","It's easy to learn English.","It easy to learn English.","It is easy learn English."], ans:1},
+  {q:"Dịch: 'Thật khó để sửa chiếc xe này.'",opts:["It's easy to fix this car.","It's difficult to fix this car.","It's dangerous to fix this car.","It's good to fix this car."], ans:1},
+  {q:"Dịch: 'Thật tốt khi ngủ sớm.'",        opts:["It's good to sleep late.","It's healthy to sleep early.","It's good to sleep early.","It's easy to sleep early."], ans:2},
+  {q:"Dịch: 'Thật nguy hiểm khi bơi một mình.'", opts:["It's difficult to swim alone.","It's dangerous to swim alone.","It's unhealthy to swim alone.","It's easy to swim alone."], ans:1},
+  {q:"Dịch: 'Thật tốt cho sức khỏe khi tập thể dục.'", opts:["It's good to exercise.","It's easy to exercise.","It's healthy to exercise.","It's dangerous to exercise."], ans:2},
+  {q:"Câu phủ định đúng là:",                 opts:["It not easy to learn.","It's not easy to learn.","It's not easy learning.","Is not easy to learn."], ans:1},
+  {q:"Câu hỏi đúng là:",                      opts:["Is it dangerous to drive fast?","It's dangerous to drive fast?","Does it dangerous to drive fast?","Is dangerous to drive fast?"], ans:0},
+  {q:"'It's easy for me to speak English.' – 'for me' có nghĩa là:", opts:["đối với tôi","khi tôi","để tôi","vì tôi"], ans:0},
+  {q:"Điền đúng: 'It's ___ to play with fire.'", opts:["easy","good","dangerous","healthy"], ans:2},
+  {q:"Điền đúng: 'It's ___ to read books every day.'", opts:["dangerous","difficult","good","impossible"], ans:2},
+  {q:"Điền đúng: 'It's ___ to walk every day.'", opts:["easy","dangerous","difficult","healthy"], ans:3},
+  {q:"'It's difficult to hear him speak.' nghĩa là gì?", opts:["Thật dễ để nghe anh ta nói.","Thật khó để nghe anh ta nói.","Thật nguy hiểm khi nghe anh ta nói.","Thật tốt khi nghe anh ta nói."], ans:1},
+  {q:"Câu nào ĐÚNG về ngữ pháp?", opts:["It's good to eating vegetables.","It's good to eat vegetables.","It's good eat vegetables.","It good to eat vegetables."], ans:1},
+  {q:"'Is it safe to swim here?' nghĩa là gì?", opts:["Ở đây có nguy hiểm không?","Ở đây có dễ để bơi không?","Ở đây có an toàn để bơi không?","Có tốt khi bơi ở đây không?"], ans:2},
+  {q:"Từ nào điền vào: 'It's ___ to drive fast.'?", opts:["good","healthy","easy","dangerous"], ans:3},
+  {q:"Chọn câu đúng có nghĩa 'Thật tốt cho sức khỏe khi chơi thể thao.'", opts:["It's good to play sports.","It's easy to play sports.","It's healthy to play sports.","It's safe to play sports."], ans:2},
+];
+
+const fillData = [
+  {answer:"easy",      before:"It is ",   after:" to learn English.",          vi:"Thật dễ để học tiếng Anh."},
+  {answer:"difficult", before:"It's ",    after:" to fix this car.",           vi:"Thật khó để sửa chiếc xe này."},
+  {answer:"good",      before:"It is ",   after:" to sleep early.",            vi:"Thật tốt khi ngủ sớm."},
+  {answer:"healthy",   before:"It's ",    after:" to play sports.",            vi:"Thật tốt cho sức khỏe khi chơi thể thao."},
+  {answer:"dangerous", before:"It's ",    after:" to drive fast.",             vi:"Thật nguy hiểm khi lái xe nhanh."},
+  {answer:"easy",      before:"It is ",   after:" to understand this lesson.", vi:"Thật dễ để hiểu bài này."},
+  {answer:"difficult", before:"It's ",    after:" to hear him speak.",         vi:"Thật khó để nghe anh ta nói."},
+  {answer:"good",      before:"It's ",    after:" to read books.",             vi:"Thật tốt khi đọc sách."},
+  {answer:"healthy",   before:"It's ",    after:" to walk every day.",         vi:"Thật tốt cho sức khỏe khi đi bộ mỗi ngày."},
+  {answer:"dangerous", before:"It's ",    after:" to swim alone.",             vi:"Thật nguy hiểm khi bơi một mình."},
+  {answer:"good",      before:"It's ",    after:" to exercise every day.",     vi:"Thật tốt khi tập thể dục mỗi ngày."},
+  {answer:"dangerous", before:"It's ",    after:" to go out at night.",        vi:"Thật nguy hiểm khi đi ra ngoài ban đêm."},
+  {answer:"easy",      before:"It is ",   after:" to speak English.",          vi:"Thật dễ để nói tiếng Anh."},
+  {answer:"healthy",   before:"It's ",    after:" to eat vegetables.",         vi:"Thật tốt cho sức khỏe khi ăn rau củ."},
+];
+
+const transData = [
+  {prompt:"Thật dễ để học tiếng Anh.",                answer:"it is easy to learn english",                 dir:"vi→en"},
+  {prompt:"It's difficult to fix this car.",           answer:"thật khó để sửa chiếc xe này",               dir:"en→vi"},
+  {prompt:"Thật tốt khi ngủ sớm.",                     answer:"it is good to sleep early",                  dir:"vi→en"},
+  {prompt:"It's healthy to play sports.",              answer:"thật tốt cho sức khỏe khi chơi thể thao",    dir:"en→vi"},
+  {prompt:"Thật nguy hiểm khi lái xe nhanh.",          answer:"it is dangerous to drive fast",              dir:"vi→en"},
+  {prompt:"It's easy to understand this lesson.",      answer:"thật dễ để hiểu bài này",                    dir:"en→vi"},
+  {prompt:"Thật khó để nghe anh ta nói.",              answer:"it is difficult to hear him speak",           dir:"vi→en"},
+  {prompt:"It's good to read books.",                  answer:"thật tốt khi đọc sách",                      dir:"en→vi"},
+  {prompt:"Thật tốt cho sức khỏe khi đi bộ mỗi ngày.",answer:"it is healthy to walk every day",            dir:"vi→en"},
+  {prompt:"It's dangerous to swim alone.",             answer:"thật nguy hiểm khi bơi một mình",            dir:"en→vi"},
+  {prompt:"Thật dễ để nói tiếng Anh.",                 answer:"it is easy to speak english",                dir:"vi→en"},
+  {prompt:"It's dangerous to play with fire.",         answer:"thật nguy hiểm khi chơi với lửa",            dir:"en→vi"},
+  {prompt:"Thật tốt cho sức khỏe khi tập thể dục.",   answer:"it is healthy to exercise",                  dir:"vi→en"},
+  {prompt:"Is it dangerous to go out at night?",       answer:"có nguy hiểm khi đi ra ngoài ban đêm không", dir:"en→vi"},
+];
+
+const speakingData = [
+  {en:"It is easy to learn English.",          vi:"Thật dễ để học tiếng Anh.",                color:"#2e7d32"},
+  {en:"It is easy to understand this lesson.", vi:"Thật dễ để hiểu bài này.",                 color:"#2e7d32"},
+  {en:"It is easy to speak English.",          vi:"Thật dễ để nói tiếng Anh.",                color:"#2e7d32"},
+  {en:"It is easy to learn new words.",        vi:"Thật dễ để học từ mới.",                   color:"#2e7d32"},
+  {en:"It is difficult to learn English.",     vi:"Thật khó để học tiếng Anh.",               color:"#b7410e"},
+  {en:"It's difficult to fix this car.",       vi:"Thật khó để sửa chiếc xe này.",            color:"#b7410e"},
+  {en:"It's difficult to hear him speak.",     vi:"Thật khó để nghe anh ta nói.",             color:"#b7410e"},
+  {en:"It is good to sleep early.",            vi:"Thật tốt khi ngủ sớm.",                    color:"#1565c0"},
+  {en:"It's good to read books.",              vi:"Thật tốt khi đọc sách.",                   color:"#1565c0"},
+  {en:"It's good to exercise.",                vi:"Thật tốt khi tập thể dục.",                color:"#1565c0"},
+  {en:"It's healthy to play sports.",          vi:"Thật tốt cho sức khỏe khi chơi thể thao.",color:"#00838f"},
+  {en:"It's healthy to walk every day.",       vi:"Thật tốt cho sức khỏe khi đi bộ mỗi ngày.",color:"#00838f"},
+  {en:"It's healthy to eat vegetables.",       vi:"Thật tốt cho sức khỏe khi ăn rau củ.",    color:"#00838f"},
+  {en:"It's dangerous to drive fast.",         vi:"Thật nguy hiểm khi lái xe nhanh.",         color:"#c0392b"},
+  {en:"It's dangerous to swim alone.",         vi:"Thật nguy hiểm khi bơi một mình.",         color:"#c0392b"},
+  {en:"It's dangerous to go out at night.",    vi:"Thật nguy hiểm khi đi ra ngoài ban đêm.", color:"#c0392b"},
+  {en:"It's dangerous to play with fire.",     vi:"Thật nguy hiểm khi chơi với lửa.",        color:"#c0392b"},
+  {en:"It's not easy to make friends.",        vi:"Không dễ để kết bạn.",                     color:"#2e7d32"},
+  {en:"Is it good to eat late at night?",      vi:"Có tốt khi ăn khuya không?",              color:"#1565c0"},
+  {en:"It's easy for me to learn English.",    vi:"Thật dễ đối với tôi khi học tiếng Anh.",  color:"#2e7d32"},
+];
+
+// ===== STATE =====
+let quizCorrect=0,quizAnswered=0,fillCorrect=0,transCorrect=0;
+let secondsLeft=3600,timerInterval;
+
+function init(){
+  buildAdjCards(); buildExamples(); buildDialogues();
+  buildQuiz(); buildFill(); buildTrans(); buildSpeaking(); buildQuickReview();
+  startTimer();
+}
+
+function startTimer(){
+  timerInterval=setInterval(()=>{
+    secondsLeft--;
+    const m=String(Math.floor(secondsLeft/60)).padStart(2,'0');
+    const s=String(secondsLeft%60).padStart(2,'0');
+    document.getElementById('timer-bar').textContent=`⏱ ${m}:${s}`;
+    if(secondsLeft<=0) clearInterval(timerInterval);
+  },1000);
+}
+
+function buildAdjCards(){
+  document.getElementById('adj-cards').innerHTML=adjData.map(a=>`
+    <div class="adj-card" style="background:${a.color}" onclick="speak('${a.word}')">
+      <div class="ac-word">▶ ${a.word}</div>
+      <div class="ac-pron">${a.pron}</div>
+      <div class="ac-vi">→ ${a.vi}</div>
+      <div class="ac-ex">"${a.ex1}"<br>"${a.ex2}"</div>
+    </div>`).join('');
+
+  document.getElementById('adj-tbody').innerHTML=adjData.map(a=>`
+    <tr>
+      <td class="adj-word" style="color:${a.color}">${a.word}</td>
+      <td style="font-style:italic;color:#aaa;font-size:.75rem">${a.pron}</td>
+      <td style="color:var(--gray)">${a.vi}</td>
+      <td style="font-size:.78rem;color:#555">It's <strong>${a.word}</strong> to…</td>
+      <td><button class="play-btn" onclick="speak('${a.word}')">▶ Nghe</button></td>
+    </tr>`).join('');
+}
+
+function buildExamples(){
+  const body=document.getElementById('examples-body');
+  let html='';
+  examplesData.forEach((g,gi)=>{
+    if(gi>0) html+=`<div class="divider"></div>`;
+    html+=`<span class="ex-title" style="background:${g.color}">${g.adj}</span>`;
+    g.sentences.forEach(s=>{
+      html+=`<div class="eb" style="background:${g.bg};border-color:${g.color}">
+        <div class="en" style="color:${g.color}">${s.en}</div>
+        <div class="vi">→ ${s.vi}</div>
+        <button class="psm" style="background:${g.color}" onclick="speak('${s.en.replace(/'/g,"\\'")}')">▶ Nghe</button>
+      </div>`;
+    });
+  });
+  html+=`<br><button class="btn-next" onclick="goPhase(3)">Tiếp theo: Hội thoại →</button>`;
+  body.innerHTML=html;
+}
+
+function buildDialogues(){
+  document.getElementById('dialogue-container').innerHTML=dialogues.map((d,i)=>`
+    <div class="dbox">
+      <div class="dtitle">💬 ${d.title}</div>
+      ${d.lines.map(l=>`
+        <div class="dline">
+          <span class="dlabel" style="background:${l.color}">${l.label}</span>
+          <div><div class="dvi">${l.vi}</div><div class="den">${l.en}</div></div>
+        </div>`).join('')}
+      <button class="pdlg" onclick="speakDlg(${i})">▶ Nghe hội thoại</button>
+    </div>`).join('');
+}
+
+async function speakDlg(i){
+  for(const l of dialogues[i].lines){
+    speak(l.en);
+    await new Promise(r=>setTimeout(r,l.en.length*68+1000));
+  }
+}
+
+function buildQuiz(){
+  document.getElementById('quiz-container').innerHTML=quizData.map((q,i)=>`
+    <div class="quiz-item" id="qi-${i}">
+      <div class="quiz-q">${i+1}. ${q.q}</div>
+      <div class="quiz-opts">
+        ${q.opts.map((o,j)=>`<button class="qopt" id="qo-${i}-${j}" onclick="answerQuiz(${i},${j})">${o}</button>`).join('')}
+      </div>
+      <div class="qfb" id="qf-${i}"></div>
+    </div>`).join('');
+}
+
+function answerQuiz(qi,choice){
+  const item=document.getElementById(`qi-${qi}`);
+  if(item.dataset.answered) return;
+  item.dataset.answered='1';
+  item.querySelectorAll('.qopt').forEach(b=>b.disabled=true);
+  const fb=document.getElementById(`qf-${qi}`);
+  if(choice===quizData[qi].ans){
+    document.getElementById(`qo-${qi}-${choice}`).classList.add('sel-ok');
+    item.classList.add('answered-ok');
+    fb.textContent='✅ Đúng!'; fb.className='qfb show ok'; quizCorrect++;
+  } else {
+    document.getElementById(`qo-${qi}-${choice}`).classList.add('sel-fail');
+    item.classList.add('answered-fail');
+    fb.textContent='❌ Sai! Hãy ghi nhớ để làm lại.'; fb.className='qfb show fail';
+  }
+  quizAnswered++;
+  document.getElementById('quiz-score').textContent=`${quizCorrect} / ${quizAnswered}`;
+  if(quizAnswered===quizData.length){
+    const pct=Math.round(quizCorrect/quizData.length*100);
+    if(pct<80) document.getElementById('quiz-retry-section').style.display='block';
+    else document.getElementById('quiz-done-btn').style.display='block';
+  }
+}
+
+function retryQuiz(){
+  quizCorrect=0; quizAnswered=0;
+  document.getElementById('quiz-score').textContent='0 / 0';
+  document.getElementById('quiz-retry-section').style.display='none';
+  document.getElementById('quiz-done-btn').style.display='none';
+  buildQuiz();
+}
+
+function buildFill(){
+  document.getElementById('fill-container').innerHTML=fillData.map((f,i)=>`
+    <div class="fill-item" id="fi-${i}">
+      <div class="fill-q">${i+1}. ${f.before}<input type="text" id="finp-${i}" placeholder="...">${f.after}</div>
+      <div class="fill-vi">💡 ${f.vi}</div>
+      <div class="fill-ans" id="fa-${i}">❌ Đáp án đúng: <strong>${f.answer}</strong></div>
+    </div>`).join('');
+}
+
+function checkFill(){
+  fillCorrect=0;
+  fillData.forEach((f,i)=>{
+    const inp=document.getElementById(`finp-${i}`);
+    const item=document.getElementById(`fi-${i}`);
+    const ans=document.getElementById(`fa-${i}`);
+    const val=inp.value.trim().toLowerCase();
+    inp.disabled=true;
+    if(val===f.answer.toLowerCase()){
+      item.classList.add('correct'); item.classList.remove('wrong');
+      ans.classList.remove('show-wrong'); fillCorrect++;
+    } else {
+      item.classList.add('wrong'); item.classList.remove('correct');
+      ans.classList.add('show-wrong');
+    }
+  });
+  const pct=Math.round(fillCorrect/fillData.length*100);
+  const el=document.getElementById('fill-score-display');
+  el.style.display='block';
+  el.innerHTML=`Điểm điền từ: <span style="color:${pct>=70?'#2e7d32':'#c0392b'}">${fillCorrect}/${fillData.length} (${pct}%)</span>`;
+  if(pct<70){ el.innerHTML+=` – <span style="color:#c0392b">Hãy làm lại nhé!</span>`; document.getElementById('retry-fill-btn').style.display='inline-flex'; }
+}
+
+function retryFill(){
+  fillData.forEach((f,i)=>{
+    const inp=document.getElementById(`finp-${i}`);
+    inp.value=''; inp.disabled=false;
+    document.getElementById(`fi-${i}`).classList.remove('correct','wrong');
+    document.getElementById(`fa-${i}`).classList.remove('show-wrong');
+  });
+  fillCorrect=0;
+  document.getElementById('retry-fill-btn').style.display='none';
+  document.getElementById('fill-score-display').style.display='none';
+}
+
+function buildTrans(){
+  document.getElementById('trans-container').innerHTML=transData.map((t,i)=>`
+    <div class="trans-item" id="ti-${i}">
+      <div class="trans-lang">${t.dir==='vi→en'?'🇻🇳 Tiếng Việt → Tiếng Anh':'🇬🇧 Tiếng Anh → Tiếng Việt'}</div>
+      <div class="trans-q">${t.prompt}</div>
+      <input class="trans-input" type="text" id="tinp-${i}" placeholder="Nhập bản dịch của bạn...">
+      <div class="trans-ans" id="ta-${i}">❌ Đáp án gợi ý: <strong>${t.answer}</strong></div>
+    </div>`).join('');
+}
+
+function normalize(s){return s.trim().toLowerCase().replace(/[.?!,']/g,'').replace(/\s+/g,' ');}
+
+function checkTrans(){
+  transCorrect=0;
+  transData.forEach((t,i)=>{
+    const inp=document.getElementById(`tinp-${i}`);
+    const item=document.getElementById(`ti-${i}`);
+    const ans=document.getElementById(`ta-${i}`);
+    const val=normalize(inp.value);
+    const correct=normalize(t.answer);
+    inp.disabled=true;
+    const kw=correct.split(' ').filter(w=>w.length>2);
+    const ratio=kw.length?kw.filter(w=>val.includes(w)).length/kw.length:0;
+    if(ratio>=0.65){
+      item.classList.add('correct'); item.classList.remove('wrong');
+      ans.classList.remove('show'); transCorrect++;
+    } else {
+      item.classList.add('wrong'); item.classList.remove('correct');
+      ans.classList.add('show');
+    }
+  });
+  const pct=Math.round(transCorrect/transData.length*100);
+  const el=document.getElementById('trans-score-display');
+  el.style.display='block';
+  el.innerHTML=`Điểm dịch câu: <span style="color:${pct>=70?'#2e7d32':'#c0392b'}">${transCorrect}/${transData.length} (${pct}%)</span>`;
+  if(pct<70){ el.innerHTML+=` – <span style="color:#c0392b">Hãy làm lại nhé!</span>`; document.getElementById('retry-trans-btn').style.display='inline-flex'; }
+}
+
+function retryTrans(){
+  transData.forEach((t,i)=>{
+    const inp=document.getElementById(`tinp-${i}`);
+    inp.value=''; inp.disabled=false;
+    document.getElementById(`ti-${i}`).classList.remove('correct','wrong');
+    document.getElementById(`ta-${i}`).classList.remove('show');
+  });
+  transCorrect=0;
+  document.getElementById('retry-trans-btn').style.display='none';
+  document.getElementById('trans-score-display').style.display='none';
+}
+
+function buildSpeaking(){
+  document.getElementById('speaking-container').innerHTML=speakingData.map((s,i)=>`
+    <div class="speak-card" style="background:${s.color}">
+      <div class="slbl">CÂU ${i+1}</div>
+      <div class="sen-en">${s.en}</div>
+      <div class="sen-vi">${s.vi}</div>
+      <button class="hear-btn" onclick="speak('${s.en.replace(/'/g,"\\'")}')">▶ Nghe mẫu</button>
+    </div>`).join('');
+}
+
+function buildQuickReview(){
+  const rows=[
+    {adj:"easy",      pron:"/ˈiːzi/",        vi:"dễ",                c:"#2e7d32", ex:"It is easy to learn English."},
+    {adj:"difficult", pron:"/ˈdɪfɪkəlt/",    vi:"khó",               c:"#b7410e", ex:"It's difficult to fix this car."},
+    {adj:"good",      pron:"/ɡʊd/",           vi:"tốt",               c:"#1565c0", ex:"It's good to sleep early."},
+    {adj:"healthy",   pron:"/ˈhel.θi/",       vi:"tốt cho sức khỏe", c:"#00838f", ex:"It's healthy to exercise."},
+    {adj:"dangerous", pron:"/ˈdeɪn.dʒr.əs/", vi:"nguy hiểm",         c:"#c0392b", ex:"It's dangerous to drive fast."},
+  ];
+  document.getElementById('quick-review').innerHTML=`
+    <div style="background:#fff8e1;border-radius:9px;padding:9px 12px;margin-bottom:8px;font-size:.82rem;border-left:3px solid var(--yellow)">
+      <strong>Cấu trúc:</strong> It's + <span style="color:#b7410e">Adj</span> + to + <span style="color:#1565c0">V nguyên thể</span><br>
+      <strong>Phủ định:</strong> It's <u>not</u> + Adj + to V &nbsp;&nbsp; <strong>Câu hỏi:</strong> <u>Is</u> it + Adj + to V?
+    </div>
+    ${rows.map(r=>`<div>📌 <strong style="color:${r.c}">${r.adj}</strong> <span style="color:#aaa;font-style:italic">${r.pron}</span> – ${r.vi} &nbsp;→&nbsp; <span style="color:#555">"${r.ex}"</span></div>`).join('')}`;
+}
+
+function speak(text){
+  if(!window.speechSynthesis) return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='en-US'; u.rate=0.85;
+  speechSynthesis.speak(u);
+}
+
+function goPhase(n){
+  document.querySelectorAll('.phase').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.phase-tab').forEach((t,i)=>{
+    t.classList.remove('active','done');
+    if(i<n) t.classList.add('done');
+  });
+  document.getElementById(`phase-${n}`).classList.add('active');
+  document.querySelectorAll('.phase-tab')[n].classList.add('active');
+  document.getElementById('progress-bar').style.width=Math.round(n/8*100)+'%';
+  window.scrollTo(0,0);
+  if(n===8) showResult();
+}
+
+function showResult(){
+  const total=quizCorrect+fillCorrect+transCorrect;
+  const max=quizData.length+fillData.length+transData.length;
+  const pct=Math.round(total/max*100);
+  document.getElementById('final-score').textContent=pct+'%';
+  let msg,desc;
+  if(pct>=90){msg='🏆 Xuất sắc!';desc='Bạn đã nắm vững cấu trúc It\'s + Adj + to V!';}
+  else if(pct>=75){msg='👍 Tốt lắm!';desc='Bạn hiểu tốt. Ôn lại các câu chưa đúng nhé!';}
+  else if(pct>=55){msg='📚 Cần ôn thêm!';desc='Hãy học lại lý thuyết và làm lại bài tập!';}
+  else{msg='💪 Tiếp tục cố gắng!';desc='Bắt đầu lại từ phần lý thuyết và luyện nhiều hơn!';}
+  document.getElementById('final-msg').textContent=msg;
+  document.getElementById('final-desc').textContent=desc;
+  document.getElementById('detail-score').innerHTML=
+    `🧠 Quiz: <strong>${quizCorrect}/${quizData.length}</strong> &nbsp;|&nbsp; ✏️ Điền từ: <strong>${fillCorrect}/${fillData.length}</strong> &nbsp;|&nbsp; 🔄 Dịch câu: <strong>${transCorrect}/${transData.length}</strong> &nbsp;|&nbsp; Tổng: <strong>${total}/${max} (${pct}%)</strong>`;
+  clearInterval(timerInterval);
+}
+
+function restartLesson(){
+  quizCorrect=0; quizAnswered=0; fillCorrect=0; transCorrect=0;
+  secondsLeft=3600; clearInterval(timerInterval);
+  buildQuiz(); buildFill(); buildTrans();
+  document.getElementById('quiz-score').textContent='0 / 0';
+  document.getElementById('quiz-retry-section').style.display='none';
+  document.getElementById('quiz-done-btn').style.display='none';
+  goPhase(0); startTimer();
+}
+
+init();
+</script>
+</body>
+</html>

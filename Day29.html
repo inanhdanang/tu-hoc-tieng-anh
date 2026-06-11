@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 29 – WAS / WERE – Động từ To Be quá khứ</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --c1:#b7410e;--c2:#1565c0;--c3:#2e7d32;--c4:#6a1b9a;--c5:#00838f;
+    --yellow:#FFD93D;--bg:#fafbff;--dark:#0d1b2a;--gray:#78909c;--radius:18px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--dark);min-height:100vh;}
+  header{background:var(--dark);color:white;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 3px 14px rgba(0,0,0,.3);}
+  header h1{font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;}
+  header h1 span{color:var(--yellow);}
+  #timer-bar{font-size:.95rem;font-weight:700;background:var(--yellow);color:var(--dark);padding:5px 14px;border-radius:30px;}
+  #progress-wrap{background:#e9ecef;height:8px;}
+  #progress-bar{height:8px;background:linear-gradient(90deg,var(--c1),var(--c2),var(--c3),var(--c4));transition:width .6s ease;border-radius:0 4px 4px 0;}
+  #phase-nav{display:flex;gap:5px;padding:10px 16px;overflow-x:auto;background:white;border-bottom:2px solid #f1f3f4;}
+  .phase-tab{flex-shrink:0;padding:5px 11px;border-radius:20px;font-size:.72rem;font-weight:700;border:2px solid #dee2e6;background:white;cursor:pointer;transition:all .2s;color:var(--gray);}
+  .phase-tab.active{background:var(--dark);color:white;border-color:var(--dark);}
+  .phase-tab.done{background:var(--c3);color:white;border-color:var(--c3);}
+  main{padding:18px 14px 48px;max-width:780px;margin:0 auto;}
+  .phase{display:none;animation:fadeIn .4s ease;}
+  .phase.active{display:block;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+  .section-header{border-radius:var(--radius) var(--radius) 0 0;padding:13px 18px;}
+  .section-header .phase-label{font-size:.66rem;letter-spacing:2px;text-transform:uppercase;color:var(--yellow);font-weight:700;}
+  .section-header h2{font-family:'Baloo 2',cursive;font-size:1.2rem;font-weight:800;color:white;}
+  .section-header .duration{font-size:.76rem;color:rgba(255,255,255,.5);margin-top:1px;}
+  .section-body{background:white;border-radius:0 0 var(--radius) var(--radius);padding:18px;margin-bottom:20px;box-shadow:0 4px 18px rgba(0,0,0,.07);}
+
+  .formula-box{border-radius:13px;padding:14px 18px;margin-bottom:14px;border:3px solid;}
+  .formula-box .fb-title{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;}
+  .formula-box .fb-formula{font-family:'Baloo 2',cursive;font-size:1.05rem;font-weight:800;margin-bottom:6px;}
+  .formula-box .fb-ex{font-size:.84rem;line-height:1.8;}
+
+  .rule-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+  .rule-card{border-radius:12px;padding:13px 12px;border:2px solid;text-align:center;}
+  .rule-card .rc-word{font-family:'Baloo 2',cursive;font-size:1.15rem;font-weight:800;margin-bottom:3px;}
+  .rule-card .rc-sub{font-size:.73rem;font-weight:700;margin-bottom:5px;line-height:1.5;}
+  .rule-card .rc-ipa{font-size:.72rem;color:var(--gray);}
+  @media(max-width:480px){.rule-grid{grid-template-columns:1fr;}.quiz-opts{grid-template-columns:1fr;}}
+
+  .tip-box{background:#fff8e1;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:.82rem;border-left:4px solid var(--yellow);line-height:1.75;}
+  .tip-box strong{color:#e65100;}
+
+  .phrase-table{width:100%;border-collapse:collapse;margin-bottom:14px;font-size:.83rem;}
+  .phrase-table th{background:var(--dark);color:white;padding:8px 10px;text-align:left;font-weight:800;}
+  .phrase-table td{padding:8px 10px;border-bottom:1px solid #e9ecef;vertical-align:middle;}
+  .phrase-table tr:hover td{background:#f1f8e9;}
+  .phrase-table .en{font-weight:700;color:var(--c1);}
+  .phrase-table .vi{color:var(--gray);}
+  .play-btn{background:none;border:1px solid #dee2e6;border-radius:20px;padding:2px 8px;font-size:.68rem;font-weight:700;cursor:pointer;color:var(--c3);font-family:'Nunito',sans-serif;}
+  .play-btn:hover{background:var(--c3);color:white;border-color:var(--c3);}
+
+  .ex-title{font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;padding:4px 12px;border-radius:20px;color:white;display:inline-block;margin-bottom:8px;}
+  .eb{border-radius:11px;padding:11px 14px;margin-bottom:8px;border-left:4px solid;}
+  .eb .en{font-size:.93rem;font-weight:700;margin-bottom:2px;}
+  .eb .vi{font-size:.81rem;color:#495057;margin-bottom:6px;}
+  .divider{height:1px;background:#e9ecef;margin:14px 0;}
+
+  .dbox{background:#f8f9fa;border-radius:13px;padding:14px;margin-bottom:11px;border:2px solid #e9ecef;}
+  .dtitle{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--gray);margin-bottom:9px;}
+  .dline{display:flex;gap:7px;margin-bottom:7px;align-items:flex-start;}
+  .dlabel{font-size:.7rem;font-weight:800;padding:2px 7px;border-radius:7px;color:white;flex-shrink:0;margin-top:2px;min-width:24px;text-align:center;}
+  .dvi{font-size:.84rem;font-weight:700;color:#1565c0;}
+  .den{font-size:.84rem;font-weight:700;color:#212121;}
+  .pdlg{margin-top:7px;background:#2e7d32;color:white;border:none;border-radius:20px;padding:5px 13px;font-size:.74rem;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;display:inline-flex;align-items:center;gap:4px;}
+
+  .quiz-item{background:#f8f9fa;border-radius:13px;padding:14px;margin-bottom:12px;border:2px solid transparent;transition:border-color .3s;}
+  .quiz-item.answered-ok{border-color:#2e7d32;background:#f1f8e9;}
+  .quiz-item.answered-fail{border-color:#c0392b;background:#fbe9e7;}
+  .quiz-q{font-size:.9rem;font-weight:700;margin-bottom:10px;}
+  .quiz-opts{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+  .qopt{background:white;border:2px solid #dee2e6;border-radius:9px;padding:7px 9px;font-size:.81rem;font-weight:700;cursor:pointer;transition:all .2s;font-family:'Nunito',sans-serif;text-align:center;}
+  .qopt:hover:not(:disabled){border-color:#1565c0;color:#1565c0;}
+  .qopt.sel-ok{background:#2e7d32;color:white;border-color:#2e7d32;}
+  .qopt.sel-fail{background:#c0392b;color:white;border-color:#c0392b;}
+  .qopt:disabled{cursor:default;}
+  .qfb{margin-top:6px;font-size:.77rem;font-weight:700;display:none;}
+  .qfb.show{display:block;}
+  .qfb.ok{color:#2e7d32;}
+  .qfb.fail{color:#c0392b;}
+
+  .fill-item{background:#f8f9fa;border-radius:12px;padding:13px;margin-bottom:10px;border:2px solid transparent;}
+  .fill-item.correct{border-color:#2e7d32;background:#f1f8e9;}
+  .fill-item.wrong{border-color:#c0392b;background:#fbe9e7;}
+  .fill-q{font-size:.9rem;font-weight:700;margin-bottom:6px;line-height:1.9;}
+  .fill-q input{border:2px solid #1565c0;border-radius:7px;padding:2px 8px;font-size:.86rem;font-family:'Nunito',sans-serif;font-weight:700;width:160px;text-align:center;outline:none;background:white;}
+  .fill-vi{font-size:.78rem;color:var(--gray);margin-bottom:6px;}
+  .fill-ans{font-size:.78rem;font-weight:700;margin-top:4px;display:none;}
+  .fill-ans.show-wrong{display:block;color:#c0392b;}
+
+  .trans-item{background:#f8f9fa;border-radius:12px;padding:13px;margin-bottom:10px;border:2px solid transparent;}
+  .trans-item.correct{border-color:#2e7d32;background:#f1f8e9;}
+  .trans-item.wrong{border-color:#c0392b;background:#fbe9e7;}
+  .trans-lang{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;color:var(--gray);}
+  .trans-q{font-size:.92rem;font-weight:700;margin-bottom:6px;color:var(--dark);}
+  .trans-input{width:100%;border:2px solid #1565c0;border-radius:8px;padding:6px 10px;font-size:.86rem;font-family:'Nunito',sans-serif;font-weight:700;outline:none;background:white;}
+  .trans-ans{font-size:.78rem;font-weight:700;margin-top:4px;display:none;color:#c0392b;}
+  .trans-ans.show{display:block;}
+
+  .speak-card{border-radius:12px;padding:13px 16px;margin-bottom:9px;color:white;}
+  .slbl{font-size:.66rem;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:3px;}
+  .sen-en{font-size:.97rem;font-weight:800;margin-bottom:2px;}
+  .sen-vi{font-size:.8rem;color:rgba(255,255,255,.7);margin-bottom:9px;}
+  .hear-btn{background:var(--yellow);color:var(--dark);border:none;border-radius:20px;padding:6px 14px;font-weight:800;font-size:.8rem;cursor:pointer;font-family:'Nunito',sans-serif;display:inline-flex;align-items:center;gap:4px;transition:transform .15s;}
+  .hear-btn:hover{transform:scale(1.04);}
+
+  #score-section{text-align:center;padding:24px 12px;}
+  .score-circle{width:120px;height:120px;border-radius:50%;background:linear-gradient(135deg,var(--c1),var(--c2));display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 6px 20px rgba(21,101,192,.3);}
+  .score-circle .num{font-family:'Baloo 2',cursive;font-size:2rem;font-weight:800;color:white;line-height:1;}
+  .score-circle .lbl{font-size:.7rem;font-weight:700;color:rgba(255,255,255,.8);}
+  #score-section h2{font-family:'Baloo 2',cursive;font-size:1.4rem;font-weight:800;margin-bottom:6px;}
+  #score-section p{color:var(--gray);font-size:.86rem;max-width:340px;margin:0 auto 16px;}
+  .btn-next{background:var(--c2);color:white;border:none;border-radius:11px;padding:10px 24px;font-size:.9rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;margin-top:12px;display:inline-flex;align-items:center;gap:6px;transition:all .2s;}
+  .btn-next:hover{opacity:.88;}
+  .btn-check{background:var(--c3);color:white;border:none;border-radius:11px;padding:9px 20px;font-size:.86rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;margin-top:10px;display:inline-flex;align-items:center;gap:5px;}
+  .btn-primary{background:var(--dark);color:white;border:none;border-radius:11px;padding:10px 24px;font-size:.9rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;display:inline-flex;align-items:center;gap:6px;}
+  .retry-btn{background:#c0392b;color:white;border:none;border-radius:11px;padding:9px 20px;font-size:.86rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;margin-top:8px;display:inline-flex;align-items:center;gap:5px;margin-right:8px;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>⏪ <span>WAS / WERE</span> – To Be quá khứ</h1>
+  <div id="timer-bar">⏱ 60:00</div>
+</header>
+<div id="progress-wrap"><div id="progress-bar" style="width:0%"></div></div>
+
+<nav id="phase-nav">
+  <button class="phase-tab active" onclick="goPhase(0)">1. Lý thuyết</button>
+  <button class="phase-tab" onclick="goPhase(1)">2. Từ vựng</button>
+  <button class="phase-tab" onclick="goPhase(2)">3. Ví dụ</button>
+  <button class="phase-tab" onclick="goPhase(3)">4. Hội thoại</button>
+  <button class="phase-tab" onclick="goPhase(4)">5. Quiz</button>
+  <button class="phase-tab" onclick="goPhase(5)">6. Điền từ</button>
+  <button class="phase-tab" onclick="goPhase(6)">7. Dịch câu</button>
+  <button class="phase-tab" onclick="goPhase(7)">8. Nói</button>
+  <button class="phase-tab" onclick="goPhase(8)">9. Kết quả</button>
+</nav>
+
+<main>
+
+<!-- PHASE 0: LÝ THUYẾT -->
+<div class="phase active" id="phase-0">
+  <div class="section-header" style="background:var(--dark)">
+    <div class="phase-label">📖 Giai đoạn 1 – 8 phút</div>
+    <h2>Động Từ To Be Trong Quá Khứ: WAS / WERE</h2>
+    <div class="duration">Học cách dùng was/were trong câu khẳng định, phủ định, câu hỏi</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box">
+      <strong>📌 Mục tiêu:</strong> Nắm vững khi nào dùng <strong>WAS</strong> (I/He/She/It) và <strong>WERE</strong> (You/We/They/số nhiều). Nhấn ▶ để nghe phát âm!
+    </div>
+
+    <!-- WAS vs WERE cards -->
+    <div class="rule-grid">
+      <div class="rule-card" style="background:#fff3e0;border-color:#e65100">
+        <div class="rc-word" style="color:#e65100">WAS</div>
+        <div class="rc-ipa">/wɒz/ hoặc /wəz/</div>
+        <div class="rc-sub" style="color:#e65100;margin-top:5px;">I / He / She / It<br>Danh từ số ít</div>
+        <button class="play-btn" onclick="speak('was')" style="margin-top:6px">▶ Nghe</button>
+      </div>
+      <div class="rule-card" style="background:#e3f2fd;border-color:#1565c0">
+        <div class="rc-word" style="color:#1565c0">WERE</div>
+        <div class="rc-ipa">/wɜː(r)/</div>
+        <div class="rc-sub" style="color:#1565c0;margin-top:5px;">You / We / They<br>Danh từ số nhiều</div>
+        <button class="play-btn" onclick="speak('were')" style="margin-top:6px">▶ Nghe</button>
+      </div>
+    </div>
+
+    <!-- Khẳng định -->
+    <div class="formula-box" style="background:#f1f8e9;border-color:#2e7d32">
+      <div class="fb-title" style="color:#2e7d32">✅ Câu khẳng định</div>
+      <div class="fb-formula" style="color:#e65100">I / He / She / It + WAS + N/Adj</div>
+      <div class="fb-formula" style="color:#1565c0">You / We / They / Số nhiều + WERE + N/Adj</div>
+      <div class="fb-ex">
+        <button class="play-btn" onclick="speak('He was at home yesterday.')" style="margin-right:6px">▶</button><strong>He was at home yesterday.</strong> → Hôm qua anh ấy đã ở nhà.<br>
+        <button class="play-btn" onclick="speak('She was a teacher.')" style="margin-right:6px">▶</button><strong>She was a teacher.</strong> → Cô ấy từng là giáo viên.<br>
+        <button class="play-btn" onclick="speak('I was very tired.')" style="margin-right:6px">▶</button><strong>I was very tired.</strong> → Tôi đã rất mệt.<br>
+        <button class="play-btn" onclick="speak('They were teachers.')" style="margin-right:6px">▶</button><strong>They were teachers.</strong> → Họ từng là giáo viên.<br>
+        <button class="play-btn" onclick="speak('We were very happy.')" style="margin-right:6px">▶</button><strong>We were very happy.</strong> → Chúng tôi đã rất vui.<br>
+        <button class="play-btn" onclick="speak('Lan and Trang were at home.')" style="margin-right:6px">▶</button><strong>Lan and Trang were at home.</strong> → Lan và Trang đã ở nhà.
+      </div>
+    </div>
+
+    <!-- Phủ định -->
+    <div class="formula-box" style="background:#fce4ec;border-color:#c0392b">
+      <div class="fb-title" style="color:#c0392b">❌ Câu phủ định</div>
+      <div class="fb-formula" style="color:#c0392b">WAS NOT = WASN'T &nbsp;|&nbsp; WERE NOT = WEREN'T</div>
+      <div class="fb-ex">
+        <button class="play-btn" onclick="speak('I wasn\'t at home yesterday.')" style="margin-right:6px">▶</button><strong>I wasn't at home yesterday.</strong> → Tối qua tôi không ở nhà.<br>
+        <button class="play-btn" onclick="speak('Lan wasn\'t happy yesterday.')" style="margin-right:6px">▶</button><strong>Lan wasn't happy yesterday.</strong> → Hôm qua Lan không vui.<br>
+        <button class="play-btn" onclick="speak('My mom wasn\'t busy this morning.')" style="margin-right:6px">▶</button><strong>My mom wasn't busy this morning.</strong> → Sáng nay mẹ tôi không bận.<br>
+        <button class="play-btn" onclick="speak('We weren\'t at the park yesterday.')" style="margin-right:6px">▶</button><strong>We weren't at the park yesterday.</strong> → Hôm qua chúng tôi không ở công viên.<br>
+        <button class="play-btn" onclick="speak('You weren\'t here.')" style="margin-right:6px">▶</button><strong>You weren't here.</strong> → Bạn không ở đây vào tối qua.
+      </div>
+    </div>
+
+    <!-- Câu hỏi -->
+    <div class="formula-box" style="background:#e3f2fd;border-color:#1565c0">
+      <div class="fb-title" style="color:#1565c0">❓ Câu hỏi Yes/No</div>
+      <div class="fb-formula" style="color:#1565c0">WAS + S + N/Adj?</div>
+      <div class="fb-formula" style="color:#1565c0">WERE + S + N/Adj?</div>
+      <div class="fb-ex">
+        <button class="play-btn" onclick="speak('Was he a teacher?')" style="margin-right:6px">▶</button><strong>Was he a teacher?</strong> → Anh ấy từng là giáo viên à?<br>
+        <button class="play-btn" onclick="speak('Was he tired after the trip?')" style="margin-right:6px">▶</button><strong>Was he tired after the trip?</strong> → Anh ấy có mệt sau chuyến đi không?<br>
+        <button class="play-btn" onclick="speak('Was it cold yesterday?')" style="margin-right:6px">▶</button><strong>Was it cold yesterday?</strong> → Hôm qua trời có lạnh không?<br>
+        <button class="play-btn" onclick="speak('Were they at the office yesterday?')" style="margin-right:6px">▶</button><strong>Were they at the office yesterday?</strong> → Hôm qua họ có ở văn phòng không?<br>
+        <button class="play-btn" onclick="speak('Were you here last Monday?')" style="margin-right:6px">▶</button><strong>Were you here last Monday?</strong> → Bạn có ở đây vào thứ 2 trước không?
+      </div>
+    </div>
+
+    <!-- There was / There were -->
+    <div class="formula-box" style="background:#f3e5f5;border-color:#6a1b9a">
+      <div class="fb-title" style="color:#6a1b9a">📍 There was / There were – Đã từng có...</div>
+      <div class="fb-formula" style="color:#6a1b9a">There was + N số ít &nbsp;|&nbsp; There were + N số nhiều</div>
+      <div class="fb-ex">
+        <button class="play-btn" onclick="speak('There was a table here.')" style="margin-right:6px">▶</button><strong>There was a table here.</strong> → Đã từng có một cái bàn ở đây.<br>
+        <button class="play-btn" onclick="speak('There was a meeting yesterday.')" style="margin-right:6px">▶</button><strong>There was a meeting yesterday.</strong> → Hôm qua đã có một cuộc họp.<br>
+        <button class="play-btn" onclick="speak('There were many stores here.')" style="margin-right:6px">▶</button><strong>There were many stores here.</strong> → Đã từng có nhiều cửa hàng ở đây.<br>
+        <button class="play-btn" onclick="speak('There were lots of problems at that time.')" style="margin-right:6px">▶</button><strong>There were lots of problems at that time.</strong> → Lúc đó đã có rất nhiều vấn đề.
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <strong>⏰ Từ chỉ thời gian quá khứ thường dùng:</strong> yesterday (hôm qua), last night (tối qua), last Monday (thứ 2 tuần trước), this morning (sáng nay), at that time (lúc đó), ago (... trước đây).
+    </div>
+
+    <button class="btn-next" onclick="goPhase(1)">Tiếp theo: Từ vựng →</button>
+  </div>
+</div>
+
+<!-- PHASE 1: TỪ VỰNG -->
+<div class="phase" id="phase-1">
+  <div class="section-header" style="background:var(--c1)">
+    <div class="phase-label">📝 Giai đoạn 2 – 7 phút</div>
+    <h2>Bảng Tổng Hợp Từ Vựng & Câu Mẫu</h2>
+    <div class="duration">Nhấn ▶ để nghe phát âm từng từ / câu</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box"><strong>Cách học:</strong> Nhìn tiếng Việt → nhớ tiếng Anh → nhấn ▶ nghe phát âm!</div>
+    <table class="phrase-table">
+      <thead><tr><th>Tiếng Anh</th><th>Nghĩa</th><th>Nhóm</th><th>Nghe</th></tr></thead>
+      <tbody id="phrase-tbody"></tbody>
+    </table>
+    <button class="btn-next" onclick="goPhase(2)">Tiếp theo: Ví dụ →</button>
+  </div>
+</div>
+
+<!-- PHASE 2: VÍ DỤ -->
+<div class="phase" id="phase-2">
+  <div class="section-header" style="background:var(--c2)">
+    <div class="phase-label">🗣️ Giai đoạn 3 – 8 phút</div>
+    <h2>Ví dụ trong ngữ cảnh thực tế</h2>
+    <div class="duration">Nghe và đọc theo từng câu</div>
+  </div>
+  <div class="section-body">
+    <span class="ex-title" style="background:var(--c1)">✅ WAS / WERE – Khẳng định</span>
+    <div id="ex-group1"></div>
+    <div class="divider"></div>
+    <span class="ex-title" style="background:#c0392b">❌ WASN'T / WEREN'T – Phủ định</span>
+    <div id="ex-group2"></div>
+    <div class="divider"></div>
+    <span class="ex-title" style="background:var(--c2)">❓ WAS / WERE – Câu hỏi</span>
+    <div id="ex-group3"></div>
+    <div class="divider"></div>
+    <span class="ex-title" style="background:var(--c4)">📍 There was / There were</span>
+    <div id="ex-group4"></div>
+    <button class="btn-next" onclick="goPhase(3)">Tiếp theo: Hội thoại →</button>
+  </div>
+</div>
+
+<!-- PHASE 3: HỘI THOẠI -->
+<div class="phase" id="phase-3">
+  <div class="section-header" style="background:var(--c3)">
+    <div class="phase-label">💬 Giai đoạn 4 – 7 phút</div>
+    <h2>Hội Thoại Thực Tế</h2>
+    <div class="duration">Đọc, nghe, và học theo hội thoại</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box"><strong>Cách luyện:</strong> Đọc tiếng Việt trước → đoán tiếng Anh → nhấn ▶ để nghe toàn bộ hội thoại.</div>
+    <div id="dialogue-container"></div>
+    <button class="btn-next" onclick="goPhase(4)">Tiếp theo: Quiz →</button>
+  </div>
+</div>
+
+<!-- PHASE 4: QUIZ -->
+<div class="phase" id="phase-4">
+  <div class="section-header" style="background:var(--c4)">
+    <div class="phase-label">🧠 Giai đoạn 5 – 8 phút</div>
+    <h2>Quiz Trắc Nghiệm</h2>
+    <div class="duration">Chọn đáp án đúng – không giới hạn thời gian</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box"><strong>Hướng dẫn:</strong> Chọn câu trả lời đúng. Cần đạt <strong>80%</strong> để qua vòng này!</div>
+    <div style="font-size:.82rem;font-weight:700;margin-bottom:12px;">Điểm: <span id="quiz-score">0 / 0</span></div>
+    <div id="quiz-container"></div>
+    <div id="quiz-retry-section" style="display:none;margin-top:12px;">
+      <div style="color:#c0392b;font-weight:700;font-size:.86rem;margin-bottom:8px;">Chưa đạt 80% — Hãy thử lại nhé!</div>
+      <button class="retry-btn" onclick="retryQuiz()">🔄 Làm lại Quiz</button>
+    </div>
+    <div id="quiz-done-btn" style="display:none;">
+      <button class="btn-next" onclick="goPhase(5)">✅ Tiếp theo: Điền từ →</button>
+    </div>
+    <button class="btn-next" style="margin-top:10px;background:var(--gray)" onclick="goPhase(5)">Bỏ qua →</button>
+  </div>
+</div>
+
+<!-- PHASE 5: ĐIỀN TỪ -->
+<div class="phase" id="phase-5">
+  <div class="section-header" style="background:var(--c5)">
+    <div class="phase-label">✏️ Giai đoạn 6 – 7 phút</div>
+    <h2>Điền từ vào chỗ trống</h2>
+    <div class="duration">Gõ was / were / wasn't / weren't – không có gợi ý!</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box"><strong>Hướng dẫn:</strong> Điền was / were / wasn't / weren't vào ô trống. Nhấn "Kiểm tra" sau khi xong.</div>
+    <div id="fill-container"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">
+      <button class="btn-check" onclick="checkFill()">✅ Kiểm tra tất cả</button>
+      <button class="retry-btn" onclick="retryFill()" id="retry-fill-btn" style="display:none">🔄 Làm lại</button>
+    </div>
+    <div id="fill-score-display" style="margin-top:10px;font-weight:700;font-size:.9rem;display:none;"></div>
+    <br>
+    <button class="btn-next" onclick="goPhase(6)" style="margin-top:8px">Tiếp theo: Dịch câu →</button>
+  </div>
+</div>
+
+<!-- PHASE 6: DỊCH CÂU -->
+<div class="phase" id="phase-6">
+  <div class="section-header" style="background:var(--c4)">
+    <div class="phase-label">🔄 Giai đoạn 7 – 7 phút</div>
+    <h2>Dịch câu</h2>
+    <div class="duration">Dịch 2 chiều Việt ↔ Anh – không có gợi ý!</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box"><strong>Hướng dẫn:</strong> Dịch câu vào ô. Nhấn "Kiểm tra" sau khi làm xong tất cả.</div>
+    <div id="trans-container"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">
+      <button class="btn-check" onclick="checkTrans()">✅ Kiểm tra tất cả</button>
+      <button class="retry-btn" onclick="retryTrans()" id="retry-trans-btn" style="display:none">🔄 Làm lại</button>
+    </div>
+    <div id="trans-score-display" style="margin-top:10px;font-weight:700;font-size:.9rem;display:none;"></div>
+    <br>
+    <button class="btn-next" onclick="goPhase(7)" style="margin-top:8px">Tiếp theo: Luyện nói →</button>
+  </div>
+</div>
+
+<!-- PHASE 7: NÓI -->
+<div class="phase" id="phase-7">
+  <div class="section-header" style="background:var(--c5)">
+    <div class="phase-label">🎤 Giai đoạn 8 – 8 phút</div>
+    <h2>Luyện nói</h2>
+    <div class="duration">Nghe mẫu → đọc to theo → lặp lại 3 lần!</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box"><strong>Cách luyện:</strong> Nhấn ▶ nghe, sau đó nói to câu đó. Lặp lại đến khi phát âm tự nhiên.</div>
+    <div id="speaking-container"></div>
+    <button class="btn-next" onclick="goPhase(8)">Xem kết quả →</button>
+  </div>
+</div>
+
+<!-- PHASE 8: RESULT -->
+<div class="phase" id="phase-8">
+  <div class="section-header" style="background:var(--dark)">
+    <div class="phase-label">🏆 Kết thúc bài học</div>
+    <h2>Tổng kết</h2>
+    <div class="duration">Kết quả Quiz + Điền từ + Dịch câu</div>
+  </div>
+  <div class="section-body">
+    <div id="score-section">
+      <div class="score-circle">
+        <div class="num" id="final-score">—</div>
+        <div class="lbl">điểm</div>
+      </div>
+      <h2 id="final-msg">Hoàn thành!</h2>
+      <p id="final-desc"></p>
+      <div id="detail-score" style="margin:12px 0;font-size:.85rem;font-weight:700;background:#f8f9fa;border-radius:10px;padding:12px 16px;text-align:left;"></div>
+      <div style="background:#f8f9fa;border-radius:13px;padding:14px;text-align:left;margin:14px 0;">
+        <h3 style="font-size:.86rem;font-weight:800;margin-bottom:10px;">📋 Ôn nhanh:</h3>
+        <div id="quick-review" style="font-size:.82rem;line-height:2.2;"></div>
+      </div>
+      <button class="btn-primary" onclick="restartLesson()">🔄 Học lại từ đầu</button>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+const allPhrases = [
+  // WAS - khẳng định
+  {en:"He was at home yesterday.",           vi:"Hôm qua anh ấy đã ở nhà.",            group:"WAS (+)"},
+  {en:"She was a teacher.",                  vi:"Cô ấy từng là giáo viên.",             group:"WAS (+)"},
+  {en:"I was very tired.",                   vi:"Tôi đã rất mệt.",                      group:"WAS (+)"},
+  {en:"It was cold yesterday.",              vi:"Hôm qua trời lạnh.",                   group:"WAS (+)"},
+  {en:"There was a meeting yesterday.",      vi:"Hôm qua đã có một cuộc họp.",          group:"WAS (+)"},
+  // WERE - khẳng định
+  {en:"They were teachers.",                 vi:"Họ từng là giáo viên.",                group:"WERE (+)"},
+  {en:"We were very happy.",                 vi:"Chúng tôi đã rất vui.",                group:"WERE (+)"},
+  {en:"Lan and Trang were at home.",         vi:"Lan và Trang đã ở nhà.",               group:"WERE (+)"},
+  {en:"My parents were very angry last night.", vi:"Đêm qua bố mẹ tôi đã rất tức giận.", group:"WERE (+)"},
+  {en:"There were many stores here.",        vi:"Đã từng có nhiều cửa hàng ở đây.",    group:"WERE (+)"},
+  // WASN'T - phủ định
+  {en:"I wasn't at home yesterday.",         vi:"Tối qua tôi không ở nhà.",             group:"WASN'T"},
+  {en:"Lan wasn't happy yesterday.",         vi:"Hôm qua Lan không vui.",               group:"WASN'T"},
+  {en:"My mom wasn't busy this morning.",    vi:"Sáng nay mẹ tôi không bận.",           group:"WASN'T"},
+  // WEREN'T - phủ định
+  {en:"We weren't at the park yesterday.",   vi:"Hôm qua chúng tôi không ở công viên.",group:"WEREN'T"},
+  {en:"You weren't here.",                   vi:"Bạn không ở đây vào tối qua.",        group:"WEREN'T"},
+  {en:"They weren't at the office.",         vi:"Họ không ở văn phòng.",               group:"WEREN'T"},
+  // Câu hỏi
+  {en:"Was he a teacher?",                   vi:"Anh ấy từng là giáo viên à?",         group:"Câu hỏi"},
+  {en:"Was it cold yesterday?",              vi:"Hôm qua trời có lạnh không?",         group:"Câu hỏi"},
+  {en:"Were they at the office yesterday?",  vi:"Hôm qua họ có ở văn phòng không?",   group:"Câu hỏi"},
+  {en:"Were you here last Monday?",          vi:"Bạn có ở đây vào thứ 2 trước không?",group:"Câu hỏi"},
+  {en:"Were your friends happy?",            vi:"Bạn bè của bạn có thấy vui không?",  group:"Câu hỏi"},
+];
+
+const exGroup1 = [
+  {en:"A: Where were you yesterday? B: I was at the library.",
+   vi:"A: Hôm qua bạn ở đâu? B: Tôi đã ở thư viện."},
+  {en:"She was a doctor before. Now she is a teacher.",
+   vi:"Cô ấy từng là bác sĩ. Bây giờ cô ấy là giáo viên."},
+  {en:"The weather was beautiful last weekend.",
+   vi:"Thời tiết cuối tuần trước rất đẹp."},
+  {en:"We were students 10 years ago.",
+   vi:"Chúng tôi là học sinh 10 năm trước."},
+  {en:"My parents were very happy at the party last night.",
+   vi:"Bố mẹ tôi đã rất vui ở buổi tiệc tối qua."},
+];
+
+const exGroup2 = [
+  {en:"I wasn't at school yesterday. I was sick.",
+   vi:"Hôm qua tôi không ở trường. Tôi bị ốm."},
+  {en:"She wasn't tired after the trip. She was excited.",
+   vi:"Cô ấy không mệt sau chuyến đi. Cô ấy hào hứng lắm."},
+  {en:"They weren't ready for the test.",
+   vi:"Họ chưa sẵn sàng cho bài kiểm tra."},
+  {en:"The food wasn't good at that restaurant.",
+   vi:"Thức ăn ở nhà hàng đó không ngon."},
+  {en:"We weren't late. The meeting started early.",
+   vi:"Chúng tôi không đến muộn. Cuộc họp bắt đầu sớm."},
+];
+
+const exGroup3 = [
+  {en:"A: Was she at home yesterday? B: Yes, she was.",
+   vi:"A: Hôm qua cô ấy có ở nhà không? B: Có, cô ấy ở nhà."},
+  {en:"A: Was it cold last night? B: No, it wasn't. It was warm.",
+   vi:"A: Tối qua có lạnh không? B: Không, không lạnh. Trời ấm."},
+  {en:"A: Were you busy this morning? B: Yes, I was very busy.",
+   vi:"A: Sáng nay bạn có bận không? B: Có, tôi rất bận."},
+  {en:"A: Were they teachers? B: No, they weren't. They were doctors.",
+   vi:"A: Họ có phải giáo viên không? B: Không. Họ là bác sĩ."},
+];
+
+const exGroup4 = [
+  {en:"There was a big park near my house. Now it's a mall.",
+   vi:"Từng có một công viên lớn gần nhà tôi. Bây giờ là trung tâm thương mại."},
+  {en:"There was a lot of traffic this morning.",
+   vi:"Sáng nay có rất nhiều xe cộ."},
+  {en:"There were many students in the classroom yesterday.",
+   vi:"Hôm qua có nhiều học sinh trong lớp học."},
+  {en:"There were lots of problems at that time.",
+   vi:"Lúc đó đã có rất nhiều vấn đề."},
+];
+
+const dialogues = [
+  {title:"Hội thoại 1 – Hỏi về ngày hôm qua",
+   lines:[
+     {label:"A", vi:"Hôm qua bạn ở đâu vậy?",                    en:"Where were you yesterday?",                    color:"#1565c0"},
+     {label:"B", vi:"Tôi ở nhà. Tôi bị ốm.",                     en:"I was at home. I was sick.",                   color:"#e65100"},
+     {label:"A", vi:"Ồ thật à! Bạn đã đỡ hơn chưa?",             en:"Oh really! Are you feeling better now?",       color:"#1565c0"},
+     {label:"B", vi:"Vâng, hôm nay tôi ổn rồi. Cảm ơn bạn.",     en:"Yes, I'm fine today. Thank you.",              color:"#e65100"},
+   ]},
+  {title:"Hội thoại 2 – Nói về nghề nghiệp cũ",
+   lines:[
+     {label:"A", vi:"Trước đây anh ấy làm nghề gì?",              en:"What was his job before?",                     color:"#2e7d32"},
+     {label:"B", vi:"Anh ấy từng là giáo viên.",                   en:"He was a teacher.",                            color:"#c0392b"},
+     {label:"A", vi:"Còn vợ anh ấy thì sao?",                      en:"What about his wife?",                         color:"#2e7d32"},
+     {label:"B", vi:"Cô ấy từng là bác sĩ. Bây giờ họ đã về hưu.","en":"She was a doctor. Now they are retired.",    color:"#c0392b"},
+   ]},
+  {title:"Hội thoại 3 – Hỏi về buổi tiệc",
+   lines:[
+     {label:"A", vi:"Buổi tiệc tối qua có vui không?",            en:"Was the party fun last night?",                color:"#6a1b9a"},
+     {label:"B", vi:"Có, vui lắm! Mọi người đều vui vẻ.",         en:"Yes, it was great! Everyone was happy.",       color:"#00838f"},
+     {label:"A", vi:"Lan và Trang có ở đó không?",                 en:"Were Lan and Trang there?",                    color:"#6a1b9a"},
+     {label:"B", vi:"Lan thì có, nhưng Trang không có mặt.",       en:"Lan was there, but Trang wasn't.",             color:"#00838f"},
+   ]},
+  {title:"Hội thoại 4 – Nói về thời tiết",
+   lines:[
+     {label:"A", vi:"Hôm qua thời tiết thế nào?",                 en:"How was the weather yesterday?",               color:"#e65100"},
+     {label:"B", vi:"Hôm qua trời rất lạnh và mưa nhiều.",         en:"It was very cold and rainy yesterday.",        color:"#1565c0"},
+     {label:"A", vi:"Thật à? Cuối tuần trước trời đẹp lắm mà.",    en:"Really? The weather was beautiful last weekend.", color:"#e65100"},
+     {label:"B", vi:"Ừ, nhưng hôm qua thì không tốt chút nào.",    en:"Yes, but it wasn't good at all yesterday.",    color:"#1565c0"},
+   ]},
+];
+
+const quizData = [
+  {q:"'Hôm qua anh ấy ở nhà.' – Câu tiếng Anh đúng?", opts:["He is at home yesterday.","He were at home yesterday.","He was at home yesterday.","He be at home yesterday."], ans:2},
+  {q:"'Chúng tôi đã rất vui.' – Câu tiếng Anh đúng?", opts:["We was very happy.","We were very happy.","We is very happy.","We be very happy."], ans:1},
+  {q:"Chọn đúng: 'Lan _____ happy yesterday.'", opts:["is","were","was","be"], ans:2},
+  {q:"Chọn đúng: 'They _____ teachers 10 years ago.'", opts:["was","is","are","were"], ans:3},
+  {q:"'Tối qua tôi không ở nhà.' – Câu đúng?", opts:["I wasn't at home yesterday.","I weren't at home yesterday.","I wasn't at home last night.","Cả A và C đều đúng."], ans:3},
+  {q:"'Hôm qua họ không ở văn phòng.' – Câu đúng?", opts:["They wasn't at the office yesterday.","They weren't at the office yesterday.","They weren't at the office last night.","Cả B và C đều đúng."], ans:3},
+  {q:"Câu hỏi 'Anh ấy từng là giáo viên à?' – Tiếng Anh đúng?", opts:["Is he a teacher?","Were he a teacher?","Was he a teacher?","Did he a teacher?"], ans:2},
+  {q:"Câu hỏi 'Hôm qua họ có ở văn phòng không?' – Tiếng Anh đúng?", opts:["Was they at the office yesterday?","Were they at the office yesterday?","Did they at the office yesterday?","Are they at the office yesterday?"], ans:1},
+  {q:"'There _____ a meeting yesterday.' – Điền đúng:", opts:["were","are","is","was"], ans:3},
+  {q:"'There _____ many stores here.' (quá khứ, số nhiều) – Điền đúng:", opts:["was","is","were","are"], ans:2},
+  {q:"Câu nào SAI ngữ pháp?", opts:["She was a doctor.","We were at the park.","He were very tired.","I wasn't happy."], ans:2},
+  {q:"Câu nào đúng?", opts:["I were sick yesterday.","They was at school.","She wasn't busy.","We was very happy."], ans:2},
+  {q:"'Was it cold yesterday?' – Trả lời phủ định đúng:", opts:["No, it wasn't.","No, it weren't.","No, it isn't.","No, it not was."], ans:0},
+  {q:"'Were you here last Monday?' – Trả lời khẳng định đúng:", opts:["Yes, I were.","Yes, I was.","Yes, you were.","Yes, we was."], ans:1},
+  {q:"'Đã từng có một cái bàn ở đây.' – Tiếng Anh đúng?", opts:["There is a table here.","There were a table here.","There was a table here.","There be a table here."], ans:2},
+  {q:"Từ nào dùng với 'I' trong quá khứ?", opts:["were","are","be","was"], ans:3},
+  {q:"'My parents _____ very angry last night.' – Điền đúng:", opts:["was","is","were","are"], ans:2},
+  {q:"Câu nào ĐÚNG?", opts:["You wasn't here.","You weren't here.","You not were here.","You were not here yesterday – Cả B và D đúng."], ans:3},
+];
+
+const fillData = [
+  {answer:"was",      before:"He ",           after:" at home yesterday.",              vi:"Hôm qua anh ấy đã ở nhà."},
+  {answer:"were",     before:"They ",         after:" teachers 10 years ago.",          vi:"Họ từng là giáo viên 10 năm trước."},
+  {answer:"wasn't",   before:"I ",            after:" at school yesterday. I was sick.", vi:"Hôm qua tôi không ở trường. Tôi bị ốm."},
+  {answer:"weren't",  before:"We ",           after:" at the park yesterday.",          vi:"Hôm qua chúng tôi không ở công viên."},
+  {answer:"Was",      before:"",              after:" he tired after the trip?",        vi:"Anh ấy có mệt sau chuyến đi không?"},
+  {answer:"Were",     before:"",              after:" they at the office yesterday?",   vi:"Hôm qua họ có ở văn phòng không?"},
+  {answer:"was",      before:"There ",        after:" a meeting yesterday.",            vi:"Hôm qua đã có một cuộc họp."},
+  {answer:"were",     before:"There ",        after:" many students in the classroom.", vi:"Có nhiều học sinh trong lớp học."},
+  {answer:"was",      before:"The weather ",  after:" beautiful last weekend.",         vi:"Thời tiết cuối tuần trước rất đẹp."},
+  {answer:"wasn't",   before:"She ",          after:" tired after the trip.",           vi:"Cô ấy không mệt sau chuyến đi."},
+  {answer:"were",     before:"We ",           after:" students 10 years ago.",          vi:"Chúng tôi là học sinh 10 năm trước."},
+  {answer:"weren't",  before:"They ",         after:" ready for the test.",             vi:"Họ chưa sẵn sàng cho bài kiểm tra."},
+];
+
+const transData = [
+  {prompt:"Hôm qua anh ấy đã ở nhà.",                   answer:"he was at home yesterday",               dir:"vi→en"},
+  {prompt:"She was a doctor before.",                    answer:"cô ấy từng là bác sĩ",                   dir:"en→vi"},
+  {prompt:"Tối qua tôi không ở nhà.",                    answer:"i wasn't at home last night",            dir:"vi→en"},
+  {prompt:"We weren't at the park yesterday.",           answer:"hôm qua chúng tôi không ở công viên",    dir:"en→vi"},
+  {prompt:"Anh ấy từng là giáo viên à?",                 answer:"was he a teacher",                       dir:"vi→en"},
+  {prompt:"Were they at the office yesterday?",          answer:"hôm qua họ có ở văn phòng không",        dir:"en→vi"},
+  {prompt:"Đã từng có một cuộc họp hôm qua.",            answer:"there was a meeting yesterday",          dir:"vi→en"},
+  {prompt:"There were many stores here before.",         answer:"trước đây đã từng có nhiều cửa hàng ở đây", dir:"en→vi"},
+  {prompt:"Chúng tôi đã rất vui.",                       answer:"we were very happy",                     dir:"vi→en"},
+  {prompt:"My mom wasn't busy this morning.",            answer:"sáng nay mẹ tôi không bận",              dir:"en→vi"},
+  {prompt:"Hôm qua trời có lạnh không?",                 answer:"was it cold yesterday",                  dir:"vi→en"},
+  {prompt:"They weren't ready for the test.",            answer:"họ chưa sẵn sàng cho bài kiểm tra",      dir:"en→vi"},
+];
+
+const speakingData = [
+  {en:"He was at home yesterday.",            vi:"Hôm qua anh ấy đã ở nhà.",              color:"#b7410e"},
+  {en:"She was a teacher.",                   vi:"Cô ấy từng là giáo viên.",               color:"#b7410e"},
+  {en:"I was very tired.",                    vi:"Tôi đã rất mệt.",                        color:"#e65100"},
+  {en:"We were very happy.",                  vi:"Chúng tôi đã rất vui.",                  color:"#1565c0"},
+  {en:"They were teachers.",                  vi:"Họ từng là giáo viên.",                  color:"#1565c0"},
+  {en:"I wasn't at home yesterday.",          vi:"Tối qua tôi không ở nhà.",               color:"#c0392b"},
+  {en:"Lan wasn't happy yesterday.",          vi:"Hôm qua Lan không vui.",                 color:"#c0392b"},
+  {en:"We weren't at the park yesterday.",    vi:"Hôm qua chúng tôi không ở công viên.",  color:"#2e7d32"},
+  {en:"Was he a teacher?",                    vi:"Anh ấy từng là giáo viên à?",            color:"#2e7d32"},
+  {en:"Was it cold yesterday?",               vi:"Hôm qua trời có lạnh không?",            color:"#6a1b9a"},
+  {en:"Were they at the office yesterday?",   vi:"Hôm qua họ có ở văn phòng không?",      color:"#6a1b9a"},
+  {en:"Were you here last Monday?",           vi:"Bạn có ở đây vào thứ 2 trước không?",   color:"#00838f"},
+  {en:"There was a meeting yesterday.",       vi:"Hôm qua đã có một cuộc họp.",            color:"#00838f"},
+  {en:"There were many stores here.",         vi:"Đã từng có nhiều cửa hàng ở đây.",      color:"#b7410e"},
+];
+
+// ===== STATE =====
+let quizCorrect=0, quizAnswered=0;
+let fillCorrect=0, fillChecked=false;
+let transCorrect=0, transChecked=false;
+let secondsLeft=3600, timerInterval;
+
+function init(){
+  buildPhraseTable(); buildExamples(); buildDialogues();
+  buildQuiz(); buildFill(); buildTrans(); buildSpeaking(); buildQuickReview();
+  startTimer();
+}
+
+function startTimer(){
+  timerInterval=setInterval(()=>{
+    secondsLeft--;
+    const m=String(Math.floor(secondsLeft/60)).padStart(2,'0');
+    const s=String(secondsLeft%60).padStart(2,'0');
+    document.getElementById('timer-bar').textContent=`⏱ ${m}:${s}`;
+    if(secondsLeft<=0) clearInterval(timerInterval);
+  },1000);
+}
+
+function buildPhraseTable(){
+  const colors={"WAS (+)":'#e65100',"WERE (+)":'#1565c0',"WASN'T":'#c0392b',"WEREN'T":'#c0392b',"Câu hỏi":'#6a1b9a'};
+  document.getElementById('phrase-tbody').innerHTML=allPhrases.map(w=>`
+    <tr>
+      <td class="en">${w.en}</td>
+      <td class="vi">${w.vi}</td>
+      <td><span style="background:${colors[w.group]||'#555'};color:white;border-radius:20px;padding:2px 9px;font-size:.68rem;font-weight:800;">${w.group}</span></td>
+      <td><button class="play-btn" onclick="speak('${w.en.replace(/'/g,"\\'")}')">▶ Nghe</button></td>
+    </tr>`).join('');
+}
+
+function buildExamples(){
+  const groups=[
+    {id:'ex-group1',data:exGroup1,color:'#b7410e'},
+    {id:'ex-group2',data:exGroup2,color:'#c0392b'},
+    {id:'ex-group3',data:exGroup3,color:'#1565c0'},
+    {id:'ex-group4',data:exGroup4,color:'#6a1b9a'},
+  ];
+  groups.forEach(g=>{
+    document.getElementById(g.id).innerHTML=g.data.map(e=>`
+      <div class="eb" style="background:${g.color}11;border-color:${g.color}">
+        <div class="en">${e.en} <button class="play-btn" onclick="speak('${e.en.replace(/'/g,"\\'")}')">▶</button></div>
+        <div class="vi">→ ${e.vi}</div>
+      </div>`).join('');
+  });
+}
+
+function buildDialogues(){
+  document.getElementById('dialogue-container').innerHTML=dialogues.map((d,i)=>`
+    <div class="dbox">
+      <div class="dtitle">💬 ${d.title}</div>
+      ${d.lines.map(l=>`
+        <div class="dline">
+          <span class="dlabel" style="background:${l.color}">${l.label}</span>
+          <div><div class="dvi">${l.vi}</div><div class="den">${l.en}</div></div>
+        </div>`).join('')}
+      <button class="pdlg" onclick="speakDlg(${i})">▶ Nghe hội thoại</button>
+    </div>`).join('');
+}
+
+async function speakDlg(i){
+  for(const l of dialogues[i].lines){
+    speak(l.en);
+    await new Promise(r=>setTimeout(r,l.en.length*65+900));
+  }
+}
+
+function buildQuiz(){
+  document.getElementById('quiz-container').innerHTML=quizData.map((q,i)=>`
+    <div class="quiz-item" id="qi-${i}">
+      <div class="quiz-q">${i+1}. ${q.q}</div>
+      <div class="quiz-opts">
+        ${q.opts.map((o,j)=>`<button class="qopt" id="qo-${i}-${j}" onclick="answerQuiz(${i},${j})">${o}</button>`).join('')}
+      </div>
+      <div class="qfb" id="qf-${i}"></div>
+    </div>`).join('');
+}
+
+function answerQuiz(qi,choice){
+  const item=document.getElementById(`qi-${qi}`);
+  if(item.dataset.answered) return;
+  item.dataset.answered='1';
+  const q=quizData[qi];
+  item.querySelectorAll('.qopt').forEach(b=>b.disabled=true);
+  const fb=document.getElementById(`qf-${qi}`);
+  if(choice===q.ans){
+    document.getElementById(`qo-${qi}-${choice}`).classList.add('sel-ok');
+    item.classList.add('answered-ok');
+    fb.textContent='✅ Đúng!'; fb.className='qfb show ok'; quizCorrect++;
+  } else {
+    document.getElementById(`qo-${qi}-${choice}`).classList.add('sel-fail');
+    item.classList.add('answered-fail');
+    fb.textContent='❌ Sai! Hãy ghi nhớ để làm lại.'; fb.className='qfb show fail';
+  }
+  quizAnswered++;
+  document.getElementById('quiz-score').textContent=`${quizCorrect} / ${quizAnswered}`;
+  if(quizAnswered===quizData.length){
+    const pct=Math.round((quizCorrect/quizData.length)*100);
+    if(pct<80) document.getElementById('quiz-retry-section').style.display='block';
+    else document.getElementById('quiz-done-btn').style.display='block';
+  }
+}
+
+function retryQuiz(){
+  quizCorrect=0; quizAnswered=0;
+  document.getElementById('quiz-score').textContent='0 / 0';
+  document.getElementById('quiz-retry-section').style.display='none';
+  document.getElementById('quiz-done-btn').style.display='none';
+  buildQuiz();
+}
+
+function buildFill(){
+  document.getElementById('fill-container').innerHTML=fillData.map((f,i)=>`
+    <div class="fill-item" id="fi-${i}">
+      <div class="fill-q">${i+1}. ${f.before}<input type="text" id="finp-${i}" placeholder="...">${f.after}</div>
+      <div class="fill-vi">${f.vi}</div>
+      <div class="fill-ans" id="fa-${i}">❌ Đáp án đúng: <strong>${f.answer}</strong></div>
+    </div>`).join('');
+  fillChecked=false;
+  document.getElementById('retry-fill-btn').style.display='none';
+  document.getElementById('fill-score-display').style.display='none';
+}
+
+function checkFill(){
+  fillCorrect=0;
+  fillData.forEach((f,i)=>{
+    const inp=document.getElementById(`finp-${i}`);
+    const item=document.getElementById(`fi-${i}`);
+    const ans=document.getElementById(`fa-${i}`);
+    const val=inp.value.trim().toLowerCase().replace(/\s+/g,' ');
+    inp.disabled=true;
+    if(val===f.answer.toLowerCase()){
+      item.classList.add('correct'); item.classList.remove('wrong');
+      ans.classList.remove('show-wrong'); fillCorrect++;
+    } else {
+      item.classList.add('wrong'); item.classList.remove('correct');
+      ans.classList.add('show-wrong');
+    }
+  });
+  fillChecked=true;
+  const pct=Math.round((fillCorrect/fillData.length)*100);
+  const scoreEl=document.getElementById('fill-score-display');
+  scoreEl.style.display='block';
+  scoreEl.innerHTML=`Điểm điền từ: <span style="color:${pct>=70?'#2e7d32':'#c0392b'}">${fillCorrect}/${fillData.length} (${pct}%)</span>`;
+  if(pct<70){
+    scoreEl.innerHTML+=` – <span style="color:#c0392b">Hãy làm lại nhé!</span>`;
+    document.getElementById('retry-fill-btn').style.display='inline-flex';
+  }
+}
+
+function retryFill(){
+  fillData.forEach((f,i)=>{
+    const inp=document.getElementById(`finp-${i}`);
+    const item=document.getElementById(`fi-${i}`);
+    const ans=document.getElementById(`fa-${i}`);
+    inp.value=''; inp.disabled=false;
+    item.classList.remove('correct','wrong'); ans.classList.remove('show-wrong');
+  });
+  fillChecked=false; fillCorrect=0;
+  document.getElementById('retry-fill-btn').style.display='none';
+  document.getElementById('fill-score-display').style.display='none';
+}
+
+function buildTrans(){
+  document.getElementById('trans-container').innerHTML=transData.map((t,i)=>`
+    <div class="trans-item" id="ti-${i}">
+      <div class="trans-lang">${t.dir==='vi→en'?'🇻🇳 Tiếng Việt → Tiếng Anh':'🇬🇧 Tiếng Anh → Tiếng Việt'}</div>
+      <div class="trans-q">${t.prompt}</div>
+      <input class="trans-input" type="text" id="tinp-${i}" placeholder="Nhập bản dịch của bạn...">
+      <div class="trans-ans" id="ta-${i}">❌ Đáp án gợi ý: <strong>${t.answer}</strong></div>
+    </div>`).join('');
+  transChecked=false;
+  document.getElementById('retry-trans-btn').style.display='none';
+  document.getElementById('trans-score-display').style.display='none';
+}
+
+function checkTrans(){
+  transCorrect=0;
+  transData.forEach((t,i)=>{
+    const inp=document.getElementById(`tinp-${i}`);
+    const item=document.getElementById(`ti-${i}`);
+    const ans=document.getElementById(`ta-${i}`);
+    const val=normalize(inp.value);
+    const correct=normalize(t.answer);
+    inp.disabled=true;
+    const keyWords=correct.split(' ').filter(w=>w.length>2);
+    const matched=keyWords.filter(w=>val.includes(w)).length;
+    const ratio=keyWords.length>0?matched/keyWords.length:0;
+    if(ratio>=0.65){
+      item.classList.add('correct'); item.classList.remove('wrong');
+      ans.classList.remove('show'); transCorrect++;
+    } else {
+      item.classList.add('wrong'); item.classList.remove('correct');
+      ans.classList.add('show');
+    }
+  });
+  transChecked=true;
+  const pct=Math.round((transCorrect/transData.length)*100);
+  const scoreEl=document.getElementById('trans-score-display');
+  scoreEl.style.display='block';
+  scoreEl.innerHTML=`Điểm dịch câu: <span style="color:${pct>=70?'#2e7d32':'#c0392b'}">${transCorrect}/${transData.length} (${pct}%)</span>`;
+  if(pct<70){
+    scoreEl.innerHTML+=` – <span style="color:#c0392b">Hãy làm lại nhé!</span>`;
+    document.getElementById('retry-trans-btn').style.display='inline-flex';
+  }
+}
+
+function retryTrans(){
+  transData.forEach((t,i)=>{
+    const inp=document.getElementById(`tinp-${i}`);
+    const item=document.getElementById(`ti-${i}`);
+    const ans=document.getElementById(`ta-${i}`);
+    inp.value=''; inp.disabled=false;
+    item.classList.remove('correct','wrong'); ans.classList.remove('show');
+  });
+  transChecked=false; transCorrect=0;
+  document.getElementById('retry-trans-btn').style.display='none';
+  document.getElementById('trans-score-display').style.display='none';
+}
+
+function buildSpeaking(){
+  document.getElementById('speaking-container').innerHTML=speakingData.map((s,i)=>`
+    <div class="speak-card" style="background:${s.color}">
+      <div class="slbl">CÂU ${i+1}</div>
+      <div class="sen-en">${s.en}</div>
+      <div class="sen-vi">${s.vi}</div>
+      <button class="hear-btn" onclick="speak('${s.en.replace(/'/g,"\\'")}')">▶ Nghe mẫu</button>
+    </div>`).join('');
+}
+
+function buildQuickReview(){
+  const items=[
+    {emoji:"✅", label:"WAS (khẳng định)",     en:"I / He / She / It + was + ...",        vi:"I was tired. She was happy."},
+    {emoji:"✅", label:"WERE (khẳng định)",     en:"You / We / They + were + ...",         vi:"We were happy. They were teachers."},
+    {emoji:"❌", label:"WASN'T (phủ định)",     en:"I / He / She / It + wasn't + ...",     vi:"I wasn't home. She wasn't busy."},
+    {emoji:"❌", label:"WEREN'T (phủ định)",    en:"You / We / They + weren't + ...",      vi:"We weren't late. They weren't ready."},
+    {emoji:"❓", label:"WAS...? (câu hỏi)",     en:"Was + I/he/she/it + ...?",             vi:"Was he a teacher? Was it cold?"},
+    {emoji:"❓", label:"WERE...? (câu hỏi)",    en:"Were + you/we/they + ...?",            vi:"Were they happy? Were you there?"},
+    {emoji:"📍", label:"There was / were",      en:"There was + N số ít / There were + số nhiều", vi:"There was a meeting. There were many stores."},
+  ];
+  document.getElementById('quick-review').innerHTML=items.map(p=>
+    `<div>${p.emoji} <strong>${p.label}:</strong> <span style="color:#1565c0">${p.en}</span> → <span style="color:#555">${p.vi}</span></div>`
+  ).join('');
+}
+
+function speak(text){
+  if(!window.speechSynthesis) return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='en-US'; u.rate=0.85;
+  speechSynthesis.speak(u);
+}
+
+function goPhase(n){
+  document.querySelectorAll('.phase').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.phase-tab').forEach((t,i)=>{
+    t.classList.remove('active','done');
+    if(i<n) t.classList.add('done');
+  });
+  document.getElementById(`phase-${n}`).classList.add('active');
+  document.querySelectorAll('.phase-tab')[n].classList.add('active');
+  document.getElementById('progress-bar').style.width=Math.round((n/8)*100)+'%';
+  window.scrollTo(0,0);
+  if(n===8) showResult();
+}
+
+function showResult(){
+  const qTotal=quizData.length, fTotal=fillData.length, tTotal=transData.length;
+  const total=quizCorrect+fillCorrect+transCorrect;
+  const max=qTotal+fTotal+tTotal;
+  const pct=Math.round((total/max)*100);
+  document.getElementById('final-score').textContent=pct+'%';
+  let msg,desc;
+  if(pct>=90){msg='🏆 Xuất sắc!';desc='Bạn đã nắm vững cách dùng WAS và WERE trong quá khứ!';}
+  else if(pct>=75){msg='👍 Tốt lắm!';desc='Bạn hiểu tốt. Ôn lại phần phân biệt was/were và luyện thêm nhé!';}
+  else if(pct>=55){msg='📚 Cần ôn thêm!';desc='Hãy học lại phần lý thuyết và làm lại bài tập!';}
+  else{msg='💪 Tiếp tục cố gắng!';desc='Bắt đầu lại từ phần lý thuyết và luyện nhiều hơn nhé!';}
+  document.getElementById('final-msg').textContent=msg;
+  document.getElementById('final-desc').textContent=desc;
+  document.getElementById('detail-score').innerHTML=
+    `🧠 Quiz: <strong>${quizCorrect}/${qTotal}</strong> &nbsp;|&nbsp; ✏️ Điền từ: <strong>${fillCorrect}/${fTotal}</strong> &nbsp;|&nbsp; 🔄 Dịch câu: <strong>${transCorrect}/${tTotal}</strong> &nbsp;|&nbsp; Tổng: <strong>${total}/${max} (${pct}%)</strong>`;
+  clearInterval(timerInterval);
+}
+
+function restartLesson(){
+  quizCorrect=0; quizAnswered=0; fillCorrect=0; fillChecked=false; transCorrect=0; transChecked=false;
+  secondsLeft=3600; clearInterval(timerInterval);
+  buildQuiz(); buildFill(); buildTrans();
+  document.getElementById('quiz-score').textContent='0 / 0';
+  document.getElementById('quiz-retry-section').style.display='none';
+  document.getElementById('quiz-done-btn').style.display='none';
+  goPhase(0); startTimer();
+}
+
+function normalize(s){return s.trim().toLowerCase().replace(/[.?!,]/g,'').replace(/\s+/g,' ');}
+
+init();
+</script>
+</body>
+</html>

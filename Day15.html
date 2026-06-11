@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 15 – BODY PARTS – Các bộ phận cơ thể</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{--c1:#b7410e;--c2:#1565c0;--c3:#2e7d32;--c4:#6a1b9a;--c5:#00838f;--yellow:#FFD93D;--bg:#fafbff;--dark:#0d1b2a;--gray:#78909c;--radius:18px;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--dark);min-height:100vh;}
+  header{background:var(--dark);color:white;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 3px 14px rgba(0,0,0,.3);}
+  header h1{font-family:'Baloo 2',cursive;font-size:1.05rem;font-weight:800;text-align:center;flex:1;}
+  header h1 span{color:var(--yellow);}
+  #timer-bar{font-size:.95rem;font-weight:700;background:var(--yellow);color:var(--dark);padding:5px 14px;border-radius:30px;white-space:nowrap;}
+  .back-btn{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.25);color:white;padding:5px 13px;border-radius:30px;font-size:.78rem;font-weight:700;text-decoration:none;transition:all .2s;white-space:nowrap;}
+  .back-btn:hover{background:rgba(255,255,255,.22);}
+  #progress-wrap{background:#e9ecef;height:8px;}
+  #progress-bar{height:8px;background:linear-gradient(90deg,var(--c1),var(--c2),var(--c3),var(--c4));transition:width .6s ease;border-radius:0 4px 4px 0;}
+  #phase-nav{display:flex;gap:5px;padding:10px 16px;overflow-x:auto;background:white;border-bottom:2px solid #f1f3f4;}
+  .phase-tab{flex-shrink:0;padding:5px 11px;border-radius:20px;font-size:.72rem;font-weight:700;border:2px solid #dee2e6;background:white;cursor:pointer;transition:all .2s;color:var(--gray);}
+  .phase-tab.active{background:var(--dark);color:white;border-color:var(--dark);}
+  .phase-tab.done{background:var(--c3);color:white;border-color:var(--c3);}
+  main{padding:18px 14px 48px;max-width:780px;margin:0 auto;}
+  .phase{display:none;animation:fadeIn .4s ease;}
+  .phase.active{display:block;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+  .section-header{border-radius:var(--radius) var(--radius) 0 0;padding:13px 18px;}
+  .section-header .phase-label{font-size:.66rem;letter-spacing:2px;text-transform:uppercase;color:var(--yellow);font-weight:700;}
+  .section-header h2{font-family:'Baloo 2',cursive;font-size:1.2rem;font-weight:800;color:white;}
+  .section-header .duration{font-size:.76rem;color:rgba(255,255,255,.5);margin-top:1px;}
+  .section-body{background:white;border-radius:0 0 var(--radius) var(--radius);padding:18px;margin-bottom:20px;box-shadow:0 4px 18px rgba(0,0,0,.07);}
+  .tip-box{background:#fff8e1;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:.82rem;border-left:4px solid var(--yellow);line-height:1.75;}
+  .tip-box strong{color:#e65100;}
+  .tip-red{background:#fce4ec;border-left-color:var(--c1);}
+  .tip-red strong{color:var(--c1);}
+  .tip-green{background:#e8f5e9;border-left-color:var(--c3);}
+  .tip-green strong{color:var(--c3);}
+  .tip-blue{background:#e3f2fd;border-left-color:var(--c2);}
+  .tip-blue strong{color:var(--c2);}
+  .tip-purple{background:#f3e5f5;border-left-color:var(--c4);}
+  .tip-purple strong{color:var(--c4);}
+
+  .formula-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+  @media(max-width:520px){.formula-grid{grid-template-columns:1fr;}.quiz-opts{grid-template-columns:1fr;}}
+  .fc{border-radius:12px;padding:14px;}
+  .fc h3{font-family:'Baloo 2',cursive;font-size:.95rem;font-weight:800;margin-bottom:8px;color:white;}
+  .fc .fb{background:rgba(255,255,255,.18);border-radius:7px;padding:8px 11px;font-size:.8rem;font-weight:700;font-family:monospace;color:white;margin-bottom:6px;line-height:1.6;}
+  .fc .fn{font-size:.76rem;color:rgba(255,255,255,.88);line-height:1.9;}
+
+  .num-table{width:100%;border-collapse:collapse;margin-bottom:16px;font-size:.84rem;border-radius:11px;overflow:hidden;}
+  .num-table th{background:var(--dark);color:white;padding:9px 12px;text-align:left;font-weight:800;}
+  .num-table td{padding:9px 12px;border-bottom:1px solid #f0f0f0;vertical-align:middle;font-weight:600;}
+  .num-table tr:nth-child(even) td{background:#f8f9fa;}
+  .num-table .w{font-weight:800;color:var(--c1);}
+  .num-table .p{font-size:.72rem;font-style:italic;color:var(--gray);}
+  .play-btn{background:none;border:1px solid #dee2e6;border-radius:20px;padding:2px 8px;font-size:.68rem;font-weight:700;cursor:pointer;color:var(--c3);font-family:'Nunito',sans-serif;}
+  .play-btn:hover{background:var(--c3);color:white;border-color:var(--c3);}
+
+  .ex-title{font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;padding:4px 12px;border-radius:20px;color:white;display:inline-block;margin-bottom:8px;}
+  .eb{border-radius:11px;padding:11px 14px;margin-bottom:8px;border-left:4px solid;}
+  .eb .en{font-size:.93rem;font-weight:700;margin-bottom:2px;}
+  .eb .vi{font-size:.81rem;color:#495057;margin-bottom:5px;}
+  .eb .tag{font-size:.72rem;font-weight:800;display:inline-block;background:#0d1b2a;color:var(--yellow);border-radius:6px;padding:2px 8px;margin-bottom:5px;}
+  .divider{height:1px;background:#e9ecef;margin:14px 0;}
+  .psm{border:none;border-radius:20px;padding:4px 12px;font-size:.72rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:4px;font-family:'Nunito',sans-serif;color:white;}
+
+  .dbox{background:#f8f9fa;border-radius:13px;padding:14px;margin-bottom:11px;border:2px solid #e9ecef;}
+  .dtitle{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--gray);margin-bottom:9px;}
+  .dline{display:flex;gap:7px;margin-bottom:7px;align-items:flex-start;}
+  .dlabel{font-size:.7rem;font-weight:800;padding:2px 7px;border-radius:7px;color:white;flex-shrink:0;margin-top:2px;min-width:24px;text-align:center;}
+  .dvi{font-size:.84rem;font-weight:700;color:#1565c0;}
+  .den{font-size:.84rem;font-weight:700;color:#212121;}
+  .pdlg{margin-top:7px;background:#2e7d32;color:white;border:none;border-radius:20px;padding:5px 13px;font-size:.74rem;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;display:inline-flex;align-items:center;gap:4px;}
+
+  /* SENTENCE BUILDER */
+  .nw-box{background:linear-gradient(135deg,#b7410e,#8d2800);border-radius:16px;padding:18px;margin-bottom:16px;color:white;text-align:center;}
+  .nw-box h3{font-family:'Baloo 2',cursive;font-size:1rem;font-weight:800;margin-bottom:10px;}
+  .nw-display{font-family:'Baloo 2',cursive;font-size:1.5rem;font-weight:800;color:var(--yellow);margin-bottom:4px;line-height:1.4;}
+  .nw-vi{font-size:.82rem;color:rgba(255,255,255,.75);margin-bottom:10px;}
+  .nw-tag{display:inline-block;background:rgba(255,255,255,.18);border-radius:7px;padding:2px 9px;font-size:.7rem;font-weight:800;margin-bottom:10px;}
+  .nw-input{width:100%;border:3px solid var(--yellow);border-radius:10px;padding:8px 14px;font-size:.96rem;font-family:'Nunito',sans-serif;font-weight:700;outline:none;text-align:center;background:rgba(255,255,255,.12);color:white;}
+  .nw-input::placeholder{color:rgba(255,255,255,.5);}
+  .nw-btns{display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap;}
+  .nw-btn{border:none;border-radius:10px;padding:7px 16px;font-size:.82rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;}
+  .nw-check{background:var(--yellow);color:var(--dark);}
+  .nw-next{background:rgba(255,255,255,.2);color:white;border:1.5px solid rgba(255,255,255,.4);}
+  .nw-fb{min-height:22px;font-size:.84rem;font-weight:700;margin-top:8px;}
+  .nw-score{font-size:.78rem;color:rgba(255,255,255,.7);margin-top:6px;}
+
+  .quiz-item{background:#f8f9fa;border-radius:13px;padding:14px;margin-bottom:12px;border:2px solid transparent;transition:border-color .3s;}
+  .quiz-item.answered-ok{border-color:#2e7d32;background:#f1f8e9;}
+  .quiz-item.answered-fail{border-color:#c0392b;background:#fbe9e7;}
+  .quiz-q{font-size:.9rem;font-weight:700;margin-bottom:10px;}
+  .quiz-opts{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+  .qopt{background:white;border:2px solid #dee2e6;border-radius:9px;padding:7px 9px;font-size:.81rem;font-weight:700;cursor:pointer;transition:all .2s;font-family:'Nunito',sans-serif;text-align:center;}
+  .qopt:hover:not(:disabled){border-color:#1565c0;color:#1565c0;}
+  .qopt.sel-ok{background:#2e7d32;color:white;border-color:#2e7d32;}
+  .qopt.sel-fail{background:#c0392b;color:white;border-color:#c0392b;}
+  .qopt:disabled{cursor:default;}
+  .qfb{margin-top:6px;font-size:.77rem;font-weight:700;display:none;}
+  .qfb.show{display:block;}
+  .qfb.ok{color:#2e7d32;}
+  .qfb.fail{color:#c0392b;}
+
+  .fill-item{background:#f8f9fa;border-radius:12px;padding:13px;margin-bottom:10px;border:2px solid transparent;}
+  .fill-item.correct{border-color:#2e7d32;background:#f1f8e9;}
+  .fill-item.wrong{border-color:#c0392b;background:#fbe9e7;}
+  .fill-q{font-size:.9rem;font-weight:700;margin-bottom:6px;line-height:2.2;}
+  .fill-q input{border:2px solid #1565c0;border-radius:7px;padding:2px 8px;font-size:.86rem;font-family:'Nunito',sans-serif;font-weight:700;width:200px;text-align:center;outline:none;background:white;}
+  .fill-vi{font-size:.78rem;color:var(--gray);margin-bottom:4px;}
+  .fill-ans{font-size:.78rem;font-weight:700;margin-top:4px;display:none;}
+  .fill-ans.show-wrong{display:block;color:#c0392b;}
+
+  .trans-item{background:#f8f9fa;border-radius:12px;padding:13px;margin-bottom:10px;border:2px solid transparent;}
+  .trans-item.correct{border-color:#2e7d32;background:#f1f8e9;}
+  .trans-item.wrong{border-color:#c0392b;background:#fbe9e7;}
+  .trans-lang{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;color:var(--gray);}
+  .trans-q{font-size:.92rem;font-weight:700;margin-bottom:6px;color:var(--dark);}
+  .trans-input{width:100%;border:2px solid #1565c0;border-radius:8px;padding:6px 10px;font-size:.86rem;font-family:'Nunito',sans-serif;font-weight:700;outline:none;background:white;}
+  .trans-ans{font-size:.78rem;font-weight:700;margin-top:4px;display:none;color:#c0392b;}
+  .trans-ans.show{display:block;}
+
+  .speak-card{border-radius:12px;padding:13px 16px;margin-bottom:9px;color:white;}
+  .slbl{font-size:.66rem;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:3px;}
+  .sen-en{font-size:.97rem;font-weight:800;margin-bottom:2px;}
+  .sen-vi{font-size:.8rem;color:rgba(255,255,255,.75);margin-bottom:9px;}
+  .hear-btn{background:var(--yellow);color:var(--dark);border:none;border-radius:20px;padding:6px 14px;font-weight:800;font-size:.8rem;cursor:pointer;font-family:'Nunito',sans-serif;transition:transform .15s;}
+  .hear-btn:hover{transform:scale(1.04);}
+
+  #score-section{text-align:center;padding:24px 12px;}
+  .score-circle{width:120px;height:120px;border-radius:50%;background:linear-gradient(135deg,var(--c1),var(--c2));display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 6px 20px rgba(21,101,192,.3);}
+  .score-circle .num{font-family:'Baloo 2',cursive;font-size:2rem;font-weight:800;color:white;line-height:1;}
+  .score-circle .lbl{font-size:.7rem;font-weight:700;color:rgba(255,255,255,.8);}
+  #score-section h2{font-family:'Baloo 2',cursive;font-size:1.4rem;font-weight:800;margin-bottom:6px;}
+  #score-section p{color:var(--gray);font-size:.86rem;max-width:340px;margin:0 auto 16px;}
+  .score-inline{background:#f1f3f5;border-radius:9px;padding:8px 14px;margin-bottom:12px;font-size:.81rem;font-weight:700;display:flex;align-items:center;gap:7px;}
+  .score-badge{background:var(--yellow);color:var(--dark);border-radius:20px;padding:2px 11px;font-weight:800;font-size:.81rem;}
+  .btn-next{background:var(--c2);color:white;border:none;border-radius:11px;padding:10px 24px;font-size:.9rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;margin-top:12px;display:inline-flex;align-items:center;gap:6px;transition:all .2s;}
+  .btn-next:hover{opacity:.88;}
+  .btn-check{background:var(--c3);color:white;border:none;border-radius:11px;padding:9px 20px;font-size:.86rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;margin-top:10px;display:inline-flex;align-items:center;gap:5px;}
+  .btn-primary{background:var(--dark);color:white;border:none;border-radius:11px;padding:10px 24px;font-size:.9rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;display:inline-flex;align-items:center;gap:6px;}
+  .retry-btn{background:#c0392b;color:white;border:none;border-radius:11px;padding:9px 20px;font-size:.86rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;margin-top:8px;display:inline-flex;align-items:center;gap:5px;margin-right:8px;}
+  .home-btn{background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.3);color:white;border-radius:11px;padding:9px 20px;font-size:.86rem;font-weight:800;text-decoration:none;display:inline-flex;align-items:center;gap:5px;margin-top:8px;}
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="back-btn">&#8592; Trang chủ</a>
+  <h1>🦴 <span>BODY PARTS</span> – Các bộ phận cơ thể</h1>
+  <div id="timer-bar">⏱ 60:00</div>
+</header>
+<div id="progress-wrap"><div id="progress-bar" style="width:0%"></div></div>
+
+<nav id="phase-nav">
+  <button class="phase-tab active" onclick="goPhase(0)">1. Lý thuyết</button>
+  <button class="phase-tab" onclick="goPhase(1)">2. Từ vựng</button>
+  <button class="phase-tab" onclick="goPhase(2)">3. Câu mẫu</button>
+  <button class="phase-tab" onclick="goPhase(3)">4. Luyện viết câu</button>
+  <button class="phase-tab" onclick="goPhase(4)">5. Hội thoại</button>
+  <button class="phase-tab" onclick="goPhase(5)">6. Quiz</button>
+  <button class="phase-tab" onclick="goPhase(6)">7. Điền từ</button>
+  <button class="phase-tab" onclick="goPhase(7)">8. Dịch câu</button>
+  <button class="phase-tab" onclick="goPhase(8)">9. Nói</button>
+  <button class="phase-tab" onclick="goPhase(9)">10. Kết quả</button>
+</nav>
+
+<main>
+
+<!-- ══ PHASE 0: LÝ THUYẾT ══ -->
+<div class="phase active" id="phase-0">
+  <div class="section-header" style="background:var(--dark)">
+    <div class="phase-label">📖 Giai đoạn 1 – 8 phút</div>
+    <h2>Từ vựng &amp; Cách nói trạng thái cơ thể</h2>
+    <div class="duration">Đau nhức (hurts) · Sổ mũi (runny nose) · Số ít &amp; Số nhiều các bộ phận</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box"><strong>📌 Hôm nay học gì?</strong> Học từ vựng gọi tên các bộ phận trên cơ thể con người và cách diễn đạt tình trạng sức khỏe liên quan (đau, mỏi, khô, ướt, đứt tay) bằng cấu trúc sở hữu.</div>
+
+    <div class="formula-grid">
+      <div class="fc" style="background:#b7410e">
+        <h3>⚡ Diễn đạt Đau nhức</h3>
+        <div class="fb">Tính từ sở hữu + Bộ phận + hurts</div>
+        <div class="fn">
+          • My head <strong>hurts</strong>. (Đầu tôi đau)<br>
+          • My ear <strong>hurts</strong>. (Tai tôi đang đau)<br>
+          • My right arm <strong>hurts</strong>. (Tay phải tôi đau)<br>
+          ✅ Dùng động từ <i>hurts</i> cho bộ phận số ít.
+        </div>
+      </div>
+      <div class="fc" style="background:#1565c0">
+        <h3>🧼 Khai báo bệnh lý / Trạng thái</h3>
+        <div class="fb">S + have/has + bệnh HOẶC tobe + Adj</div>
+        <div class="fn">
+          • I have a <strong>runny nose</strong>. (Tôi sổ mũi)<br>
+          • My lips are <strong>dry</strong>. (Môi tôi bị khô)<br>
+          • My hands are <strong>cold</strong>. (Tay tôi lạnh)<br>
+          • My legs are <strong>tired</strong>. (Chân tôi mỏi)
+        </div>
+      </div>
+      <div class="fc" style="background:#2e7d32">
+        <h3>⚠️ Số ít &amp; Số nhiều đặc biệt</h3>
+        <div class="fb">Biến đổi danh từ cơ thể</div>
+        <div class="fn">
+          • 1 bàn chân: <strong>foot</strong> → 2 bàn chân: <strong>feet</strong><br>
+          • 1 mắt: <strong>eye</strong> → 2 mắt: <strong>eyes</strong><br>
+          • 1 đôi môi: <strong>lips</strong> (luôn dùng số nhiều khi nói cả hai)<br>
+          • Tóc: <strong>hair</strong> (danh từ không đếm được, dùng <i>is</i>)
+        </div>
+      </div>
+      <div class="fc" style="background:#6a1b9a">
+        <h3>🚫 Câu mệnh lệnh / Khuyên bảo</h3>
+        <div class="fb">Động từ nguyên mẫu đầu câu / Don't + V</div>
+        <div class="fn">
+          • <strong>Open</strong> your mouth. (Mở miệng ra)<br>
+          • <strong>Don't stick out</strong> your tongue. (Đừng thè lưỡi)<br>
+          • <strong>Don't pinch</strong> my cheek. (Đừng véo má tôi)
+        </div>
+      </div>
+    </div>
+
+    <div class="tip-box tip-red">
+      <strong>⚠️ Lỗi thường gặp:</strong><br>
+      ❌ "My legs hurts" → ✅ "My legs <u>are tired/hurt</u>" (Chủ ngữ số nhiều không thêm 's' vào động từ thường hoặc phải dùng tobe <i>are</i>).<br>
+      ❌ "She washes her foots" → ✅ "She washes her <u>feet</u>" (Dạng số nhiều bất quy tắc của foot).
+    </div>
+
+    <button class="btn-next" onclick="goPhase(1)">Tiếp theo: Từ vựng →</button>
+  </div>
+</div>
+
+<!-- ══ PHASE 1: TỪ VỰNG ══ -->
+<div class="phase" id="phase-1">
+  <div class="section-header" style="background:var(--c2)">
+    <div class="phase-label">📚 Giai đoạn 2 – 8 phút</div>
+    <h2>Từ vựng các bộ phận cơ thể</h2>
+    <div class="duration">Nhấp ▶ để nghe phát âm mẫu</div>
+  </div>
+  <div class="section-body">
+    <span class="ex-title" style="background:#b7410e">🔑 Bộ phận trên đầu &amp; khuôn mặt</span>
+    <table class="num-table">
+      <thead><tr><th>Tiếng Anh</th><th>Phát âm gốc</th><th>Tiếng Việt</th><th>▶</th></tr></thead>
+      <tbody id="vocab-head"></tbody>
+    </table>
+
+    <div class="divider"></div>
+    <span class="ex-title" style="background:#1565c0">🎯 Bộ phận trên thân thể &amp; Tình trạng</span>
+    <table class="num-table">
+      <thead><tr><th>Tiếng Anh</th><th>Phát âm gốc</th><th>Tiếng Việt</th><th>▶</th></tr></thead>
+      <tbody id="vocab-body"></tbody>
+    </table>
+
+    <button class="btn-next" onclick="goPhase(2)">Tiếp theo: Câu mẫu →</button>
+  </div>
+</div>
+
+<!-- ══ PHASE 2: CÂU MẪU ══ -->
+<div class="phase" id="phase-2">
+  <div class="section-header" style="background:var(--c1)">
+    <div class="phase-label">📝 Giai đoạn 3 – 8 phút</div>
+    <h2>Câu mẫu đời sống</h2>
+    <div class="duration">Nghe và luyện nói theo từng câu mẫu có sẵn</div>
+  </div>
+  <div class="section-body">
+    <span class="ex-title" style="background:#b7410e">🤒 Diễn đạt cảm giác đau đớn, mệt mỏi</span>
+    <div id="ex-pain"></div>
+    <div class="divider"></div>
+    <span class="ex-title" style="background:#1565c0">🚫 Diễn đạt các hành động và trạng thái khác</span>
+    <div id="ex-action"></div>
+    <button class="btn-next" onclick="goPhase(3)">Tiếp theo: Luyện viết câu →</button>
+  </div>
+</div>
+
+<!-- ══ PHASE 3: LUYỆN VIẾT CÂU ══ -->
+<div class="phase" id="phase-3">
+  <div class="section-header" style="background:var(--c4)">
+    <div class="phase-label">✏️ Giai đoạn 4 – 8 phút</div>
+    <h2>Luyện viết câu phản xạ</h2>
+    <div class="duration">Tự viết lại câu hoàn chỉnh (Không gợi ý)</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box tip-purple"><strong>📌 Hướng dẫn:</strong> Đọc câu tiếng Việt gợi ý → Tự viết lại câu tiếng Anh tương ứng. Lưu ý chia động từ số ít hoặc số nhiều (feet/foot, are/is, hurt/hurts)!</div>
+    <div class="nw-box">
+      <h3>✍️ Viết câu tiếng Anh</h3>
+      <div class="nw-display" id="nw-prompt">...</div>
+      <div class="nw-tag" id="nw-tag"></div>
+      <input class="nw-input" type="text" id="nw-input" placeholder="Nhập câu tiếng Anh..." onkeydown="if(event.key==='Enter')checkNW()">
+      <div class="nw-fb" id="nw-fb"></div>
+      <div class="nw-score" id="nw-score">0 / 0 đúng</div>
+      <div class="nw-btns">
+        <button class="nw-btn nw-check" onclick="checkNW()">✅ Kiểm tra</button>
+        <button class="nw-btn nw-next" onclick="nextNW()">⏭ Bỏ qua câu này</button>
+      </div>
+    </div>
+    <button class="btn-next" onclick="goPhase(4)">Tiếp theo: Hội thoại →</button>
+  </div>
+</div>
+
+<!-- ══ PHASE 4: HỘI THOẠI ══ -->
+<div class="phase" id="phase-4">
+  <div class="section-header" style="background:var(--c5)">
+    <div class="phase-label">💬 Giai đoạn 5 – 6 phút</div>
+    <h2>Hội thoại y tế &amp; Hỏi thăm ngắn</h2>
+    <div class="duration">Nghe và hội thoại phản xạ</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box"><strong>🎯 Luyện tập:</strong> Xem các đoạn hội thoại ngắn → Nhấn nút ▶ để nghe audio chạy tự động → Đọc to theo ngữ điệu nhân vật.</div>
+    <div id="dialogue-container"></div>
+    <button class="btn-next" onclick="goPhase(5)">Tiếp theo: Quiz →</button>
+  </div>
+</div>
+
+<!-- ══ PHASE 5: QUIZ ══ -->
+<div class="phase" id="phase-5">
+  <div class="section-header" style="background:var(--dark)">
+    <div class="phase-label">🧠 Giai đoạn 6 – 8 phút</div>
+    <h2>Bài tập trắc nghiệm kiến thức</h2>
+    <div class="duration">Yêu cầu đạt từ 80% trở lên để qua môn</div>
+  </div>
+  <div class="section-body">
+    <div class="score-inline">Điểm số hiện tại: <span class="score-badge" id="quiz-score">0 / 0</span></div>
+    <div class="tip-box tip-red"><strong>⚠️ Quy chế:</strong> Không có bất kỳ hình thức gợi ý đáp án nào. Nếu bạn không đạt đủ 80% số câu đúng, hệ thống sẽ yêu cầu bạn làm lại từ đầu.</div>
+    <div id="quiz-container"></div>
+    <div id="quiz-retry-section" style="display:none;margin-top:12px;">
+      <button class="retry-btn" onclick="retryQuiz()">🔄 Làm lại bài trắc nghiệm</button>
+      <button class="btn-next" onclick="goPhase(6)" style="margin-top:0">Tiếp theo: Điền từ →</button>
+    </div>
+    <div id="quiz-done-btn" style="display:none"><button class="btn-next" onclick="goPhase(6)">Tiếp theo: Điền từ →</button></div>
+  </div>
+</div>
+
+<!-- ══ PHASE 6: ĐIỀN TỪ ══ -->
+<div class="phase" id="phase-6">
+  <div class="section-header" style="background:var(--c1)">
+    <div class="phase-label">✏️ Giai đoạn 7 – 8 phút</div>
+    <h2>Điền vào ô trống</h2>
+    <div class="duration">Làm toàn bộ bài tập trước khi nhấn nút chấm điểm</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box tip-red"><strong>⚠️ Luật làm bài:</strong> Điền từ thích hợp vào ô trống. Bạn cần đạt trên 70% số câu đúng, nếu sai nhiều hơn mức này sẽ phải làm lại toàn bộ phần này.</div>
+    <div id="fill-container"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">
+      <button class="btn-check" onclick="checkFill()">✅ Kiểm tra bài điền từ</button>
+      <button class="retry-btn" onclick="retryFill()" id="retry-fill-btn" style="display:none">🔄 Làm lại phần điền từ</button>
+    </div>
+    <div id="fill-score-display" style="margin-top:10px;font-weight:700;font-size:.9rem;display:none;"></div>
+    <br><button class="btn-next" onclick="goPhase(7)" style="margin-top:8px">Tiếp theo: Dịch câu →</button>
+  </div>
+</div>
+
+<!-- ══ PHASE 7: DỊCH CÂU ══ -->
+<div class="phase" id="phase-7">
+  <div class="section-header" style="background:var(--c5)">
+    <div class="phase-label">🔄 Giai đoạn 8 – 7 phút</div>
+    <h2>Dịch câu song ngữ</h2>
+    <div class="duration">Dịch thuật tự lập hoàn toàn</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box"><strong>Hướng dẫn làm bài:</strong> Hãy tự nhớ kiến thức và dịch các câu dưới đây. Điểm số đạt yêu cầu phải từ 70% trở lên.</div>
+    <div id="trans-container"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">
+      <button class="btn-check" onclick="checkTrans()">✅ Kiểm tra bài dịch câu</button>
+      <button class="retry-btn" onclick="retryTrans()" id="retry-trans-btn" style="display:none">🔄 Làm lại bài dịch câu</button>
+    </div>
+    <div id="trans-score-display" style="margin-top:10px;font-weight:700;font-size:.9rem;display:none;"></div>
+    <br><button class="btn-next" onclick="goPhase(8)" style="margin-top:8px">Tiếp theo: Luyện nói →</button>
+  </div>
+</div>
+
+<!-- ══ PHASE 8: NÓI ══ -->
+<div class="phase" id="phase-8">
+  <div class="section-header" style="background:var(--c3)">
+    <div class="phase-label">🎤 Giai đoạn 9 – 5 phút</div>
+    <h2>Luyện nói câu ứng dụng</h2>
+    <div class="duration">Tự nói to trước khi nghe giọng mẫu đối chiếu</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box"><strong>Hướng dẫn luyện phát âm:</strong> Bạn nhìn câu chữ hiển thị → Tự đọc to lên thành tiếng → Sau đó nhấn nút ▶ để nghe máy phát giọng chuẩn bản xứ và tự sửa lỗi nếu có.</div>
+    <div id="speaking-container"></div>
+    <button class="btn-next" onclick="goPhase(9)">Xem kết quả tổng kết học tập →</button>
+  </div>
+</div>
+
+<!-- ══ PHASE 9: KẾT QUẢ ══ -->
+<div class="phase" id="phase-9">
+  <div class="section-header" style="background:var(--dark)">
+    <div class="phase-label">🏆 Báo cáo kết quả phiên học</div>
+    <h2>Tổng kết bài học Day 15</h2>
+    <div class="duration">Đánh giá tổng hợp năng lực</div>
+  </div>
+  <div class="section-body">
+    <div id="score-section">
+      <div class="score-circle"><div class="num" id="final-score">—</div><div class="lbl">điểm số</div></div>
+      <h2 id="final-msg">Hoàn thành khóa học!</h2>
+      <p id="final-desc">Hệ thống đang xử lý...</p>
+      <div id="detail-score" style="margin:12px 0;font-size:.85rem;font-weight:700;background:#f8f9fa;border-radius:10px;padding:12px 16px;text-align:left;"></div>
+      <div style="background:#f8f9fa;border-radius:13px;padding:14px;text-align:left;margin:14px 0;">
+        <h3 style="font-size:.86rem;font-weight:800;margin-bottom:10px;">📋 Checklist kiến thức trọng tâm:</h3>
+        <div style="font-size:.82rem;line-height:2.2;">
+          <div>🔴 <strong>Triệu chứng đau:</strong> My head hurts / My ear hurts (Sử dụng hurts có 's' cho danh từ số ít).</div>
+          <div>🔵 <strong>Bộ phận số nhiều đặc biệt:</strong> foot → feet, eye → eyes, hand → hands, arm → arms, leg → legs.</div>
+          <div>🟢 <strong>Hành động / Trạng thái:</strong> runny nose (sổ mũi), dry (khô), cold (lạnh), tired (mỏi/mệt).</div>
+          <div>🟡 <strong>Câu mệnh lệnh:</strong> Open your mouth, Don't stick out your tongue, Don't pinch my cheek.</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+        <button class="btn-primary" onclick="restartLesson()">🔄 Học lại phiên này từ đầu</button>
+        <a href="index.html" class="home-btn">🏠 Quay lại trang chủ</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+// ══════════ DATA CONTROL SOURCE PROMPT ══════════
+
+const vocabHead=[
+  {w:"head",p:"/hed/",vi:"đầu"},
+  {w:"eyebrow",p:"/ˈaɪ.braʊ/",vi:"lông mày"},
+  {w:"eye",p:"/aɪ/",vi:"mắt"},
+  {w:"nose",p:"/noʊz/",vi:"mũi"},
+  {w:"ear",p:"/ɪər/",vi:"tai"},
+  {w:"mouth",p:"/maʊθ/",vi:"miệng"},
+  {w:"lip",p:"/lɪp/",vi:"môi"},
+  {w:"tongue",p:"/tʌŋ/",vi:"lưỡi"},
+  {w:"hair",p:"/heər/",vi:"tóc"},
+  {w:"cheek",p:"/tʃiːk/",vi:"má"}
+];
+
+const vocabBody=[
+  {w:"arm",p:"/ɑːm/",vi:"cánh tay"},
+  {w:"hand",p:"/hænd/",vi:"bàn tay"},
+  {w:"leg",p:"/leɡ/",vi:"chân / cẳng chân"},
+  {w:"foot",p:"/fʊt/",vi:"bàn chân"},
+  {w:"runny nose",p:"/ˈrʌn.i noʊz/",vi:"sổ mũi"},
+  {w:"hurt / hurts",p:"/hɜːt/",vi:"đau / làm đau"},
+  {w:"dry",p:"/draɪ/",vi:"khô"},
+  {w:"tired",p:"/ˈtaɪəd/",vi:"mệt mỏi / mỏi"}
+];
+
+const exPain=[
+  {en:"My head hurts.",vi:"Đầu tôi đau.",tag:"head"},
+  {en:"My ear hurts.",vi:"Tai tôi đang đau.",tag:"ear"},
+  {en:"My arm hurts.",vi:"Cánh tay của tôi bị đau.",tag:"arm"},
+  {en:"My right arm hurts.",vi:"Cánh tay phải của tôi bị đau.",tag:"arm"},
+  {en:"I have a runny nose.",vi:"Tôi bị sổ mũi.",tag:"nose"},
+  {en:"My legs are tired.",vi:"Chân tôi mỏi.",tag:"leg"}
+];
+
+const exAction=[
+  {en:"Her eyes are beautiful.",vi:"Mắt cô ấy rất đẹp.",tag:"eye"},
+  {en:"Open your mouth.",vi:"Mở miệng ra.",tag:"mouth"},
+  {en:"My lips are dry.",vi:"Môi của tôi bị khô.",tag:"lip"},
+  {en:"Don't stick out your tongue.",vi:"Đừng thè lưỡi.",tag:"tongue"},
+  {en:"My hands are cold.",vi:"Tay tôi lạnh.",tag:"hand"},
+  {en:"His arms are strong.",vi:"Tay anh ấy rất khỏe.",tag:"arm"},
+  {en:"She washes her feet.",vi:"Cô ấy rửa chân.",tag:"foot"},
+  {en:"My hair is very long.",vi:"Tóc của tôi rất dài.",tag:"hair"},
+  {en:"Don't pinch my cheek.",vi:"Đừng véo má tôi.",tag:"cheek"}
+];
+
+const nwExercises=[
+  {prompt:"Đầu tôi đau.",tag:"🤒 Triệu chứng",a:"my head hurts"},
+  {prompt:"Mắt cô ấy rất đẹp.",tag:"✨ Trạng thái",a:"her eyes are beautiful"},
+  {prompt:"Tôi bị sổ mũi.",tag:"🤒 Triệu chứng",a:"i have a runny nose"},
+  {prompt:"Tai tôi đang đau.",tag:"🤒 Triệu chứng",a:"my ear hurts"},
+  {prompt:"Mở miệng ra.",tag:"🚫 Câu lệnh",a:"open your mouth"},
+  {prompt:"Môi của tôi bị khô.",tag:"✨ Trạng thái",a:"my lips are dry"},
+  {prompt:"Đừng thè lưỡi.",tag:"🚫 Câu lệnh",a:"don't stick out your tongue"},
+  {prompt:"Tay tôi lạnh.",tag:"✨ Trạng thái",a:"my hands are cold"},
+  {prompt:"Chân tôi mỏi.",tag:"✨ Trạng thái",a:"my legs are tired"},
+  {prompt:"Cô ấy rửa chân.",tag:"🏃 Hành động",a:"she washes her feet"},
+  {prompt:"Tóc của tôi rất dài.",tag:"✨ Trạng thái",a:"my hair is very long"},
+  {prompt:"Đừng véo má tôi.",tag:"🚫 Câu lệnh",a:"don't pinch my cheek"},
+  {prompt:"Cánh tay phải của tôi bị đau.",tag:"🤒 Triệu chứng",a:"my right arm hurts"}
+];
+let nwIdx=0,nwCorrect=0,nwTotal=0;
+
+const dialogues=[
+  {title:"Đoạn hội thoại 1 – Chân mỏi",lines:[
+    {label:"A",vi:"Sao bạn ngồi xuống vậy?",en:"Why are you sitting down?",color:"#1565c0"},
+    {label:"B",vi:"Chân tôi mỏi.",en:"My legs are tired.",color:"#b7410e"}
+  ]},
+  {title:"Đoạn hội thoại 2 – Chân ướt đi mưa",lines:[
+    {label:"A",vi:"Sao chân bạn ướt vậy?",en:"Why are your feet wet?",color:"#1565c0"},
+    {label:"B",vi:"Tôi đi dưới mưa.",en:"I walked in the rain.",color:"#2e7d32"}
+  ]},
+  {title:"Đoạn hội thoại 3 – Bị đứt tay",lines:[
+    {label:"A",vi:"Tay bạn bị sao vậy?",en:"What happened to your hand?",color:"#1565c0"},
+    {label:"B",vi:"Tôi bị đứt tay.",en:"I cut my hand.",color:"#6a1b9a"}
+  ]},
+  {title:"Đoạn hội thoại 4 – Đau cánh tay ở bệnh viện",lines:[
+    {label:"Bác sĩ",vi:"Xin chào. Bạn bị sao vậy?",en:"Hello. What's the problem?",color:"#2e7d32"},
+    {label:"Bệnh nhân",vi:"Cánh tay của tôi bị đau.",en:"My arm hurts.",color:"#00838f"},
+    {label:"Bác sĩ",vi:"Cánh tay nào? Tay trái hay tay phải?",en:"Which arm? Left arm or right arm?",color:"#2e7d32"},
+    {label:"Bệnh nhân",vi:"Cánh tay phải của tôi bị đau.",en:"My right arm hurts.",color:"#00838f"}
+  ]}
+];
+
+const quizData=[
+  {q:'Từ nào đại diện cho danh từ số nhiều của "foot" (bàn chân)?',opts:["foots","feets","feet","footest"],ans:2},
+  {q:'Dịch câu sau: "Đầu tôi đau."',opts:["My head are hurt.","My head hurts.","My head hurting.","I have a head hurt."],ans:1},
+  {q:'Hoàn thành câu: "I have a ______ nose" (Tôi bị sổ mũi).',opts:["runny","running","cold","dry"],ans:0},
+  {q:'"Don\'t stick out your tongue" nghĩa là gì?',opts:["Đừng chạm vào lưỡi bạn.","Đừng mở miệng ra.","Đừng thè lưỡi.","Đừng véo má tôi."],ans:2},
+  {q:'Khi chủ ngữ là số nhiều như "My hands" hoặc "My legs", ta dùng động từ tobe nào?',opts:["is","am","are","be"],ans:2},
+  {q:'Chọn câu viết đúng quy tắc tiếng Anh tương ứng câu: "Cô ấy rửa chân."',opts:["She wash her feet.","She washes her foots.","She washes her feet.","She washing her feet."],ans:2},
+  {q:'"My right arm hurts" nghĩa là gì?',opts:["Cánh tay trái của tôi bị đau.","Cánh tay phải của tôi bị đau.","Cẳng chân phải của tôi bị đau.","Đầu tôi đang đau."],ans:1},
+  {q:'Từ "hair" (tóc) đi với động từ tobe số ít hay số nhiều?',opts:["Số ít (is)","Số nhiều (are)","Không đi với tobe","Cả hai đều đúng"],ans:0},
+  {q:'Cụm từ "pinch my cheek" có nghĩa là gì?',opts:["thè lưỡi tôi","véo má tôi","rửa chân tôi","đứt tay tôi"],ans:1},
+  {q:'Hoàn thành câu đối thoại: "Why are you sitting down?" -> "My ______ are tired."',opts:["head","ear","legs","hands"],ans:2}
+];
+
+const fillData=[
+  {answer:"hurts",before:"My head ______.",after:"",vi:"Đầu tôi đau."},
+  {answer:"eyes are",before:"Her ______ beautiful.",after:"",vi:"Mắt cô ấy rất đẹp."},
+  {answer:"runny nose",before:"I have a ______.",after:"",vi:"Tôi bị sổ mũi."},
+  {answer:"mouth",before:"Open your ______.",after:"",vi:"Mở miệng ra."},
+  {answer:"lips are",before:"My ______ dry.",after:"",vi:"Môi của tôi bị khô."},
+  {answer:"hands are",before:"My ______ cold.",after:"",vi:"Tay tôi lạnh."},
+  {answer:"legs are",before:"My ______ tired.",after:"",vi:"Chân tôi mỏi."},
+  {answer:"washes her feet",before:"She ______.",after:"",vi:"Cô ấy rửa chân."},
+  {answer:"hair is",before:"My ______ very long.",after:"",vi:"Tóc của tôi rất dài."},
+  {answer:"right arm hurts",before:"My ______.",after:"",vi:"Cánh tay phải của tôi bị đau."}
+];
+
+const transData=[
+  {prompt:"Đầu tôi đau.",answer:"my head hurts",dir:"vi→en"},
+  {prompt:"Her eyes are beautiful.",answer:"mắt cô ấy rất đẹp",dir:"en→vi"},
+  {prompt:"Tôi bị sổ mũi.",answer:"i have a runny nose",dir:"vi→en"},
+  {prompt:"Open your mouth.",answer:"mở miệng ra",dir:"en→vi"},
+  {prompt:"Môi của tôi bị khô.",answer:"my lips are dry",dir:"vi→en"},
+  {prompt:"Don't stick out your tongue.",answer:"đừng thè lưỡi",dir:"en→vi"},
+  {prompt:"Chân tôi mỏi.",answer:"my legs are tired",dir:"vi→en"},
+  {prompt:"Why are your feet wet?",answer:"sao chân bạn ướt vậy",dir:"en→vi"},
+  {prompt:"Cánh tay phải của tôi bị đau.",answer:"my right arm hurts",dir:"vi→en"},
+  {prompt:"I cut my hand.",answer:"tôi bị đứt tay",dir:"en→vi"}
+];
+
+const speakingData=[
+  {en:"My head hurts.",vi:"Đầu tôi đau.",color:"#b7410e"},
+  {en:"I have a runny nose.",vi:"Tôi bị sổ mũi.",color:"#b7410e"},
+  {en:"Her eyes are beautiful.",vi:"Mắt cô ấy rất đẹp.",color:"#1565c0"},
+  {en:"Open your mouth.",vi:"Mở miệng ra.",color:"#1565c0"},
+  {en:"My lips are dry.",vi:"Môi của tôi bị khô.",color:"#2e7d32"},
+  {en:"My hands are cold.",vi:"Tay tôi lạnh.",color:"#2e7d32"},
+  {en:"My legs are tired.",vi:"Chân tôi mỏi.",color:"#6a1b9a"},
+  {en:"She washes her feet.",vi:"Cô ấy rửa chân.",color:"#6a1b9a"},
+  {en:"My right arm hurts.",vi:"Cánh tay phải của tôi bị đau.",color:"#00838f"},
+  {en:"Don't pinch my cheek.",vi:"Đừng véo má tôi.",color:"#00838f"}
+];
+
+// ══════════ AUTOMATED CORE SYSTEM ENGINE ══════════
+let quizCorrect=0,quizAnswered=0,fillCorrect=0,transCorrect=0;
+let secondsLeft=3600,timerInterval;
+
+function init(){
+  buildVocabTables();buildExamples();buildDialogues();
+  buildQuiz();buildFill();buildTrans();buildSpeaking();
+  initNW();startTimer();
+}
+
+function startTimer(){
+  timerInterval=setInterval(()=>{
+    secondsLeft--;
+    const m=String(Math.floor(secondsLeft/60)).padStart(2,'0');
+    const s=String(secondsLeft%60).padStart(2,'0');
+    document.getElementById('timer-bar').textContent='⏱ '+m+':'+s;
+    if(secondsLeft<=0)clearInterval(timerInterval);
+  },1000);
+}
+
+function buildVocabTables(){
+  function makeRows(data,id){
+    document.getElementById(id).innerHTML=data.map(v=>
+      '<tr><td class="w">'+v.w+'</td><td class="p">'+(v.p||'')+'</td><td>'+v.vi+'</td><td><button class="play-btn" onclick="speak(\''+v.w.replace(/'/g,"\\'")+'\')">▶</button></td></tr>'
+    ).join('');
+  }
+  makeRows(vocabHead,'vocab-head');
+  makeRows(vocabBody,'vocab-body');
+}
+
+function buildExamples(){
+  function r(arr,id,color,bg){
+    document.getElementById(id).innerHTML=arr.map(e=>
+      '<div class="eb" style="background:'+bg+';border-color:'+color+'">'+
+      (e.tag?'<div class="tag">'+e.tag+'</div>':'')+
+      '<div class="en" style="color:'+color+'">'+e.en+'</div>'+
+      '<div class="vi">→ '+e.vi+'</div>'+
+      '<button class="psm" style="background:'+color+'" onclick="speak(\''+e.en.replace(/'/g,"\\'")+'\')">▶ Nghe mẫu</button></div>'
+    ).join('');
+  }
+  r(exPain,'ex-pain','#b7410e','#fff3e0');
+  r(exAction,'ex-action','#1565c0','#e3f2fd');
+}
+
+function buildDialogues(){
+  document.getElementById('dialogue-container').innerHTML=dialogues.map((d,i)=>
+    '<div class="dbox"><div class="dtitle">💬 '+d.title+'</div>'+
+    d.lines.map(l=>'<div class="dline"><span class="dlabel" style="background:'+l.color+'">'+l.label+'</span><div><div class="dvi">'+l.vi+'</div><div class="den">'+l.en+'</div></div></div>').join('')+
+    '<button class="pdlg" onclick="speakDlg('+i+')">▶ Nghe toàn bộ đoạn thoại</button></div>'
+  ).join('');
+}
+async function speakDlg(i){
+  for(const l of dialogues[i].lines){speak(l.en);await new Promise(r=>setTimeout(r,l.en.length*65+900));}
+}
+
+function buildSpeaking(){
+  document.getElementById('speaking-container').innerHTML=speakingData.map((s,i)=>
+    '<div class="speak-card" style="background:'+s.color+'">'+
+    '<div class="slbl">📝 CÂU THỰC HÀNH PHÁT ÂM '+(i+1)+'</div>'+
+    '<div class="sen-en">'+s.en+'</div>'+
+    '<div class="sen-vi">'+s.vi+'</div>'+
+    '<button class="hear-btn" onclick="speak(\''+s.en.replace(/'/g,"\\'")+'\')">▶ Audio mẫu</button></div>'
+  ).join('');
+}
+
+function initNW(){
+  nwIdx=0;nwCorrect=0;nwTotal=0;
+  document.getElementById('nw-score').textContent='0 / 0 đúng';
+  showNW();
+}
+function showNW(){
+  if(nwIdx>=nwExercises.length){
+    document.getElementById('nw-prompt').textContent='✅ Hoàn thành bài tập!';
+    document.getElementById('nw-tag').textContent='';
+    document.getElementById('nw-fb').innerHTML='<span style="color:var(--yellow)">Bạn đã giải xong toàn bộ câu viết phản xạ!</span>';
+    return;
+  }
+  const ex=nwExercises[nwIdx];
+  document.getElementById('nw-prompt').textContent=ex.prompt;
+  document.getElementById('nw-tag').textContent=ex.tag;
+  document.getElementById('nw-input').value='';
+  document.getElementById('nw-fb').textContent='';
+  document.getElementById('nw-input').focus();
+}
+function checkNW(){
+  if(nwIdx>=nwExercises.length)return;
+  const val=document.getElementById('nw-input').value.trim().toLowerCase().replace(/[.?!,']/g,'').replace(/\s+/g,' ');
+  const correct=nwExercises[nwIdx].a.toLowerCase();
+  nwTotal++;
+  const fb=document.getElementById('nw-fb');
+  const kw=correct.split(' ').filter(w=>w.length>1);
+  const ratio=kw.length?kw.filter(w=>val.includes(w)).length/kw.length:0;
+  if(ratio>=0.75 || val===correct){
+    fb.innerHTML='<span style="color:#FFD93D">✅ Đúng! Bạn làm rất tốt.</span>';
+    nwCorrect++;nwIdx++;setTimeout(showNW,1400);
+  }else{
+    fb.innerHTML='<span style="color:#ff8a80">❌ Chưa chính xác! Hãy tự suy nghĩ kỹ và nhập lại câu trả lời, không có gợi ý.</span>';
+  }
+  document.getElementById('nw-score').textContent=nwCorrect+' / '+nwTotal+' đúng';
+}
+function nextNW(){if(nwIdx<nwExercises.length)nwIdx++;showNW();}
+
+function buildQuiz(){
+  document.getElementById('quiz-container').innerHTML=quizData.map((q,i)=>
+    '<div class="quiz-item" id="qi-'+i+'"><div class="quiz-q">'+(i+1)+'. '+q.q+'</div><div class="quiz-opts">'+
+    q.opts.map((o,j)=>'<button class="qopt" id="qo-'+i+'-'+j+'" onclick="answerQuiz('+i+','+j+')">'+o+'</button>').join('')+
+    '</div><div class="qfb" id="qf-'+i+'"></div></div>'
+  ).join('');
+}
+function answerQuiz(qi,choice){
+  const item=document.getElementById('qi-'+qi);
+  if(item.dataset.answered)return;
+  item.dataset.answered='1';
+  const q=quizData[qi];
+  item.querySelectorAll('.qopt').forEach(b=>b.disabled=true);
+  const fb=document.getElementById('qf-'+qi);
+  if(choice===q.ans){document.getElementById('qo-'+qi+'-'+choice).classList.add('sel-ok');item.classList.add('answered-ok');fb.textContent='✅ Đúng!';fb.className='qfb show ok';quizCorrect++;}
+  else{document.getElementById('qo-'+qi+'-'+choice).classList.add('sel-fail');item.classList.add('answered-fail');fb.textContent='❌ Sai! Ghi nhớ quy tắc cấu trúc để làm lại sau.',fb.className='qfb show fail';}
+  quizAnswered++;
+  document.getElementById('quiz-score').textContent=quizCorrect+' / '+quizAnswered;
+  if(quizAnswered===quizData.length){
+    const pct=Math.round((quizCorrect/quizData.length)*100);
+    document.getElementById(pct<80?'quiz-retry-section':'quiz-done-btn').style.display='block';
+  }
+}
+function retryQuiz(){
+  quizCorrect=0;quizAnswered=0;
+  document.getElementById('quiz-score').textContent='0 / 0';
+  document.getElementById('quiz-retry-section').style.display='none';
+  document.getElementById('quiz-done-btn').style.display='none';
+  buildQuiz();
+}
+
+function buildFill(){
+  document.getElementById('fill-container').innerHTML=fillData.map((f,i)=>
+    '<div class="fill-item" id="fi-'+i+'"><div class="fill-q">'+(i+1)+'. '+f.before+'<input type="text" id="finp-'+i+'" placeholder="...">'+f.after+'</div><div class="fill-ans" id="fa-'+i+'">❌ Có lỗi sai chính tả từ vựng, vui lòng thử lại!</div></div>'
+  ).join('');
+  fillCorrect=0;
+  document.getElementById('retry-fill-btn').style.display='none';
+  document.getElementById('fill-score-display').style.display='none';
+}
+function checkFill(){
+  fillCorrect=0;
+  fillData.forEach((f,i)=>{
+    const inp=document.getElementById('finp-'+i);
+    const item=document.getElementById('fi-'+i);
+    const ans=document.getElementById('fa-'+i);
+    const val=inp.value.trim().toLowerCase().replace(/[.?!,']/g,'').replace(/\s+/g,' ');
+    const correct=f.answer.toLowerCase().replace(/[.?!,']/g,'');
+    inp.disabled=true;
+    const kw=correct.split(' ').filter(w=>w.length>1);
+    const ratio=kw.length?kw.filter(w=>val.includes(w)).length/kw.length:0;
+    if(ratio>=0.75 || val===correct){item.classList.add('correct');item.classList.remove('wrong');ans.classList.remove('show-wrong');fillCorrect++;}
+    else{item.classList.add('wrong');item.classList.remove('correct');ans.classList.add('show-wrong');}
+  });
+  const pct=Math.round((fillCorrect/fillData.length)*100);
+  const el=document.getElementById('fill-score-display');
+  el.style.display='block';
+  el.innerHTML='Điểm số điền từ: <span style="color:'+(pct>=70?'#2e7d32':'#c0392b')+'">'+fillCorrect+'/'+fillData.length+' ('+pct+'%)</span>';
+  if(pct<70)document.getElementById('retry-fill-btn').style.display='inline-flex';
+}
+function retryFill(){
+  fillData.forEach((f,i)=>{
+    const inp=document.getElementById('finp-'+i);
+    const item=document.getElementById('fi-'+i);
+    const ans=document.getElementById('fa-'+i);
+    inp.value='';inp.disabled=false;item.classList.remove('correct','wrong');ans.classList.remove('show-wrong');
+  });
+  fillCorrect=0;document.getElementById('retry-fill-btn').style.display='none';document.getElementById('fill-score-display').style.display='none';
+}
+
+function buildTrans(){
+  document.getElementById('trans-container').innerHTML=transData.map((t,i)=>
+    '<div class="trans-item" id="ti-'+i+'"><div class="trans-lang">'+(t.dir==='vi→en'?'🇻🇳 Dịch sang Tiếng Anh':'🇬🇧 Dịch sang Tiếng Việt')+'</div><div class="trans-q">'+t.prompt+'</div><input class="trans-input" type="text" id="tinp-'+i+'" placeholder="Nhập văn bản bản dịch..."><div class="trans-ans" id="ta-'+i+'">❌ Nội dung dịch chưa chuẩn ngữ pháp hoặc sai bộ phận cơ thể.</div></div>'
+  ).join('');
+  transCorrect=0;document.getElementById('retry-trans-btn').style.display='none';document.getElementById('trans-score-display').style.display='none';
+}
+function normalize(s){return s.trim().toLowerCase().replace(/[.?!,']/g,'').replace(/\s+/g,' ');}
+function checkTrans(){
+  transCorrect=0;
+  transData.forEach((t,i)=>{
+    const inp=document.getElementById('tinp-'+i);
+    const item=document.getElementById('ti-'+i);
+    const ans=document.getElementById('ta-'+i);
+    const val=normalize(inp.value);
+    const correct=normalize(t.answer);
+    inp.disabled=true;
+    const kw=correct.split(' ').filter(w=>w.length>2);
+    const ratio=kw.length?kw.filter(w=>val.includes(w)).length/kw.length:0;
+    if(ratio>=0.65 || val===correct){item.classList.add('correct');item.classList.remove('wrong');ans.classList.remove('show');transCorrect++;}
+    else{item.classList.add('wrong');item.classList.remove('correct');ans.classList.add('show');}
+  });
+  const pct=Math.round((transCorrect/transData.length)*100);
+  const el=document.getElementById('trans-score-display');
+  el.style.display='block';
+  el.innerHTML='Điểm số dịch câu: <span style="color:'+(pct>=70?'#2e7d32':'#c0392b')+'">'+transCorrect+'/'+transData.length+' ('+pct+'%)</span>';
+  if(pct<70)document.getElementById('retry-trans-btn').style.display='inline-flex';
+}
+function retryTrans(){
+  transData.forEach((t,i)=>{
+    const inp=document.getElementById('tinp-'+i);
+    const item=document.getElementById('ti-'+i);
+    const ans=document.getElementById('ta-'+i);
+    inp.value='';inp.disabled=false;item.classList.remove('correct','wrong');ans.classList.remove('show');
+  });
+  transCorrect=0;document.getElementById('retry-trans-btn').style.display='none';document.getElementById('trans-score-display').style.display='none';
+}
+
+function speak(text){
+  if(!window.speechSynthesis)return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='en-US';u.rate=0.82;speechSynthesis.speak(u);
+}
+
+function goPhase(n){
+  document.querySelectorAll('.phase').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.phase-tab').forEach((t,i)=>{t.classList.remove('active','done');if(i<n)t.classList.add('done');});
+  document.getElementById('phase-'+n).classList.add('active');
+  document.querySelectorAll('.phase-tab')[n].classList.add('active');
+  document.getElementById('progress-bar').style.width=Math.round((n/9)*100)+'%';
+  window.scrollTo(0,0);
+  if(n===9)showResult();
+}
+
+function showResult(){
+  const qT=quizData.length,fT=fillData.length,tT=transData.length;
+  const total=quizCorrect+fillCorrect+transCorrect;
+  const max=qT+fT+tT;
+  const pct=Math.round((total/max)*100);
+  document.getElementById('final-score').textContent=pct+'%';
+  let msg,desc;
+  if(pct>=90){msg='🏆 Hoàn thành xuất sắc!';desc='Bạn nắm vững toàn bộ tên gọi và triệu chứng liên quan đến các bộ phận cơ thể!';}
+  else if(pct>=75){msg='👍 Kết quả khá tốt!';desc='Hãy tiếp tục duy trì và luyện nghe nói hàng ngày để ghi nhớ lâu nhé!';}
+  else if(pct>=55){msg='📚 Cần ôn tập thêm!';desc='Bạn nên xem lại cách dùng hurts cho số ít và động từ chia số nhiều.';}
+  else{msg='💪 Cố gắng lên nhé!';desc='Điểm số chưa đạt yêu cầu hệ thống. Hãy thực hiện lại phiên học để củng cố kiến thức.';}
+  document.getElementById('final-msg').textContent=msg;
+  document.getElementById('final-desc').textContent=desc;
+  document.getElementById('detail-score').innerHTML=
+    '🧠 Trắc nghiệm: <strong>'+quizCorrect+'/'+qT+'</strong> &nbsp;|&nbsp; ✏️ Điền vào ô trống: <strong>'+fillCorrect+'/'+fT+'</strong> &nbsp;|&nbsp; 🔄 Dịch câu: <strong>'+transCorrect+'/'+tT+'</strong> &nbsp;|&nbsp; Tổng điểm đạt: <strong>'+total+'/'+max+' ('+pct+'%)</strong>';
+  clearInterval(timerInterval);
+}
+
+function restartLesson(){
+  quizCorrect=0;quizAnswered=0;fillCorrect=0;transCorrect=0;
+  secondsLeft=3600;clearInterval(timerInterval);
+  buildQuiz();buildFill();buildTrans();initNW();
+  document.getElementById('quiz-score').textContent='0 / 0';
+  document.getElementById('quiz-retry-section').style.display='none';
+  document.getElementById('quiz-done-btn').style.display='none';
+  goPhase(0);startTimer();
+}
+
+init();
+</script>
+</body>
+</html>

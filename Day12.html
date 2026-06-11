@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 12 – SỐ ĐẾM (Trăm–Triệu) – 100 / 1,000 / 1,000,000</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{--c1:#b7410e;--c2:#1565c0;--c3:#2e7d32;--c4:#6a1b9a;--c5:#00838f;--yellow:#FFD93D;--bg:#fafbff;--dark:#0d1b2a;--gray:#78909c;--radius:18px;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--dark);min-height:100vh;}
+  header{background:var(--dark);color:white;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 3px 14px rgba(0,0,0,.3);}
+  header h1{font-family:'Baloo 2',cursive;font-size:1.05rem;font-weight:800;text-align:center;flex:1;}
+  header h1 span{color:var(--yellow);}
+  #timer-bar{font-size:.95rem;font-weight:700;background:var(--yellow);color:var(--dark);padding:5px 14px;border-radius:30px;white-space:nowrap;}
+  .back-btn{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.25);color:white;padding:5px 13px;border-radius:30px;font-size:.78rem;font-weight:700;text-decoration:none;transition:all .2s;white-space:nowrap;}
+  .back-btn:hover{background:rgba(255,255,255,.22);}
+  #progress-wrap{background:#e9ecef;height:8px;}
+  #progress-bar{height:8px;background:linear-gradient(90deg,var(--c1),var(--c2),var(--c3),var(--c4));transition:width .6s ease;border-radius:0 4px 4px 0;}
+  #phase-nav{display:flex;gap:5px;padding:10px 16px;overflow-x:auto;background:white;border-bottom:2px solid #f1f3f4;}
+  .phase-tab{flex-shrink:0;padding:5px 11px;border-radius:20px;font-size:.72rem;font-weight:700;border:2px solid #dee2e6;background:white;cursor:pointer;transition:all .2s;color:var(--gray);}
+  .phase-tab.active{background:var(--dark);color:white;border-color:var(--dark);}
+  .phase-tab.done{background:var(--c3);color:white;border-color:var(--c3);}
+  main{padding:18px 14px 48px;max-width:780px;margin:0 auto;}
+  .phase{display:none;animation:fadeIn .4s ease;}
+  .phase.active{display:block;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+  .section-header{border-radius:var(--radius) var(--radius) 0 0;padding:13px 18px;}
+  .section-header .phase-label{font-size:.66rem;letter-spacing:2px;text-transform:uppercase;color:var(--yellow);font-weight:700;}
+  .section-header h2{font-family:'Baloo 2',cursive;font-size:1.2rem;font-weight:800;color:white;}
+  .section-header .duration{font-size:.76rem;color:rgba(255,255,255,.5);margin-top:1px;}
+  .section-body{background:white;border-radius:0 0 var(--radius) var(--radius);padding:18px;margin-bottom:20px;box-shadow:0 4px 18px rgba(0,0,0,.07);}
+  .tip-box{background:#fff8e1;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:.82rem;border-left:4px solid var(--yellow);line-height:1.75;}
+  .tip-box strong{color:#e65100;}
+  .tip-red{background:#fce4ec;border-left-color:var(--c1);}
+  .tip-red strong{color:var(--c1);}
+  .tip-green{background:#e8f5e9;border-left-color:var(--c3);}
+  .tip-green strong{color:var(--c3);}
+  .tip-blue{background:#e3f2fd;border-left-color:var(--c2);}
+  .tip-blue strong{color:var(--c2);}
+
+  /* NUMBER TABLE */
+  .num-table{width:100%;border-collapse:collapse;margin-bottom:16px;font-size:.84rem;border-radius:11px;overflow:hidden;}
+  .num-table th{background:var(--dark);color:white;padding:9px 12px;text-align:left;font-weight:800;}
+  .num-table td{padding:9px 12px;border-bottom:1px solid #f0f0f0;vertical-align:middle;font-weight:600;}
+  .num-table tr:nth-child(even) td{background:#f8f9fa;}
+  .num-table .n{font-family:'Baloo 2',cursive;font-size:1rem;font-weight:800;color:var(--c2);}
+  .num-table .w{font-weight:800;color:var(--c1);}
+  .num-table .p{font-size:.72rem;font-style:italic;color:var(--gray);}
+  .play-btn{background:none;border:1px solid #dee2e6;border-radius:20px;padding:2px 8px;font-size:.68rem;font-weight:700;cursor:pointer;color:var(--c3);font-family:'Nunito',sans-serif;}
+  .play-btn:hover{background:var(--c3);color:white;border-color:var(--c3);}
+
+  /* FORMULA CARDS */
+  .formula-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+  .fc{border-radius:12px;padding:14px;}
+  .fc h3{font-family:'Baloo 2',cursive;font-size:.95rem;font-weight:800;margin-bottom:8px;color:white;}
+  .fc .fb{background:rgba(255,255,255,.18);border-radius:7px;padding:8px 11px;font-size:.8rem;font-weight:700;font-family:monospace;color:white;margin-bottom:6px;line-height:1.6;}
+  .fc .fn{font-size:.76rem;color:rgba(255,255,255,.88);line-height:1.75;}
+
+  /* NUMBER CARDS (vocab-style) */
+  .num-card-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;}
+  @media(max-width:520px){.num-card-grid{grid-template-columns:repeat(2,1fr);}.formula-grid{grid-template-columns:1fr;}.quiz-opts{grid-template-columns:1fr;}}
+  .nc{border-radius:12px;padding:10px 8px;border:2px solid;text-align:center;cursor:pointer;transition:transform .15s;}
+  .nc:hover{transform:scale(1.05);}
+  .nc .nn{font-family:'Baloo 2',cursive;font-size:1.15rem;font-weight:800;}
+  .nc .nw{font-size:.78rem;font-weight:800;margin-top:2px;}
+  .nc .np{font-size:.65rem;font-style:italic;color:#777;margin-top:1px;}
+
+  /* EXAMPLES */
+  .ex-title{font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;padding:4px 12px;border-radius:20px;color:white;display:inline-block;margin-bottom:8px;}
+  .eb{border-radius:11px;padding:11px 14px;margin-bottom:8px;border-left:4px solid;}
+  .eb .en{font-size:.93rem;font-weight:700;margin-bottom:2px;}
+  .eb .vi{font-size:.81rem;color:#495057;margin-bottom:5px;}
+  .eb .nb{font-size:.72rem;font-weight:800;display:inline-block;background:#0d1b2a;color:var(--yellow);border-radius:6px;padding:2px 8px;margin-bottom:5px;}
+  .divider{height:1px;background:#e9ecef;margin:14px 0;}
+  .psm{border:none;border-radius:20px;padding:4px 12px;font-size:.72rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:4px;font-family:'Nunito',sans-serif;color:white;}
+
+  /* DIALOGUE */
+  .dbox{background:#f8f9fa;border-radius:13px;padding:14px;margin-bottom:11px;border:2px solid #e9ecef;}
+  .dtitle{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--gray);margin-bottom:9px;}
+  .dline{display:flex;gap:7px;margin-bottom:7px;align-items:flex-start;}
+  .dlabel{font-size:.7rem;font-weight:800;padding:2px 7px;border-radius:7px;color:white;flex-shrink:0;margin-top:2px;min-width:24px;text-align:center;}
+  .dvi{font-size:.84rem;font-weight:700;color:#1565c0;}
+  .den{font-size:.84rem;font-weight:700;color:#212121;}
+  .pdlg{margin-top:7px;background:#2e7d32;color:white;border:none;border-radius:20px;padding:5px 13px;font-size:.74rem;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;display:inline-flex;align-items:center;gap:4px;}
+
+  /* QUIZ */
+  .quiz-item{background:#f8f9fa;border-radius:13px;padding:14px;margin-bottom:12px;border:2px solid transparent;transition:border-color .3s;}
+  .quiz-item.answered-ok{border-color:#2e7d32;background:#f1f8e9;}
+  .quiz-item.answered-fail{border-color:#c0392b;background:#fbe9e7;}
+  .quiz-q{font-size:.9rem;font-weight:700;margin-bottom:10px;}
+  .quiz-opts{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+  .qopt{background:white;border:2px solid #dee2e6;border-radius:9px;padding:7px 9px;font-size:.81rem;font-weight:700;cursor:pointer;transition:all .2s;font-family:'Nunito',sans-serif;text-align:center;}
+  .qopt:hover:not(:disabled){border-color:#1565c0;color:#1565c0;}
+  .qopt.sel-ok{background:#2e7d32;color:white;border-color:#2e7d32;}
+  .qopt.sel-fail{background:#c0392b;color:white;border-color:#c0392b;}
+  .qopt:disabled{cursor:default;}
+  .qfb{margin-top:6px;font-size:.77rem;font-weight:700;display:none;}
+  .qfb.show{display:block;}
+  .qfb.ok{color:#2e7d32;}
+  .qfb.fail{color:#c0392b;}
+
+  /* FILL */
+  .fill-item{background:#f8f9fa;border-radius:12px;padding:13px;margin-bottom:10px;border:2px solid transparent;}
+  .fill-item.correct{border-color:#2e7d32;background:#f1f8e9;}
+  .fill-item.wrong{border-color:#c0392b;background:#fbe9e7;}
+  .fill-q{font-size:.9rem;font-weight:700;margin-bottom:6px;line-height:2;}
+  .fill-q input{border:2px solid #1565c0;border-radius:7px;padding:2px 8px;font-size:.86rem;font-family:'Nunito',sans-serif;font-weight:700;width:220px;text-align:center;outline:none;background:white;}
+  .fill-vi{font-size:.78rem;color:var(--gray);margin-bottom:4px;}
+  .fill-ans{font-size:.78rem;font-weight:700;margin-top:4px;display:none;}
+  .fill-ans.show-wrong{display:block;color:#c0392b;}
+
+  /* TRANSLATE */
+  .trans-item{background:#f8f9fa;border-radius:12px;padding:13px;margin-bottom:10px;border:2px solid transparent;}
+  .trans-item.correct{border-color:#2e7d32;background:#f1f8e9;}
+  .trans-item.wrong{border-color:#c0392b;background:#fbe9e7;}
+  .trans-lang{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;color:var(--gray);}
+  .trans-q{font-size:.92rem;font-weight:700;margin-bottom:6px;color:var(--dark);}
+  .trans-input{width:100%;border:2px solid #1565c0;border-radius:8px;padding:6px 10px;font-size:.86rem;font-family:'Nunito',sans-serif;font-weight:700;outline:none;background:white;}
+  .trans-ans{font-size:.78rem;font-weight:700;margin-top:4px;display:none;color:#c0392b;}
+  .trans-ans.show{display:block;}
+
+  /* SPEAKING */
+  .speak-card{border-radius:12px;padding:13px 16px;margin-bottom:9px;color:white;}
+  .slbl{font-size:.66rem;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:3px;}
+  .sen-en{font-size:.97rem;font-weight:800;margin-bottom:2px;}
+  .sen-vi{font-size:.8rem;color:rgba(255,255,255,.75);margin-bottom:9px;}
+  .hear-btn{background:var(--yellow);color:var(--dark);border:none;border-radius:20px;padding:6px 14px;font-weight:800;font-size:.8rem;cursor:pointer;font-family:'Nunito',sans-serif;transition:transform .15s;}
+  .hear-btn:hover{transform:scale(1.04);}
+
+  /* NUMBER WRITER (interactive) */
+  .num-writer{background:linear-gradient(135deg,#1565c0,#0d47a1);border-radius:16px;padding:18px;margin-bottom:16px;color:white;text-align:center;}
+  .num-writer h3{font-family:'Baloo 2',cursive;font-size:1rem;font-weight:800;margin-bottom:12px;}
+  .nw-display{font-family:'Baloo 2',cursive;font-size:2.8rem;font-weight:800;color:var(--yellow);margin-bottom:8px;letter-spacing:2px;}
+  .nw-input{width:100%;border:3px solid var(--yellow);border-radius:10px;padding:8px 14px;font-size:.96rem;font-family:'Nunito',sans-serif;font-weight:700;outline:none;text-align:center;background:rgba(255,255,255,.12);color:white;}
+  .nw-input::placeholder{color:rgba(255,255,255,.5);}
+  .nw-btns{display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap;}
+  .nw-btn{border:none;border-radius:10px;padding:7px 16px;font-size:.82rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;}
+  .nw-check{background:var(--yellow);color:var(--dark);}
+  .nw-next{background:rgba(255,255,255,.2);color:white;border:1.5px solid rgba(255,255,255,.4);}
+  .nw-fb{min-height:22px;font-size:.84rem;font-weight:700;margin-top:8px;}
+  .nw-score{font-size:.78rem;color:rgba(255,255,255,.7);margin-top:6px;}
+
+  /* RESULT */
+  #score-section{text-align:center;padding:24px 12px;}
+  .score-circle{width:120px;height:120px;border-radius:50%;background:linear-gradient(135deg,var(--c1),var(--c2));display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 6px 20px rgba(21,101,192,.3);}
+  .score-circle .num{font-family:'Baloo 2',cursive;font-size:2rem;font-weight:800;color:white;line-height:1;}
+  .score-circle .lbl{font-size:.7rem;font-weight:700;color:rgba(255,255,255,.8);}
+  #score-section h2{font-family:'Baloo 2',cursive;font-size:1.4rem;font-weight:800;margin-bottom:6px;}
+  #score-section p{color:var(--gray);font-size:.86rem;max-width:340px;margin:0 auto 16px;}
+  .score-inline{background:#f1f3f5;border-radius:9px;padding:8px 14px;margin-bottom:12px;font-size:.81rem;font-weight:700;display:flex;align-items:center;gap:7px;}
+  .score-badge{background:var(--yellow);color:var(--dark);border-radius:20px;padding:2px 11px;font-weight:800;font-size:.81rem;}
+  .btn-next{background:var(--c2);color:white;border:none;border-radius:11px;padding:10px 24px;font-size:.9rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;margin-top:12px;display:inline-flex;align-items:center;gap:6px;transition:all .2s;}
+  .btn-next:hover{opacity:.88;}
+  .btn-check{background:var(--c3);color:white;border:none;border-radius:11px;padding:9px 20px;font-size:.86rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;margin-top:10px;display:inline-flex;align-items:center;gap:5px;}
+  .btn-primary{background:var(--dark);color:white;border:none;border-radius:11px;padding:10px 24px;font-size:.9rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;display:inline-flex;align-items:center;gap:6px;}
+  .retry-btn{background:#c0392b;color:white;border:none;border-radius:11px;padding:9px 20px;font-size:.86rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;margin-top:8px;display:inline-flex;align-items:center;gap:5px;margin-right:8px;}
+  .home-btn{background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.3);color:white;border-radius:11px;padding:9px 20px;font-size:.86rem;font-weight:800;text-decoration:none;display:inline-flex;align-items:center;gap:5px;margin-top:8px;}
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="back-btn">&#8592; Trang chủ</a>
+  <h1>🔢 <span>SỐ ĐẾM</span> trong Tiếng Anh</h1>
+  <div id="timer-bar">⏱ 60:00</div>
+</header>
+<div id="progress-wrap"><div id="progress-bar" style="width:0%"></div></div>
+
+<nav id="phase-nav">
+  <button class="phase-tab active" onclick="goPhase(0)">1. Lý thuyết</button>
+  <button class="phase-tab" onclick="goPhase(1)">2. Từ vựng</button>
+  <button class="phase-tab" onclick="goPhase(2)">3. Câu mẫu</button>
+  <button class="phase-tab" onclick="goPhase(3)">4. Luyện đọc số</button>
+  <button class="phase-tab" onclick="goPhase(4)">5. Hội thoại</button>
+  <button class="phase-tab" onclick="goPhase(5)">6. Quiz</button>
+  <button class="phase-tab" onclick="goPhase(6)">7. Điền từ</button>
+  <button class="phase-tab" onclick="goPhase(7)">8. Dịch câu</button>
+  <button class="phase-tab" onclick="goPhase(8)">9. Nói</button>
+  <button class="phase-tab" onclick="goPhase(9)">10. Kết quả</button>
+</nav>
+
+<main>
+
+<!-- ══ PHASE 0: LÝ THUYẾT ══ -->
+<div class="phase active" id="phase-0">
+  <div class="section-header" style="background:var(--dark)">
+    <div class="phase-label">📖 Giai đoạn 1 – 8 phút</div>
+    <h2>Số đếm lớn trong Tiếng Anh – Cực dễ!</h2>
+    <div class="duration">Hundreds · Thousands · Kết hợp</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box"><strong>📌 Quy tắc vàng:</strong> Tiếng Anh đọc số lớn rất logic! Chỉ cần nhớ: số hàng trăm dùng <strong>hundred</strong>, số hàng nghìn dùng <strong>thousand</strong>. Các phần kết hợp nối bằng <strong>"and"</strong>.</div>
+
+    <div class="formula-grid">
+      <div class="fc" style="background:#1565c0">
+        <h3>📌 Hàng TRĂM</h3>
+        <div class="fb">Số đếm + hundred</div>
+        <div class="fn">
+          100 → one hundred<br>
+          200 → two hundred<br>
+          300 → three hundred<br>
+          ⚠️ <strong>Không có "hundreds"</strong> khi đứng với số cụ thể!
+        </div>
+      </div>
+      <div class="fc" style="background:#b7410e">
+        <h3>📌 Trăm + Đơn vị</h3>
+        <div class="fb">Số đếm + hundred AND ...</div>
+        <div class="fn">
+          340 → three hundred AND forty<br>
+          412 → four hundred AND twelve<br>
+          215 → two hundred AND fifteen<br>
+          ✅ Dùng <strong>"and"</strong> nối phần lẻ
+        </div>
+      </div>
+      <div class="fc" style="background:#2e7d32">
+        <h3>📌 Hàng NGHÌN</h3>
+        <div class="fb">Số đếm + thousand</div>
+        <div class="fn">
+          1,000 → one thousand<br>
+          2,000 → two thousand<br>
+          5,000 → five thousand<br>
+          ⚠️ <strong>Không có "thousands"</strong> khi đứng với số cụ thể!
+        </div>
+      </div>
+      <div class="fc" style="background:#6a1b9a">
+        <h3>📌 Nghìn + Kết hợp</h3>
+        <div class="fb">X thousand [Y hundred] [and Z]</div>
+        <div class="fn">
+          4,008 → four thousand AND eight<br>
+          5,015 → five thousand AND fifteen<br>
+          2,300 → two thousand three hundred<br>
+          4,600 → four thousand six hundred
+        </div>
+      </div>
+    </div>
+
+    <div class="tip-box tip-red">
+      <strong>⚠️ Lỗi thường gặp:</strong><br>
+      ❌ "three hundreds" → ✅ "three hundred"<br>
+      ❌ "two thousands" → ✅ "two thousand"<br>
+      ❌ "four hundred forty" (thiếu and) → ✅ "four hundred <u>and</u> forty"<br>
+      ✅ Ngoại lệ: "hundreds of people" (hàng trăm người) → đây là cách dùng khác!
+    </div>
+
+    <div class="tip-box tip-blue">
+      <strong>💡 Cách đọc nhanh:</strong><br>
+      Tách số thành 2 phần: <strong>[phần nghìn]</strong> + <strong>[phần trăm/lẻ]</strong><br>
+      Ví dụ: 4,612 = 4,000 + 612 = "four thousand" + "six hundred and twelve"<br>
+      → <strong>four thousand six hundred and twelve</strong>
+    </div>
+
+    <div class="tip-box tip-green">
+      <strong>📝 Số 1–20 cần nhớ thuộc lòng (nền tảng):</strong><br>
+      1-one · 2-two · 3-three · 4-four · 5-five · 6-six · 7-seven · 8-eight · 9-nine · 10-ten<br>
+      11-eleven · 12-twelve · 13-thirteen · 14-fourteen · 15-fifteen · 16-sixteen · 17-seventeen · 18-eighteen · 19-nineteen · 20-twenty<br>
+      <strong>Chục:</strong> 30-thirty · 40-forty · 50-fifty · 60-sixty · 70-seventy · 80-eighty · 90-ninety
+    </div>
+
+    <button class="btn-next" onclick="goPhase(1)">Tiếp theo: Từ vựng →</button>
+  </div>
+</div>
+
+<!-- ══ PHASE 1: TỪ VỰNG ══ -->
+<div class="phase" id="phase-1">
+  <div class="section-header" style="background:var(--c2)">
+    <div class="phase-label">📝 Giai đoạn 2 – 8 phút</div>
+    <h2>Từ vựng số đếm & Phát âm</h2>
+    <div class="duration">Nhấn vào số để nghe phát âm</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box"><strong>Cách học:</strong> Nhìn số → đọc tên tiếng Anh → nhấn ▶ nghe phát âm chuẩn!</div>
+
+    <div style="font-size:.76rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--gray);margin-bottom:8px;">🔵 SỐ 1–20 (nền tảng)</div>
+    <div class="num-card-grid" id="cards-1-20"></div>
+
+    <div style="font-size:.76rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--gray);margin-bottom:8px;">🟠 SỐ CHỤC</div>
+    <div class="num-card-grid" id="cards-tens"></div>
+
+    <div style="font-size:.76rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--gray);margin-bottom:8px;">🟢 SỐ TRĂM & NGHÌN</div>
+    <div class="num-card-grid" id="cards-big"></div>
+
+    <div style="font-size:.76rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--gray);margin-bottom:8px;">🟣 SỐ KẾT HỢP (nhấn ▶ để nghe)</div>
+    <table class="num-table">
+      <thead><tr><th>Số</th><th>Tiếng Anh</th><th>Phát âm</th><th>▶</th></tr></thead>
+      <tbody id="combo-tbody"></tbody>
+    </table>
+
+    <button class="btn-next" onclick="goPhase(2)">Tiếp theo: Câu mẫu →</button>
+  </div>
+</div>
+
+<!-- ══ PHASE 2: CÂU MẪU ══ -->
+<div class="phase" id="phase-2">
+  <div class="section-header" style="background:var(--c1)">
+    <div class="phase-label">🗣️ Giai đoạn 3 – 8 phút</div>
+    <h2>Câu mẫu thực tế</h2>
+    <div class="duration">Nghe và đọc theo từng câu – luyện phát âm số</div>
+  </div>
+  <div class="section-body">
+    <span class="ex-title" style="background:var(--c2)">📌 Hàng trăm (hundreds)</span>
+    <div id="ex-hundreds"></div>
+    <div class="divider"></div>
+    <span class="ex-title" style="background:var(--c1)">📌 Trăm + lẻ (hundred and...)</span>
+    <div id="ex-hundred-and"></div>
+    <div class="divider"></div>
+    <span class="ex-title" style="background:var(--c3)">📌 Hàng nghìn (thousands)</span>
+    <div id="ex-thousands"></div>
+    <div class="divider"></div>
+    <span class="ex-title" style="background:var(--c4)">📌 Nghìn + kết hợp</span>
+    <div id="ex-thou-combo"></div>
+    <button class="btn-next" onclick="goPhase(3)">Tiếp theo: Luyện đọc số →</button>
+  </div>
+</div>
+
+<!-- ══ PHASE 3: LUYỆN ĐỌC SỐ (Interactive) ══ -->
+<div class="phase" id="phase-3">
+  <div class="section-header" style="background:var(--c4)">
+    <div class="phase-label">🎯 Giai đoạn 4 – 10 phút</div>
+    <h2>Luyện viết số bằng tiếng Anh</h2>
+    <div class="duration">Nhìn số → viết thành chữ tiếng Anh → kiểm tra!</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box"><strong>Hướng dẫn:</strong> Nhìn số hiển thị → viết thành chữ tiếng Anh vào ô. Không cần viết hoa. Dùng "and" đúng chỗ! Nếu sai, đáp án đúng sẽ hiện.</div>
+    <div class="num-writer">
+      <h3>✏️ Viết số sau thành tiếng Anh:</h3>
+      <div class="nw-display" id="nw-number">—</div>
+      <input class="nw-input" type="text" id="nw-input" placeholder="Nhập tiếng Anh của số trên...">
+      <div class="nw-btns">
+        <button class="nw-btn nw-check" onclick="checkNW()">✅ Kiểm tra</button>
+        <button class="nw-btn nw-next" onclick="nextNW()">➡ Số tiếp theo</button>
+      </div>
+      <div class="nw-fb" id="nw-fb"></div>
+      <div class="nw-score" id="nw-score">0 / 0 đúng</div>
+    </div>
+    <div style="background:#f8f9fa;border-radius:12px;padding:12px;font-size:.82rem;">
+      <strong>📋 Bảng tra cứu nhanh:</strong>
+      <div style="margin-top:8px;line-height:2;color:#333">
+        100=one hundred · 200=two hundred · 300=three hundred · 400=four hundred · 500=five hundred<br>
+        1,000=one thousand · 2,000=two thousand · 5,000=five thousand · 10,000=ten thousand<br>
+        340=three hundred and forty · 412=four hundred and twelve · 4,008=four thousand and eight
+      </div>
+    </div>
+    <button class="btn-next" onclick="goPhase(4)" style="margin-top:14px">Tiếp theo: Hội thoại →</button>
+  </div>
+</div>
+
+<!-- ══ PHASE 4: HỘI THOẠI ══ -->
+<div class="phase" id="phase-4">
+  <div class="section-header" style="background:var(--c3)">
+    <div class="phase-label">💬 Giai đoạn 5 – 7 phút</div>
+    <h2>Hội thoại thực tế</h2>
+    <div class="duration">Nghe và luyện theo</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box"><strong>Cách luyện:</strong> Đọc tiếng Việt → đoán tiếng Anh → nhấn ▶ nghe toàn bộ.</div>
+    <div id="dialogue-container"></div>
+    <button class="btn-next" onclick="goPhase(5)">Tiếp theo: Quiz →</button>
+  </div>
+</div>
+
+<!-- ══ PHASE 5: QUIZ ══ -->
+<div class="phase" id="phase-5">
+  <div class="section-header" style="background:var(--dark)">
+    <div class="phase-label">🧠 Giai đoạn 6 – 8 phút</div>
+    <h2>Trắc nghiệm</h2>
+    <div class="duration">Không có gợi ý – suy nghĩ kỹ trước khi chọn!</div>
+  </div>
+  <div class="section-body">
+    <div class="score-inline">Điểm: <span class="score-badge" id="quiz-score">0 / 0</span></div>
+    <div class="tip-box tip-red"><strong style="color:var(--c1)">⚠️</strong> Không có gợi ý. Dưới 80% → làm lại!</div>
+    <div id="quiz-container"></div>
+    <div id="quiz-retry-section" style="display:none;margin-top:12px;">
+      <button class="retry-btn" onclick="retryQuiz()">🔄 Làm lại Quiz</button>
+      <button class="btn-next" onclick="goPhase(6)" style="margin-top:0">Tiếp theo: Điền từ →</button>
+    </div>
+    <div id="quiz-done-btn" style="display:none"><button class="btn-next" onclick="goPhase(6)">Tiếp theo: Điền từ →</button></div>
+  </div>
+</div>
+
+<!-- ══ PHASE 6: ĐIỀN TỪ ══ -->
+<div class="phase" id="phase-6">
+  <div class="section-header" style="background:var(--c1)">
+    <div class="phase-label">✏️ Giai đoạn 7 – 8 phút</div>
+    <h2>Điền vào ô trống</h2>
+    <div class="duration">Không có gợi ý – điền xong rồi mới kiểm tra!</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box tip-red"><strong style="color:var(--c1)">⚠️</strong> Viết tiếng Anh của số/từ vào ô. Làm hết rồi mới kiểm tra!</div>
+    <div id="fill-container"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">
+      <button class="btn-check" onclick="checkFill()">✅ Kiểm tra</button>
+      <button class="retry-btn" onclick="retryFill()" id="retry-fill-btn" style="display:none">🔄 Làm lại</button>
+    </div>
+    <div id="fill-score-display" style="margin-top:10px;font-weight:700;font-size:.9rem;display:none;"></div>
+    <br><button class="btn-next" onclick="goPhase(7)" style="margin-top:8px">Tiếp theo: Dịch câu →</button>
+  </div>
+</div>
+
+<!-- ══ PHASE 7: DỊCH CÂU ══ -->
+<div class="phase" id="phase-7">
+  <div class="section-header" style="background:var(--c5)">
+    <div class="phase-label">🔄 Giai đoạn 8 – 7 phút</div>
+    <h2>Dịch câu</h2>
+    <div class="duration">Việt ↔ Anh – không có gợi ý!</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box"><strong>Hướng dẫn:</strong> Dịch câu vào ô. Kiểm tra sau khi xong tất cả. Chú ý viết số đúng!</div>
+    <div id="trans-container"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">
+      <button class="btn-check" onclick="checkTrans()">✅ Kiểm tra</button>
+      <button class="retry-btn" onclick="retryTrans()" id="retry-trans-btn" style="display:none">🔄 Làm lại</button>
+    </div>
+    <div id="trans-score-display" style="margin-top:10px;font-weight:700;font-size:.9rem;display:none;"></div>
+    <br><button class="btn-next" onclick="goPhase(8)" style="margin-top:8px">Tiếp theo: Nói →</button>
+  </div>
+</div>
+
+<!-- ══ PHASE 8: NÓI ══ -->
+<div class="phase" id="phase-8">
+  <div class="section-header" style="background:var(--c3)">
+    <div class="phase-label">🎤 Giai đoạn 9 – 6 phút</div>
+    <h2>Luyện Nói</h2>
+    <div class="duration">Đọc to → Nhấn ▶ nghe mẫu → So sánh</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box"><strong>Hướng dẫn:</strong> Nhìn số và câu → đọc to trước → nhấn ▶ nghe mẫu!</div>
+    <div id="speaking-container"></div>
+    <button class="btn-next" onclick="goPhase(9)">Xem kết quả →</button>
+  </div>
+</div>
+
+<!-- ══ PHASE 9: KẾT QUẢ ══ -->
+<div class="phase" id="phase-9">
+  <div class="section-header" style="background:var(--dark)">
+    <div class="phase-label">🏆 Kết thúc bài học</div>
+    <h2>Tổng kết</h2>
+    <div class="duration">Quiz + Điền từ + Dịch câu + Luyện số</div>
+  </div>
+  <div class="section-body">
+    <div id="score-section">
+      <div class="score-circle"><div class="num" id="final-score">—</div><div class="lbl">điểm</div></div>
+      <h2 id="final-msg">Hoàn thành!</h2>
+      <p id="final-desc">Bạn đã hoàn thành bài học!</p>
+      <div id="detail-score" style="margin:12px 0;font-size:.85rem;font-weight:700;background:#f8f9fa;border-radius:10px;padding:12px 16px;text-align:left;"></div>
+      <div style="background:#f8f9fa;border-radius:13px;padding:14px;text-align:left;margin:14px 0;">
+        <h3 style="font-size:.86rem;font-weight:800;margin-bottom:10px;">📋 Công thức ôn nhanh:</h3>
+        <div style="font-size:.82rem;line-height:2.2;">
+          <div>🔵 <strong>X trăm</strong> → X + <strong>hundred</strong> &nbsp;(không có "s")</div>
+          <div>🟠 <strong>X trăm lẻ Y</strong> → X hundred <strong>and</strong> Y</div>
+          <div>🟢 <strong>X nghìn</strong> → X + <strong>thousand</strong> &nbsp;(không có "s")</div>
+          <div>🟣 <strong>X nghìn + phần lẻ</strong> → X thousand [Y hundred] [and Z]</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+        <button class="btn-primary" onclick="restartLesson()">🔄 Học lại từ đầu</button>
+        <a href="index.html" class="home-btn">🏠 Trang chủ</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+// ══════════ DATA ══════════
+
+const nums1to20=[
+  {n:1,w:"one",p:"/wʌn/"},{n:2,w:"two",p:"/tuː/"},{n:3,w:"three",p:"/θriː/"},
+  {n:4,w:"four",p:"/fɔːr/"},{n:5,w:"five",p:"/faɪv/"},{n:6,w:"six",p:"/sɪks/"},
+  {n:7,w:"seven",p:"/ˈsevən/"},{n:8,w:"eight",p:"/eɪt/"},{n:9,w:"nine",p:"/naɪn/"},
+  {n:10,w:"ten",p:"/ten/"},{n:11,w:"eleven",p:"/ɪˈlevən/"},{n:12,w:"twelve",p:"/twelv/"},
+  {n:13,w:"thirteen",p:"/ˌθɜːrˈtiːn/"},{n:14,w:"fourteen",p:"/ˌfɔːrˈtiːn/"},
+  {n:15,w:"fifteen",p:"/ˌfɪfˈtiːn/"},{n:16,w:"sixteen",p:"/ˌsɪksˈtiːn/"},
+  {n:17,w:"seventeen",p:"/ˌsevənˈtiːn/"},{n:18,w:"eighteen",p:"/ˌeɪˈtiːn/"},
+  {n:19,w:"nineteen",p:"/ˌnaɪnˈtiːn/"},{n:20,w:"twenty",p:"/ˈtwenti/"},
+];
+const numsTens=[
+  {n:30,w:"thirty",p:"/ˈθɜːrti/"},{n:40,w:"forty",p:"/ˈfɔːrti/"},
+  {n:50,w:"fifty",p:"/ˈfɪfti/"},{n:60,w:"sixty",p:"/ˈsɪksti/"},
+  {n:70,w:"seventy",p:"/ˈsevənti/"},{n:80,w:"eighty",p:"/ˈeɪti/"},
+  {n:90,w:"ninety",p:"/ˈnaɪnti/"},
+];
+const numsBig=[
+  {n:100,w:"one hundred",p:"/wʌn ˈhʌndrəd/"},{n:200,w:"two hundred",p:"/tuː ˈhʌndrəd/"},
+  {n:500,w:"five hundred",p:"/faɪv ˈhʌndrəd/"},{n:1000,w:"one thousand",p:"/wʌn ˈθaʊzənd/"},
+  {n:2000,w:"two thousand",p:"/tuː ˈθaʊzənd/"},{n:5000,w:"five thousand",p:"/faɪv ˈθaʊzənd/"},
+  {n:10000,w:"ten thousand",p:"/ten ˈθaʊzənd/"},
+];
+const comboNumbers=[
+  {n:"340",w:"three hundred and forty",p:"/θriː ˈhʌndrəd ænd ˈfɔːrti/"},
+  {n:"412",w:"four hundred and twelve",p:"/fɔːr ˈhʌndrəd ænd twelv/"},
+  {n:"215",w:"two hundred and fifteen",p:"/tuː ˈhʌndrəd ænd ˌfɪfˈtiːn/"},
+  {n:"700",w:"seven hundred",p:"/ˈsevən ˈhʌndrəd/"},
+  {n:"4,008",w:"four thousand and eight",p:"/fɔːr ˈθaʊzənd ænd eɪt/"},
+  {n:"5,015",w:"five thousand and fifteen",p:"/faɪv ˈθaʊzənd ænd ˌfɪfˈtiːn/"},
+  {n:"2,300",w:"two thousand three hundred",p:"/tuː ˈθaʊzənd θriː ˈhʌndrəd/"},
+  {n:"4,600",w:"four thousand six hundred",p:"/fɔːr ˈθaʊzənd sɪks ˈhʌndrəd/"},
+  {n:"1,250",w:"one thousand two hundred and fifty",p:"/wʌn ˈθaʊzənd tuː ˈhʌndrəd ænd ˈfɪfti/"},
+  {n:"3,425",w:"three thousand four hundred and twenty-five",p:"/θriː ˈθaʊzənd fɔːr ˈhʌndrəd ænd ˌtwentiˈfaɪv/"},
+];
+
+const exHundreds=[
+  {n:"300",en:"There are three hundred students in the school.",vi:"Có 300 học sinh trong trường."},
+  {n:"700",en:"He earns seven hundred dollars a month.",vi:"Anh ấy kiếm được 700 đô mỗi tháng."},
+  {n:"500",en:"She has five hundred books.",vi:"Cô ấy có 500 cuốn sách."},
+  {n:"200",en:"There are two hundred people at the event.",vi:"Có 200 người ở sự kiện đó."},
+  {n:"900",en:"The flight costs nine hundred dollars.",vi:"Chuyến bay có giá 900 đô."},
+];
+const exHundredAnd=[
+  {n:"340",en:"There are three hundred and forty students in the school.",vi:"Có 340 học sinh trong trường."},
+  {n:"412",en:"We need four hundred and twelve chairs.",vi:"Chúng tôi cần 412 chiếc ghế."},
+  {n:"215",en:"I read two hundred and fifteen pages.",vi:"Tôi đọc được 215 trang."},
+  {n:"563",en:"The bag costs five hundred and sixty-three dollars.",vi:"Cái túi có giá 563 đô."},
+  {n:"780",en:"There are seven hundred and eighty houses in the village.",vi:"Có 780 ngôi nhà trong làng."},
+];
+const exThousands=[
+  {n:"2,000",en:"I have two thousand dollars.",vi:"Tôi có 2 nghìn đô."},
+  {n:"5,000",en:"There are five thousand students.",vi:"Có 5 nghìn học sinh."},
+  {n:"3,000",en:"The car costs three thousand dollars.",vi:"Chiếc xe có giá 3 nghìn đô."},
+  {n:"10,000",en:"There are ten thousand people in the town.",vi:"Có 10 nghìn người trong thị trấn."},
+];
+const exThouCombo=[
+  {n:"4,008",en:"There are four thousand and eight students in the school.",vi:"Có 4.008 học sinh trong trường."},
+  {n:"5,015",en:"He paid five thousand and fifteen dollars for the phone.",vi:"Anh ấy trả 5.015 đô cho điện thoại."},
+  {n:"2,300",en:"She earns two thousand three hundred dollars a month.",vi:"Cô ấy kiếm 2.300 đô mỗi tháng."},
+  {n:"4,600",en:"There are four thousand six hundred students in the school.",vi:"Có 4.600 học sinh trong trường."},
+  {n:"1,250",en:"The laptop costs one thousand two hundred and fifty dollars.",vi:"Laptop có giá 1.250 đô."},
+  {n:"3,425",en:"There are three thousand four hundred and twenty-five employees.",vi:"Có 3.425 nhân viên."},
+];
+
+// Number writer exercises
+const nwExercises=[
+  {n:"300",a:"three hundred"},{n:"700",a:"seven hundred"},
+  {n:"340",a:"three hundred and forty"},{n:"412",a:"four hundred and twelve"},
+  {n:"215",a:"two hundred and fifteen"},{n:"500",a:"five hundred"},
+  {n:"2,000",a:"two thousand"},{n:"5,000",a:"five thousand"},
+  {n:"4,008",a:"four thousand and eight"},{n:"5,015",a:"five thousand and fifteen"},
+  {n:"2,300",a:"two thousand three hundred"},{n:"4,600",a:"four thousand six hundred"},
+  {n:"1,250",a:"one thousand two hundred and fifty"},
+  {n:"780",a:"seven hundred and eighty"},{n:"563",a:"five hundred and sixty-three"},
+];
+let nwIdx=0, nwCorrect=0, nwTotal=0;
+
+const dialogues=[
+  {title:"Hội thoại 1 – Giá vé máy bay",lines:[
+    {label:"A",vi:"Vé máy bay đi Hà Nội giá bao nhiêu?",en:"How much is a flight ticket to Hanoi?",color:"#1565c0"},
+    {label:"B",vi:"Khoảng 900 đô.",en:"About nine hundred dollars.",color:"#b7410e"},
+    {label:"A",vi:"Còn vé khứ hồi thì sao?",en:"What about a round trip?",color:"#1565c0"},
+    {label:"B",vi:"Một nghìn sáu trăm đô.",en:"One thousand six hundred dollars.",color:"#b7410e"},
+  ]},
+  {title:"Hội thoại 2 – Trường học",lines:[
+    {label:"A",vi:"Trường bạn có bao nhiêu học sinh?",en:"How many students are in your school?",color:"#1565c0"},
+    {label:"B",vi:"Có khoảng 2.300 học sinh.",en:"There are about two thousand three hundred students.",color:"#2e7d32"},
+    {label:"A",vi:"Nhiều thật! Có bao nhiêu giáo viên?",en:"That's a lot! How many teachers?",color:"#1565c0"},
+    {label:"B",vi:"Khoảng 340 giáo viên.",en:"About three hundred and forty teachers.",color:"#2e7d32"},
+  ]},
+  {title:"Hội thoại 3 – Mua điện thoại",lines:[
+    {label:"A",vi:"Điện thoại này giá bao nhiêu?",en:"How much does this phone cost?",color:"#1565c0"},
+    {label:"B",vi:"5.015 đô.",en:"Five thousand and fifteen dollars.",color:"#6a1b9a"},
+    {label:"A",vi:"Ôi đắt quá! Còn loại rẻ hơn?",en:"Oh, that's expensive! Any cheaper ones?",color:"#1565c0"},
+    {label:"B",vi:"Có, loại này 412 đô thôi.",en:"Yes, this one is only four hundred and twelve dollars.",color:"#6a1b9a"},
+  ]},
+  {title:"Hội thoại 4 – Dân số thành phố",lines:[
+    {label:"A",vi:"Thành phố này có bao nhiêu người?",en:"How many people are in this city?",color:"#1565c0"},
+    {label:"B",vi:"Khoảng 4.600 người.",en:"About four thousand six hundred people.",color:"#00838f"},
+    {label:"A",vi:"Năm ngoái có nhiều hơn không?",en:"Was it more last year?",color:"#1565c0"},
+    {label:"B",vi:"Có, khoảng 5.000 người.",en:"Yes, about five thousand people.",color:"#00838f"},
+  ]},
+];
+
+const quizData=[
+  {q:'300 → tiếng Anh?',opts:["three hundreds","three hundred","thirty hundred","three thousand"],ans:1},
+  {q:'700 → tiếng Anh?',opts:["seven thousand","seventy hundred","seven hundreds","seven hundred"],ans:3},
+  {q:'340 → tiếng Anh?',opts:["three hundred forty","three hundred and forty","three and forty hundred","thirty and four hundred"],ans:1},
+  {q:'412 → tiếng Anh?',opts:["four hundred twelve","four hundred and twelve","four and twelve hundred","forty and twelve"],ans:1},
+  {q:'2,000 → tiếng Anh?',opts:["two hundreds","twenty hundred","two thousand","two thousands"],ans:2},
+  {q:'5,000 → tiếng Anh?',opts:["five thousands","fifty hundred","five hundred","five thousand"],ans:3},
+  {q:'4,008 → tiếng Anh?',opts:["four thousand eight","four thousand and eight","four thousand and eighty","forty and eight hundred"],ans:1},
+  {q:'5,015 → tiếng Anh?',opts:["five thousand fifteen","five thousand and fifteen","five thousands fifteen","fifty and fifteen"],ans:1},
+  {q:'2,300 → tiếng Anh?',opts:["two thousand and three hundred","two thousand three hundred","two thousands three hundred","twenty three hundred"],ans:1},
+  {q:'"one thousand two hundred and fifty" → số?',opts:["1,025","1,205","12,050","1,250"],ans:3},
+  {q:'"three hundred and forty" → số?',opts:["304","3,040","340","3,400"],ans:2},
+  {q:'"four thousand six hundred" → số?',opts:["4,060","4,600","46,000","4,006"],ans:1},
+  {q:'215 → tiếng Anh?',opts:["two hundred and fifteen","two hundred fifteen","twenty-one five","two fifteen hundred"],ans:0},
+  {q:'"seven hundred" → số?',opts:["70","7,000","707","700"],ans:3},
+  {q:'Cách viết đúng của 780?',opts:["seven eighty","seven hundreds and eighty","seven hundred and eighty","seven hundred eighty"],ans:2},
+  {q:'4,612 → tiếng Anh?',opts:["four thousand six hundred and twelve","four thousands six hundred twelve","forty-six twelve","four thousand and six hundred twelve"],ans:0},
+];
+
+const fillData=[
+  {answer:"three hundred",before:"Có 300 học sinh: There are ",after:" students.",vi:"300 = ?"},
+  {answer:"seven hundred",before:"Anh ấy kiếm 700 đô: He earns ",after:" dollars a month.",vi:"700 = ?"},
+  {answer:"three hundred and forty",before:"Có 340 học sinh: There are ",after:" students.",vi:"340 = ?"},
+  {answer:"four hundred and twelve",before:"Chúng tôi cần 412 ghế: We need ",after:" chairs.",vi:"412 = ?"},
+  {answer:"two thousand",before:"Tôi có 2.000 đô: I have ",after:" dollars.",vi:"2,000 = ?"},
+  {answer:"five thousand",before:"Có 5.000 học sinh: There are ",after:" students.",vi:"5,000 = ?"},
+  {answer:"four thousand and eight",before:"Có 4.008 học sinh: There are ",after:" students.",vi:"4,008 = ?"},
+  {answer:"five thousand and fifteen",before:"Anh ấy trả 5.015 đô: He paid ",after:" dollars.",vi:"5,015 = ?"},
+  {answer:"two thousand three hundred",before:"Cô ấy kiếm 2.300 đô: She earns ",after:" a month.",vi:"2,300 = ?"},
+  {answer:"four thousand six hundred",before:"Có 4.600 học sinh: There are ",after:" students.",vi:"4,600 = ?"},
+  {answer:"five hundred and sixty-three",before:"Cái túi giá 563 đô: The bag costs ",after:" dollars.",vi:"563 = ?"},
+  {answer:"one thousand two hundred and fifty",before:"Laptop giá 1.250 đô: The laptop costs ",after:" dollars.",vi:"1,250 = ?"},
+];
+
+const transData=[
+  {prompt:"Có 300 học sinh trong trường.",answer:"there are three hundred students in the school",dir:"vi→en"},
+  {prompt:"He earns seven hundred dollars a month.",answer:"anh ấy kiếm được bảy trăm đô mỗi tháng",dir:"en→vi"},
+  {prompt:"Chúng tôi cần 412 chiếc ghế.",answer:"we need four hundred and twelve chairs",dir:"vi→en"},
+  {prompt:"There are five thousand students.",answer:"có năm nghìn học sinh",dir:"en→vi"},
+  {prompt:"Anh ấy trả 5.015 đô cho điện thoại.",answer:"he paid five thousand and fifteen dollars for the phone",dir:"vi→en"},
+  {prompt:"She earns two thousand three hundred dollars a month.",answer:"cô ấy kiếm hai nghìn ba trăm đô mỗi tháng",dir:"en→vi"},
+  {prompt:"Tôi có 2.000 đô.",answer:"i have two thousand dollars",dir:"vi→en"},
+  {prompt:"The laptop costs one thousand two hundred and fifty dollars.",answer:"laptop có giá một nghìn hai trăm năm mươi đô",dir:"en→vi"},
+  {prompt:"Có 4.600 học sinh trong trường.",answer:"there are four thousand six hundred students in the school",dir:"vi→en"},
+  {prompt:"About nine hundred dollars.",answer:"khoảng chín trăm đô",dir:"en→vi"},
+];
+
+const speakingData=[
+  {label:"300",en:"three hundred",vi:"ba trăm",color:"#1565c0"},
+  {label:"700",en:"seven hundred",vi:"bảy trăm",color:"#1565c0"},
+  {label:"340",en:"three hundred and forty",vi:"ba trăm bốn mươi",color:"#b7410e"},
+  {label:"412",en:"four hundred and twelve",vi:"bốn trăm mười hai",color:"#b7410e"},
+  {label:"215",en:"two hundred and fifteen",vi:"hai trăm mười lăm",color:"#b7410e"},
+  {label:"780",en:"seven hundred and eighty",vi:"bảy trăm tám mươi",color:"#b7410e"},
+  {label:"2,000",en:"two thousand",vi:"hai nghìn",color:"#2e7d32"},
+  {label:"5,000",en:"five thousand",vi:"năm nghìn",color:"#2e7d32"},
+  {label:"4,008",en:"four thousand and eight",vi:"bốn nghìn lẻ tám",color:"#6a1b9a"},
+  {label:"5,015",en:"five thousand and fifteen",vi:"năm nghìn mười lăm",color:"#6a1b9a"},
+  {label:"2,300",en:"two thousand three hundred",vi:"hai nghìn ba trăm",color:"#6a1b9a"},
+  {label:"4,600",en:"four thousand six hundred",vi:"bốn nghìn sáu trăm",color:"#6a1b9a"},
+  {label:"1,250",en:"one thousand two hundred and fifty",vi:"một nghìn hai trăm năm mươi",color:"#00838f"},
+  {label:"3,425",en:"three thousand four hundred and twenty-five",vi:"ba nghìn bốn trăm hai mươi lăm",color:"#00838f"},
+  {label:"There are three hundred students in the school.",en:"There are three hundred students in the school.",vi:"Có 300 học sinh trong trường.",color:"#1565c0"},
+  {label:"She earns two thousand three hundred dollars a month.",en:"She earns two thousand three hundred dollars a month.",vi:"Cô ấy kiếm 2.300 đô mỗi tháng.",color:"#6a1b9a"},
+];
+
+// ══════════ STATE ══════════
+let quizCorrect=0,quizAnswered=0,fillCorrect=0,transCorrect=0;
+let secondsLeft=3600,timerInterval;
+
+function init(){
+  buildNumberCards();buildComboTable();buildExamples();buildDialogues();
+  buildQuiz();buildFill();buildTrans();buildSpeaking();
+  initNW();startTimer();
+}
+
+function startTimer(){
+  timerInterval=setInterval(()=>{
+    secondsLeft--;
+    const m=String(Math.floor(secondsLeft/60)).padStart(2,'0');
+    const s=String(secondsLeft%60).padStart(2,'0');
+    document.getElementById('timer-bar').textContent='⏱ '+m+':'+s;
+    if(secondsLeft<=0)clearInterval(timerInterval);
+  },1000);
+}
+
+function buildNumberCards(){
+  const colors1=['#1565c0','#0277bd','#01579b','#2e7d32','#1b5e20','#4a148c','#6a1b9a','#b71c1c','#c0392b','#e65100','#b7410e','#00695c','#00838f','#0d47a1','#1565c0','#0277bd','#2e7d32','#4a148c','#c0392b','#e65100'];
+  document.getElementById('cards-1-20').innerHTML=nums1to20.map((n,i)=>
+    '<div class="nc" style="border-color:'+colors1[i]+'22;background:'+colors1[i]+'11" onclick="speak(\''+n.w+'\')" ><div class="nn" style="color:'+colors1[i]+'">'+n.n+'</div><div class="nw" style="color:'+colors1[i]+'">'+n.w+'</div><div class="np">'+n.p+'</div></div>'
+  ).join('');
+  const colorsT=['#b7410e','#1565c0','#2e7d32','#6a1b9a','#c0392b','#00838f','#e65100'];
+  document.getElementById('cards-tens').innerHTML=numsTens.map((n,i)=>
+    '<div class="nc" style="border-color:'+colorsT[i]+'22;background:'+colorsT[i]+'11" onclick="speak(\''+n.w+'\')" ><div class="nn" style="color:'+colorsT[i]+'">'+n.n+'</div><div class="nw" style="color:'+colorsT[i]+'">'+n.w+'</div><div class="np">'+n.p+'</div></div>'
+  ).join('');
+  const colorsB=['#1565c0','#b7410e','#2e7d32','#6a1b9a','#c0392b','#00838f','#e65100'];
+  document.getElementById('cards-big').innerHTML=numsBig.map((n,i)=>
+    '<div class="nc" style="border-color:'+colorsB[i%7]+'22;background:'+colorsB[i%7]+'11" onclick="speak(\''+n.w+'\')" ><div class="nn" style="color:'+colorsB[i%7]+'">'+n.n.toLocaleString()+'</div><div class="nw" style="color:'+colorsB[i%7]+'">'+n.w+'</div><div class="np">'+n.p+'</div></div>'
+  ).join('');
+}
+
+function buildComboTable(){
+  document.getElementById('combo-tbody').innerHTML=comboNumbers.map(c=>
+    '<tr><td class="n">'+c.n+'</td><td class="w">'+c.w+'</td><td class="p">'+c.p+'</td><td><button class="play-btn" onclick="speak(\''+c.w+'\')">▶</button></td></tr>'
+  ).join('');
+}
+
+function buildExamples(){
+  function r(arr,id,color,bg){
+    document.getElementById(id).innerHTML=arr.map(e=>
+      '<div class="eb" style="background:'+bg+';border-color:'+color+'"><div class="nb">'+e.n+'</div><div class="en" style="color:'+color+'">'+e.en+'</div><div class="vi">→ '+e.vi+'</div><button class="psm" style="background:'+color+'" onclick="speak(\''+e.en.replace(/'/g,"\\'")+'\')">▶ Nghe</button></div>'
+    ).join('');
+  }
+  r(exHundreds,'ex-hundreds','#1565c0','#e3f2fd');
+  r(exHundredAnd,'ex-hundred-and','#b7410e','#fff3e0');
+  r(exThousands,'ex-thousands','#2e7d32','#e8f5e9');
+  r(exThouCombo,'ex-thou-combo','#6a1b9a','#f3e5f5');
+}
+
+function buildDialogues(){
+  document.getElementById('dialogue-container').innerHTML=dialogues.map((d,i)=>
+    '<div class="dbox"><div class="dtitle">💬 '+d.title+'</div>'+
+    d.lines.map(l=>'<div class="dline"><span class="dlabel" style="background:'+l.color+'">'+l.label+'</span><div><div class="dvi">'+l.vi+'</div><div class="den">'+l.en+'</div></div></div>').join('')+
+    '<button class="pdlg" onclick="speakDlg('+i+')">▶ Nghe hội thoại</button></div>'
+  ).join('');
+}
+async function speakDlg(i){
+  for(const l of dialogues[i].lines){speak(l.en);await new Promise(r=>setTimeout(r,l.en.length*60+900));}
+}
+
+// Number Writer
+function initNW(){
+  nwIdx=0;nwCorrect=0;nwTotal=0;
+  showNW();
+}
+function showNW(){
+  if(nwIdx>=nwExercises.length){
+    document.getElementById('nw-number').textContent='✅ Xong!';
+    document.getElementById('nw-fb').innerHTML='<span style="color:var(--yellow)">Bạn đã luyện hết '+nwExercises.length+' số!</span>';
+    return;
+  }
+  document.getElementById('nw-number').textContent=nwExercises[nwIdx].n;
+  document.getElementById('nw-input').value='';
+  document.getElementById('nw-fb').textContent='';
+}
+function checkNW(){
+  if(nwIdx>=nwExercises.length)return;
+  const val=document.getElementById('nw-input').value.trim().toLowerCase().replace(/\s+/g,' ');
+  const correct=nwExercises[nwIdx].a.toLowerCase();
+  nwTotal++;
+  const fb=document.getElementById('nw-fb');
+  if(val===correct){
+    fb.innerHTML='<span style="color:#FFD93D">✅ Đúng! '+nwExercises[nwIdx].a+'</span>';
+    nwCorrect++;
+    nwIdx++;
+    setTimeout(showNW,1200);
+  }else{
+    fb.innerHTML='<span style="color:#ff8a80">❌ Sai! Đáp án: <strong>'+nwExercises[nwIdx].a+'</strong></span>';
+  }
+  document.getElementById('nw-score').textContent=nwCorrect+' / '+nwTotal+' đúng';
+}
+function nextNW(){
+  if(nwIdx<nwExercises.length)nwIdx++;
+  showNW();
+}
+
+function buildQuiz(){
+  document.getElementById('quiz-container').innerHTML=quizData.map((q,i)=>
+    '<div class="quiz-item" id="qi-'+i+'"><div class="quiz-q">'+(i+1)+'. '+q.q+'</div><div class="quiz-opts">'+
+    q.opts.map((o,j)=>'<button class="qopt" id="qo-'+i+'-'+j+'" onclick="answerQuiz('+i+','+j+')">'+o+'</button>').join('')+
+    '</div><div class="qfb" id="qf-'+i+'"></div></div>'
+  ).join('');
+}
+function answerQuiz(qi,choice){
+  const item=document.getElementById('qi-'+qi);
+  if(item.dataset.answered)return;
+  item.dataset.answered='1';
+  const q=quizData[qi];
+  item.querySelectorAll('.qopt').forEach(b=>b.disabled=true);
+  const fb=document.getElementById('qf-'+qi);
+  if(choice===q.ans){document.getElementById('qo-'+qi+'-'+choice).classList.add('sel-ok');item.classList.add('answered-ok');fb.textContent='✅ Đúng!';fb.className='qfb show ok';quizCorrect++;}
+  else{document.getElementById('qo-'+qi+'-'+choice).classList.add('sel-fail');item.classList.add('answered-fail');fb.textContent='❌ Sai! Ghi nhớ quy tắc để làm lại.';fb.className='qfb show fail';}
+  quizAnswered++;
+  document.getElementById('quiz-score').textContent=quizCorrect+' / '+quizAnswered;
+  if(quizAnswered===quizData.length){
+    const pct=Math.round((quizCorrect/quizData.length)*100);
+    document.getElementById(pct<80?'quiz-retry-section':'quiz-done-btn').style.display='block';
+  }
+}
+function retryQuiz(){
+  quizCorrect=0;quizAnswered=0;
+  document.getElementById('quiz-score').textContent='0 / 0';
+  document.getElementById('quiz-retry-section').style.display='none';
+  document.getElementById('quiz-done-btn').style.display='none';
+  buildQuiz();
+}
+
+function buildFill(){
+  document.getElementById('fill-container').innerHTML=fillData.map((f,i)=>
+    '<div class="fill-item" id="fi-'+i+'"><div class="fill-q">'+(i+1)+'. '+f.before+'<input type="text" id="finp-'+i+'" placeholder="viết số thành chữ...">'+f.after+'</div><div class="fill-vi">'+f.vi+'</div><div class="fill-ans" id="fa-'+i+'">❌ Đáp án đúng: <strong>'+f.answer+'</strong></div></div>'
+  ).join('');
+  fillCorrect=0;
+  document.getElementById('retry-fill-btn').style.display='none';
+  document.getElementById('fill-score-display').style.display='none';
+}
+function checkFill(){
+  fillCorrect=0;
+  fillData.forEach((f,i)=>{
+    const inp=document.getElementById('finp-'+i);
+    const item=document.getElementById('fi-'+i);
+    const ans=document.getElementById('fa-'+i);
+    const val=inp.value.trim().toLowerCase().replace(/\s+/g,' ');
+    inp.disabled=true;
+    if(val===f.answer.toLowerCase()){item.classList.add('correct');item.classList.remove('wrong');ans.classList.remove('show-wrong');fillCorrect++;}
+    else{item.classList.add('wrong');item.classList.remove('correct');ans.classList.add('show-wrong');}
+  });
+  const pct=Math.round((fillCorrect/fillData.length)*100);
+  const el=document.getElementById('fill-score-display');
+  el.style.display='block';
+  el.innerHTML='Điểm: <span style="color:'+(pct>=70?'#2e7d32':'#c0392b')+'">'+fillCorrect+'/'+fillData.length+' ('+pct+'%)</span>'+(pct<70?' – <span style="color:#c0392b">Hãy làm lại nhé!</span>':'');
+  if(pct<70)document.getElementById('retry-fill-btn').style.display='inline-flex';
+}
+function retryFill(){
+  fillData.forEach((f,i)=>{
+    const inp=document.getElementById('finp-'+i);
+    const item=document.getElementById('fi-'+i);
+    const ans=document.getElementById('fa-'+i);
+    inp.value='';inp.disabled=false;item.classList.remove('correct','wrong');ans.classList.remove('show-wrong');
+  });
+  fillCorrect=0;document.getElementById('retry-fill-btn').style.display='none';document.getElementById('fill-score-display').style.display='none';
+}
+
+function buildTrans(){
+  document.getElementById('trans-container').innerHTML=transData.map((t,i)=>
+    '<div class="trans-item" id="ti-'+i+'"><div class="trans-lang">'+(t.dir==='vi→en'?'🇻🇳 Tiếng Việt → Tiếng Anh':'🇬🇧 Tiếng Anh → Tiếng Việt')+'</div><div class="trans-q">'+t.prompt+'</div><input class="trans-input" type="text" id="tinp-'+i+'" placeholder="Nhập bản dịch của bạn..."><div class="trans-ans" id="ta-'+i+'">❌ Gợi ý: <strong>'+t.answer+'</strong></div></div>'
+  ).join('');
+  transCorrect=0;document.getElementById('retry-trans-btn').style.display='none';document.getElementById('trans-score-display').style.display='none';
+}
+function normalize(s){return s.trim().toLowerCase().replace(/[.?!,]/g,'').replace(/\s+/g,' ');}
+function checkTrans(){
+  transCorrect=0;
+  transData.forEach((t,i)=>{
+    const inp=document.getElementById('tinp-'+i);
+    const item=document.getElementById('ti-'+i);
+    const ans=document.getElementById('ta-'+i);
+    const val=normalize(inp.value);
+    const correct=normalize(t.answer);
+    inp.disabled=true;
+    const kw=correct.split(' ').filter(w=>w.length>2);
+    const ratio=kw.length?kw.filter(w=>val.includes(w)).length/kw.length:0;
+    if(ratio>=0.65){item.classList.add('correct');item.classList.remove('wrong');ans.classList.remove('show');transCorrect++;}
+    else{item.classList.add('wrong');item.classList.remove('correct');ans.classList.add('show');}
+  });
+  const pct=Math.round((transCorrect/transData.length)*100);
+  const el=document.getElementById('trans-score-display');
+  el.style.display='block';
+  el.innerHTML='Điểm dịch câu: <span style="color:'+(pct>=70?'#2e7d32':'#c0392b')+'">'+transCorrect+'/'+transData.length+' ('+pct+'%)</span>'+(pct<70?' – <span style="color:#c0392b">Hãy làm lại nhé!</span>':'');
+  if(pct<70)document.getElementById('retry-trans-btn').style.display='inline-flex';
+}
+function retryTrans(){
+  transData.forEach((t,i)=>{
+    const inp=document.getElementById('tinp-'+i);
+    const item=document.getElementById('ti-'+i);
+    const ans=document.getElementById('ta-'+i);
+    inp.value='';inp.disabled=false;item.classList.remove('correct','wrong');ans.classList.remove('show');
+  });
+  transCorrect=0;document.getElementById('retry-trans-btn').style.display='none';document.getElementById('trans-score-display').style.display='none';
+}
+
+function buildSpeaking(){
+  document.getElementById('speaking-container').innerHTML=speakingData.map((s,i)=>
+    '<div class="speak-card" style="background:'+s.color+'"><div class="slbl">'+( s.label.length<10 ? '🔢 SỐ: '+s.label : '📝 CÂU '+(i-13) )+'</div><div class="sen-en">'+s.en+'</div><div class="sen-vi">'+s.vi+'</div><button class="hear-btn" onclick="speak(\''+s.en.replace(/'/g,"\\'")+'\')">▶ Nghe mẫu</button></div>'
+  ).join('');
+}
+
+function speak(text){
+  if(!window.speechSynthesis)return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='en-US';u.rate=0.82;speechSynthesis.speak(u);
+}
+
+function goPhase(n){
+  document.querySelectorAll('.phase').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.phase-tab').forEach((t,i)=>{t.classList.remove('active','done');if(i<n)t.classList.add('done');});
+  document.getElementById('phase-'+n).classList.add('active');
+  document.querySelectorAll('.phase-tab')[n].classList.add('active');
+  document.getElementById('progress-bar').style.width=Math.round((n/9)*100)+'%';
+  window.scrollTo(0,0);
+  if(n===9)showResult();
+}
+
+function showResult(){
+  const qT=quizData.length,fT=fillData.length,tT=transData.length;
+  const total=quizCorrect+fillCorrect+transCorrect;
+  const max=qT+fT+tT;
+  const pct=Math.round((total/max)*100);
+  document.getElementById('final-score').textContent=pct+'%';
+  let msg,desc;
+  if(pct>=90){msg='🏆 Xuất sắc!';desc='Bạn đọc số tiếng Anh rất tốt!';}
+  else if(pct>=75){msg='👍 Tốt lắm!';desc='Ôn lại phần còn nhầm và luyện thêm nhé!';}
+  else if(pct>=55){msg='📚 Cần ôn thêm!';desc='Xem lại lý thuyết và làm lại bài tập!';}
+  else{msg='💪 Cố gắng thêm!';desc='Bắt đầu lại từ lý thuyết nhé!';}
+  document.getElementById('final-msg').textContent=msg;
+  document.getElementById('final-desc').textContent=desc;
+  document.getElementById('detail-score').innerHTML=
+    '🧠 Quiz: <strong>'+quizCorrect+'/'+qT+'</strong> &nbsp;|&nbsp; ✏️ Điền từ: <strong>'+fillCorrect+'/'+fT+'</strong> &nbsp;|&nbsp; 🔄 Dịch: <strong>'+transCorrect+'/'+tT+'</strong> &nbsp;|&nbsp; Tổng: <strong>'+total+'/'+max+' ('+pct+'%)</strong>';
+  clearInterval(timerInterval);
+}
+
+function restartLesson(){
+  quizCorrect=0;quizAnswered=0;fillCorrect=0;transCorrect=0;
+  secondsLeft=3600;clearInterval(timerInterval);
+  buildQuiz();buildFill();buildTrans();initNW();
+  document.getElementById('quiz-score').textContent='0 / 0';
+  document.getElementById('quiz-retry-section').style.display='none';
+  document.getElementById('quiz-done-btn').style.display='none';
+  goPhase(0);startTimer();
+}
+
+init();
+</script>
+</body>
+</html>

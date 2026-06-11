@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 31 – DIDN'T & DID – Câu phủ định & câu hỏi quá khứ</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{--c1:#b7410e;--c2:#1565c0;--c3:#2e7d32;--c4:#6a1b9a;--c5:#00838f;--yellow:#FFD93D;--bg:#fafbff;--dark:#0d1b2a;--gray:#78909c;--radius:18px;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--dark);min-height:100vh;}
+  header{background:var(--dark);color:white;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 3px 14px rgba(0,0,0,.3);}
+  header h1{font-family:'Baloo 2',cursive;font-size:1.05rem;font-weight:800;text-align:center;flex:1;}
+  header h1 span{color:var(--yellow);}
+  #timer-bar{font-size:.95rem;font-weight:700;background:var(--yellow);color:var(--dark);padding:5px 14px;border-radius:30px;white-space:nowrap;}
+  .back-btn{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.25);color:white;padding:5px 13px;border-radius:30px;font-size:.78rem;font-weight:700;text-decoration:none;transition:all .2s;white-space:nowrap;}
+  .back-btn:hover{background:rgba(255,255,255,.22);}
+  #progress-wrap{background:#e9ecef;height:8px;}
+  #progress-bar{height:8px;background:linear-gradient(90deg,var(--c1),var(--c2),var(--c3),var(--c4));transition:width .6s ease;border-radius:0 4px 4px 0;}
+  #phase-nav{display:flex;gap:5px;padding:10px 16px;overflow-x:auto;background:white;border-bottom:2px solid #f1f3f4;}
+  .phase-tab{flex-shrink:0;padding:5px 11px;border-radius:20px;font-size:.72rem;font-weight:700;border:2px solid #dee2e6;background:white;cursor:pointer;transition:all .2s;color:var(--gray);}
+  .phase-tab.active{background:var(--dark);color:white;border-color:var(--dark);}
+  .phase-tab.done{background:var(--c3);color:white;border-color:var(--c3);}
+  main{padding:18px 14px 48px;max-width:780px;margin:0 auto;}
+  .phase{display:none;animation:fadeIn .4s ease;}
+  .phase.active{display:block;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+  .section-header{border-radius:var(--radius) var(--radius) 0 0;padding:13px 18px;}
+  .section-header .phase-label{font-size:.66rem;letter-spacing:2px;text-transform:uppercase;color:var(--yellow);font-weight:700;}
+  .section-header h2{font-family:'Baloo 2',cursive;font-size:1.2rem;font-weight:800;color:white;}
+  .section-header .duration{font-size:.76rem;color:rgba(255,255,255,.5);margin-top:1px;}
+  .section-body{background:white;border-radius:0 0 var(--radius) var(--radius);padding:18px;margin-bottom:20px;box-shadow:0 4px 18px rgba(0,0,0,.07);}
+  .tip-box{background:#fff8e1;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:.82rem;border-left:4px solid var(--yellow);line-height:1.75;}
+  .tip-box strong{color:#e65100;}
+  .tip-red{background:#fce4ec;border-left-color:var(--c1);}
+  .tip-red strong{color:var(--c1);}
+  .tip-green{background:#e8f5e9;border-left-color:var(--c3);}
+  .tip-green strong{color:var(--c3);}
+  .tip-blue{background:#e3f2fd;border-left-color:var(--c2);}
+  .tip-blue strong{color:var(--c2);}
+  .tip-purple{background:#f3e5f5;border-left-color:var(--c4);}
+  .tip-purple strong{color:var(--c4);}
+
+  .formula-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+  @media(max-width:520px){.formula-grid{grid-template-columns:1fr;}.quiz-opts{grid-template-columns:1fr;}}
+  .fc{border-radius:12px;padding:14px;}
+  .fc h3{font-family:'Baloo 2',cursive;font-size:.95rem;font-weight:800;margin-bottom:8px;color:white;}
+  .fc .fb{background:rgba(255,255,255,.18);border-radius:7px;padding:8px 11px;font-size:.8rem;font-weight:700;font-family:monospace;color:white;margin-bottom:6px;line-height:1.6;}
+  .fc .fn{font-size:.76rem;color:rgba(255,255,255,.88);line-height:1.9;}
+
+  .num-table{width:100%;border-collapse:collapse;margin-bottom:16px;font-size:.84rem;border-radius:11px;overflow:hidden;}
+  .num-table th{background:var(--dark);color:white;padding:9px 12px;text-align:left;font-weight:800;}
+  .num-table td{padding:9px 12px;border-bottom:1px solid #f0f0f0;vertical-align:middle;font-weight:600;}
+  .num-table tr:nth-child(even) td{background:#f8f9fa;}
+  .num-table .w{font-weight:800;color:var(--c1);}
+  .num-table .p{font-size:.72rem;font-style:italic;color:var(--gray);}
+  .play-btn{background:none;border:1px solid #dee2e6;border-radius:20px;padding:2px 8px;font-size:.68rem;font-weight:700;cursor:pointer;color:var(--c3);font-family:'Nunito',sans-serif;}
+  .play-btn:hover{background:var(--c3);color:white;border-color:var(--c3);}
+
+  .ex-title{font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;padding:4px 12px;border-radius:20px;color:white;display:inline-block;margin-bottom:8px;}
+  .eb{border-radius:11px;padding:11px 14px;margin-bottom:8px;border-left:4px solid;}
+  .eb .en{font-size:.93rem;font-weight:700;margin-bottom:2px;}
+  .eb .vi{font-size:.81rem;color:#495057;margin-bottom:5px;}
+  .eb .tag{font-size:.72rem;font-weight:800;display:inline-block;background:#0d1b2a;color:var(--yellow);border-radius:6px;padding:2px 8px;margin-bottom:5px;}
+  .divider{height:1px;background:#e9ecef;margin:14px 0;}
+  .psm{border:none;border-radius:20px;padding:4px 12px;font-size:.72rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:4px;font-family:'Nunito',sans-serif;color:white;}
+
+  .dbox{background:#f8f9fa;border-radius:13px;padding:14px;margin-bottom:11px;border:2px solid #e9ecef;}
+  .dtitle{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--gray);margin-bottom:9px;}
+  .dline{display:flex;gap:7px;margin-bottom:7px;align-items:flex-start;}
+  .dlabel{font-size:.7rem;font-weight:800;padding:2px 7px;border-radius:7px;color:white;flex-shrink:0;margin-top:2px;min-width:24px;text-align:center;}
+  .dvi{font-size:.84rem;font-weight:700;color:#1565c0;}
+  .den{font-size:.84rem;font-weight:700;color:#212121;}
+  .pdlg{margin-top:7px;background:#2e7d32;color:white;border:none;border-radius:20px;padding:5px 13px;font-size:.74rem;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;display:inline-flex;align-items:center;gap:4px;}
+
+  /* SENTENCE BUILDER */
+  .nw-box{background:linear-gradient(135deg,#b7410e,#8d2800);border-radius:16px;padding:18px;margin-bottom:16px;color:white;text-align:center;}
+  .nw-box h3{font-family:'Baloo 2',cursive;font-size:1rem;font-weight:800;margin-bottom:10px;}
+  .nw-display{font-family:'Baloo 2',cursive;font-size:1.5rem;font-weight:800;color:var(--yellow);margin-bottom:4px;line-height:1.4;}
+  .nw-vi{font-size:.82rem;color:rgba(255,255,255,.75);margin-bottom:10px;}
+  .nw-tag{display:inline-block;background:rgba(255,255,255,.18);border-radius:7px;padding:2px 9px;font-size:.7rem;font-weight:800;margin-bottom:10px;}
+  .nw-input{width:100%;border:3px solid var(--yellow);border-radius:10px;padding:8px 14px;font-size:.96rem;font-family:'Nunito',sans-serif;font-weight:700;outline:none;text-align:center;background:rgba(255,255,255,.12);color:white;}
+  .nw-input::placeholder{color:rgba(255,255,255,.5);}
+  .nw-btns{display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap;}
+  .nw-btn{border:none;border-radius:10px;padding:7px 16px;font-size:.82rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;}
+  .nw-check{background:var(--yellow);color:var(--dark);}
+  .nw-next{background:rgba(255,255,255,.2);color:white;border:1.5px solid rgba(255,255,255,.4);}
+  .nw-fb{min-height:22px;font-size:.84rem;font-weight:700;margin-top:8px;}
+  .nw-score{font-size:.78rem;color:rgba(255,255,255,.7);margin-top:6px;}
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="back-btn">&#8592; Trang chủ</a>
+  <h1>⏪ <span>DIDN'T &amp; DID</span> – Phủ định &amp; Câu hỏi QK</h1>
+  <div id="timer-bar">⏱ 60:00</div>
+</header>
+<div id="progress-wrap"><div id="progress-bar" style="width:0%"></div></div>
+
+<nav id="phase-nav">
+  <button class="phase-tab active" onclick="goPhase(0)">1. Lý thuyết</button>
+  <button class="phase-tab" onclick="goPhase(1)">2. Từ vựng</button>
+  <button class="phase-tab" onclick="goPhase(2)">3. Câu mẫu</button>
+  <button class="phase-tab" onclick="goPhase(3)">4. Luyện viết câu</button>
+  <button class="phase-tab" onclick="goPhase(4)">5. Hội thoại</button>
+  <button class="phase-tab" onclick="goPhase(5)">6. Quiz</button>
+  <button class="phase-tab" onclick="goPhase(6)">7. Điền từ</button>
+  <button class="phase-tab" onclick="goPhase(7)">8. Dịch câu</button>
+  <button class="phase-tab" onclick="goPhase(8)">9. Nói</button>
+  <button class="phase-tab" onclick="goPhase(9)">10. Kết quả</button>
+</nav>
+
+<main>
+
+<!-- ══ PHASE 0: LÝ THUYẾT ══ -->
+<div class="phase active" id="phase-0">
+  <div class="section-header" style="background:var(--dark)">
+    <div class="phase-label">📖 Giai đoạn 1 – 8 phút</div>
+    <h2>DIDN'T &amp; DID – Phủ định &amp; Câu hỏi Quá Khứ</h2>
+    <div class="duration">Câu phủ định · Yes/No question · WH-question</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box"><strong>📌 Hôm nay học gì?</strong> Ba cấu trúc quan trọng trong thì quá khứ đơn: <strong>didn't</strong> (phủ định), <strong>Did...?</strong> (câu hỏi có/không), <strong>WH + did...?</strong> (câu hỏi lấy thông tin)[cite: 40].</div>
+
+    <div class="formula-grid">
+      <div class="fc" style="background:#b7410e">
+        <h3>❌ Câu phủ định</h3>
+        <div class="fb">S + didn't + V (nguyên thể)</div>
+        <div class="fn">
+          I <strong>didn't</strong> go to work yesterday.<br>
+          She <strong>didn't</strong> watch TV last night.<br>
+          He <strong>didn't</strong> call me.<br>
+          He <strong>didn't</strong> read books last night.<br>
+          ✅ <strong>didn't</strong> = did not[cite: 40]<br>
+          ✅ Động từ SAU didn't → <strong>nguyên thể</strong> (không chia)[cite: 40]
+        </div>
+      </div>
+      <div class="fc" style="background:#1565c0">
+        <h3>❓ Câu hỏi Yes/No</h3>
+        <div class="fb">Did + S + V (nguyên thể)?</div>
+        <div class="fn">
+          <strong>Did</strong> you go to work yesterday?<br>
+          <strong>Did</strong> she watch TV last night?<br>
+          <strong>Did</strong> you read books yesterday?<br>
+          <strong>Did</strong> they cook dinner last night[cite: 39]?<br>
+          ✅ Trả lời: Yes, I <strong>did</strong> / No, I <strong>didn't</strong>[cite: 40].<br>
+          ✅ Động từ SAU did → <strong>nguyên thể</strong>[cite: 40]
+        </div>
+      </div>
+      <div class="fc" style="background:#2e7d32">
+        <h3>🔍 Câu hỏi WH</h3>
+        <div class="fb">WH + did + S + V (nguyên thể)?</div>
+        <div class="fn">
+          <strong>Where</strong> did you go yesterday?<br>
+          <strong>What</strong> did she watch last night?<br>
+          <strong>What</strong> did you read yesterday?<br>
+          <strong>When</strong> did they watch this movie?<br>
+          ✅ WH: Where · What · When · Why · How · Who[cite: 40]<br>
+          ✅ Động từ vẫn là <strong>nguyên thể</strong>[cite: 40]
+        </div>
+      </div>
+      <div class="fc" style="background:#6a1b9a">
+        <h3>💬 Hỏi &amp; Đáp mẫu</h3>
+        <div class="fb">Q → A đầy đủ</div>
+        <div class="fn">
+          Did you go to work yesterday?<br>
+          → No, I <strong>didn't</strong>. I stayed at home.<br><br>
+          Did he call you yesterday[cite: 39]?<br>
+          → He <strong>didn't</strong> call me. He was busy.<br><br>
+          What did she watch last night?<br>
+          → She <strong>didn't</strong> watch anything. She studied English.
+        </div>
+      </div>
+    </div>
+
+    <div class="tip-box tip-red">
+      <strong>⚠️ Lỗi thường gặp:</strong><br>
+      ❌ "I didn't went to work" → ✅ "I didn't <u>go</u> to work" (nguyên thể!)[cite: 40]<br>
+      ❌ "She didn't watched TV" → ✅ "She didn't <u>watch</u> TV"[cite: 40]<br>
+      ❌ "Did you went?" → ✅ "Did you <u>go</u>?" (nguyên thể!)[cite: 40]<br>
+      ❌ "Where did you went?" → ✅ "Where did you <u>go</u>?"[cite: 40]<br>
+      ❌ "He not call me." → ✅ "He <u>didn't</u> call me."[cite: 40]
+    </div>
+
+    <div class="tip-box tip-blue">
+      <strong>💡 Mẹo nhớ nhanh:</strong><br>
+      Hễ có <strong>did / didn't</strong> trong câu → động từ theo sau luôn là <strong>nguyên thể</strong> (không "s", không "ed", không "ing")[cite: 40].<br>
+      <strong>didn't</strong> = did + not (viết tắt) · Dùng cho TẤT CẢ chủ ngữ (I, you, he, she, they, we)[cite: 40]
+    </div>
+
+    <div class="tip-box tip-green">
+      <strong>📝 Các trạng từ thời gian hay dùng:</strong><br>
+      yesterday – hôm qua · last night – tối qua · last week – tuần trước[cite: 40]<br>
+      this morning – sáng nay · last year – năm ngoái · ago – trước đây[cite: 40]
+    </div>
+
+    <button class="btn-next" onclick="goPhase(1)">Tiếp theo: Từ vựng →</button>
+  </div>
+</div>
+
+<!-- ══ PHASE 1: TỪ VỰNG ══ -->
+<div class="phase" id="phase-1">
+  <div class="section-header" style="background:var(--c2)">
+    <div class="phase-label">📚 Giai đoạn 2 – 8 phút</div>
+    <h2>Từ vựng &amp; Phát âm</h2>
+    <div class="duration">Nhấp ▶ để nghe phát âm</div>
+  </div>
+  <div class="section-body">
+    <span class="ex-title" style="background:#b7410e">🔑 Từ khóa ngữ pháp</span>
+    <table class="num-table">
+      <thead><tr><th>Tiếng Anh</th><th>Phát âm</th><th>Tiếng Việt</th><th>▶</th></tr></thead>
+      <tbody id="vocab-grammar"></tbody>
+    </table>
+
+    <div class="divider"></div>
+    <span class="ex-title" style="background:#1565c0">🎯 Động từ hay dùng (nguyên thể)</span>
+    <table class="num-table">
+      <thead><tr><th>Nguyên thể</th><th>Phát âm</th><th>Nghĩa</th><th>▶</th></tr></thead>
+      <tbody id="vocab-verbs"></tbody>
+    </table>
+
+    <div class="divider"></div>
+    <span class="ex-title" style="background:#2e7d32">⏰ Trạng từ thời gian</span>
+    <table class="num-table">
+      <thead><tr><th>Tiếng Anh</th><th>Phát âm</th><th>Tiếng Việt</th><th>▶</th></tr></thead>
+      <tbody id="vocab-time"></tbody>
+    </table>
+
+    <button class="btn-next" onclick="goPhase(2)">Tiếp theo: Câu mẫu →</button>
+  </div>
+</div>
+
+<!-- ══ PHASE 2: CÂU MẪU ══ -->
+<div class="phase" id="phase-2">
+  <div class="section-header" style="background:var(--c1)">
+    <div class="phase-label">📝 Giai đoạn 3 – 8 phút</div>
+    <h2>Câu mẫu</h2>
+    <div class="duration">Nghe và học thuộc từng cấu trúc</div>
+  </div>
+  <div class="section-body">
+    <span class="ex-title" style="background:#b7410e">❌ didn't + V – Câu phủ định</span>
+    <div id="ex-negative"></div>
+    <div class="divider"></div>
+    <span class="ex-title" style="background:#1565c0">❓ Did + S + V? – Câu hỏi Yes/No</span>
+    <div id="ex-yesno"></div>
+    <div class="divider"></div>
+    <span class="ex-title" style="background:#2e7d32">🔍 WH + did + S + V? – Câu hỏi thông tin</span>
+    <div id="ex-wh"></div>
+    <button class="btn-next" onclick="goPhase(3)">Tiếp theo: Luyện viết câu →</button>
+  </div>
+</div>
+
+<!-- ══ PHASE 3: LUYỆN VIẾT CÂU ══ -->
+<div class="phase" id="phase-3">
+  <div class="section-header" style="background:var(--c4)">
+    <div class="phase-label">✏️ Giai đoạn 4 – 12 phút</div>
+    <h2>Luyện viết câu (Mở rộng)</h2>
+    <div class="duration">Nhìn tình huống → Viết câu tiếng Anh đúng cấu trúc</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box tip-purple"><strong>📌 Hướng dẫn:</strong> Đọc tình huống → viết câu tiếng Anh đầy đủ → nhấn Kiểm tra. Chú ý: sau didn't/did luôn dùng động từ nguyên thể! Phần này có nhiều câu hơn để tối ưu thời gian học 1 giờ.</div>
+    <div class="nw-box">
+      <h3>✍️ Viết câu tiếng Anh</h3>
+      <div class="nw-display" id="nw-prompt">...</div>
+      <div class="nw-vi" id="nw-hint"></div>
+      <div class="nw-tag" id="nw-tag"></div>
+      <input class="nw-input" type="text" id="nw-input" placeholder="Nhập câu tiếng Anh..." onkeydown="if(event.key==='Enter')checkNW()">
+      <div class="nw-fb" id="nw-fb"></div>
+      <div class="nw-score" id="nw-score">0 / 0 đúng</div>
+      <div class="nw-btns">
+        <button class="nw-btn nw-check" onclick="checkNW()">✅ Kiểm tra</button>
+        <button class="nw-btn nw-next" onclick="nextNW()">⏭ Bỏ qua</button>
+      </div>
+    </div>
+    <button class="btn-next" onclick="goPhase(4)">Tiếp theo: Hội thoại →</button>
+  </div>
+</div>
+
+<!-- ══ PHASE 4: HỘI THOẠI ══ -->
+<div class="phase" id="phase-4">
+  <div class="section-header" style="background:var(--c5)">
+    <div class="phase-label">💬 Giai đoạn 5 – 6 phút</div>
+    <h2>Hội thoại thực tế</h2>
+    <div class="duration">Hỏi thăm – kể chuyện trong quá khứ</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box"><strong>🎯 Luyện tập:</strong> Đọc hội thoại → Nhấn ▶ nghe toàn bộ → Đọc lại theo!</div>
+    <div id="dialogue-container"></div>
+    <button class="btn-next" onclick="goPhase(5)">Tiếp theo: Quiz →</button>
+  </div>
+</div>
+
+<!-- ══ PHASE 5: QUIZ ══ -->
+<div class="phase" id="phase-5">
+  <div class="section-header" style="background:var(--dark)">
+    <div class="phase-label">🧠 Giai đoạn 6 – 8 phút</div>
+    <h2>Trắc nghiệm</h2>
+    <div class="duration">Không có gợi ý – suy nghĩ kỹ trước khi chọn!</div>
+  </div>
+  <div class="section-body">
+    <div class="score-inline">Điểm: <span class="score-badge" id="quiz-score">0 / 0</span></div>
+    <div class="tip-box tip-red"><strong style="color:var(--c1)">⚠️</strong> Không có gợi ý. Dưới 80% → làm lại!</div>
+    <div id="quiz-container"></div>
+    <div id="quiz-retry-section" style="display:none;margin-top:12px;">
+      <button class="retry-btn" onclick="retryQuiz()">🔄 Làm lại Quiz</button>
+      <button class="btn-next" onclick="goPhase(6)" style="margin-top:0">Tiếp theo: Điền từ →</button>
+    </div>
+    <div id="quiz-done-btn" style="display:none"><button class="btn-next" onclick="goPhase(6)">Tiếp theo: Điền từ →</button></div>
+  </div>
+</div>
+
+<!-- ══ PHASE 6: ĐIỀN TỪ ══ -->
+<div class="phase" id="phase-6">
+  <div class="section-header" style="background:var(--c1)">
+    <div class="phase-label">✏️ Giai đoạn 7 – 8 phút</div>
+    <h2>Điền vào ô trống</h2>
+    <div class="duration">Không có gợi ý – điền xong rồi mới kiểm tra!</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box tip-red"><strong style="color:var(--c1)">⚠️</strong> Điền từ/cụm từ vào ô trống. Làm hết rồi mới kiểm tra!</div>
+    <div id="fill-container"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">
+      <button class="btn-check" onclick="checkFill()">✅ Kiểm tra</button>
+      <button class="retry-btn" onclick="retryFill()" id="retry-fill-btn" style="display:none">🔄 Làm lại</button>
+    </div>
+    <div id="fill-score-display" style="margin-top:10px;font-weight:700;font-size:.9rem;display:none;"></div>
+    <br><button class="btn-next" onclick="goPhase(7)" style="margin-top:8px">Tiếp theo: Dịch câu →</button>
+  </div>
+</div>
+
+<!-- ══ PHASE 7: DỊCH CÂU ══ -->
+<div class="phase" id="phase-7">
+  <div class="section-header" style="background:var(--c5)">
+    <div class="phase-label">🔄 Giai đoạn 8 – 7 phút</div>
+    <h2>Dịch câu</h2>
+    <div class="duration">Việt ↔ Anh – không có gợi ý!</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box"><strong>Hướng dẫn:</strong> Dịch câu vào ô. Kiểm tra sau khi xong tất cả. Chú ý dùng đúng didn't / did!</div>
+    <div id="trans-container"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">
+      <button class="btn-check" onclick="checkTrans()">✅ Kiểm tra</button>
+      <button class="retry-btn" onclick="retryTrans()" id="retry-trans-btn" style="display:none">🔄 Làm lại</button>
+    </div>
+    <div id="trans-score-display" style="margin-top:10px;font-weight:700;font-size:.9rem;display:none;"></div>
+    <br><button class="btn-next" onclick="goPhase(8)" style="margin-top:8px">Tiếp theo: Nói →</button>
+  </div>
+</div>
+
+<!-- ══ PHASE 8: NÓI ══ -->
+<div class="phase" id="phase-8">
+  <div class="section-header" style="background:var(--c3)">
+    <div class="phase-label">🎤 Giai đoạn 9 – 5 phút</div>
+    <h2>Luyện Nói</h2>
+    <div class="duration">Đọc to → Nhấn ▶ nghe mẫu → So sánh</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box"><strong>Hướng dẫn:</strong> Nhìn câu → Đọc to trước → Nhấn ▶ nghe mẫu → So sánh phát âm!</div>
+    <div id="speaking-container"></div>
+    <button class="btn-next" onclick="goPhase(9)">Xem kết quả →</button>
+  </div>
+</div>
+
+<!-- ══ PHASE 9: KẾT QUẢ ══ -->
+<div class="phase" id="phase-9">
+  <div class="section-header" style="background:var(--dark)">
+    <div class="phase-label">🏆 Kết thúc bài học</div>
+    <h2>Tổng kết</h2>
+    <div class="duration">Quiz + Điền từ + Dịch câu</div>
+  </div>
+  <div class="section-body">
+    <div id="score-section">
+      <div class="score-circle"><div class="num" id="final-score">—</div><div class="lbl">điểm</div></div>
+      <h2 id="final-msg">Hoàn thành!</h2>
+      <p id="final-desc">Bạn đã hoàn thành bài học!</p>
+      <div id="detail-score" style="margin:12px 0;font-size:.85rem;font-weight:700;background:#f8f9fa;border-radius:10px;padding:12px 16px;text-align:left;"></div>
+      <div style="background:#f8f9fa;border-radius:13px;padding:14px;text-align:left;margin:14px 0;">
+        <h3 style="font-size:.86rem;font-weight:800;margin-bottom:10px;">📋 Công thức ôn nhanh:</h3>
+        <div style="font-size:.82rem;line-height:2.2;">
+          <div>🔴 <strong>Phủ định</strong> → S + <strong>didn't</strong> + V(nguyên thể)</div>
+          <div>🔵 <strong>Câu hỏi Yes/No</strong> → <strong>Did</strong> + S + V(nguyên thể)?</div>
+          <div>🟢 <strong>Câu hỏi WH</strong> → WH + <strong>did</strong> + S + V(nguyên thể)?</div>
+          <div>🟡 <strong>Trả lời ngắn</strong> → Yes, I <strong>did</strong>. / No, I <strong>didn't</strong>.</div>
+          <div>⚠️ Sau didn't/did → động từ luôn là <strong>nguyên thể</strong>!</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+        <button class="btn-primary" onclick="restartLesson()">🔄 Học lại từ đầu</button>
+        <a href="index.html" class="home-btn">🏠 Trang chủ</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+// ══════════ DATA ══════════
+
+const vocabGrammar=[
+  {w:"didn't",p:"/ˈdɪdnt/",vi:"đã không (= did not)"},
+  {w:"did",p:"/dɪd/",vi:"đã (trợ động từ quá khứ)"},
+  {w:"did not",p:"/dɪd nɒt/",vi:"đã không (dạng đầy đủ)"},
+  {w:"Yes, I did.",p:"/jɛs aɪ dɪd/",vi:"Có, tôi có (làm)."},
+  {w:"No, I didn't.",p:"/noʊ aɪ ˈdɪdnt/",vi:"Không, tôi không (làm)."},
+  {w:"anything",p:"/ˈeniθɪŋ/",vi:"bất cứ điều gì / không gì cả"},
+  {w:"stayed at home",p:"/steɪd æt hoʊm/",vi:"ở nhà (quá khứ)"},
+  {w:"was busy",p:"/wɒz ˈbɪzi/",vi:"bận (quá khứ)"},
+];
+
+const vocabVerbs=[
+  {w:"go",p:"/ɡoʊ/",vi:"đi"},
+  {w:"watch",p:"/wɒtʃ/",vi:"xem"},
+  {w:"call",p:"/kɔːl/",vi:"gọi điện"},
+  {w:"read",p:"/riːd/",vi:"đọc"},
+  {w:"cook",p:"/kʊk/",vi:"nấu"},
+  {w:"eat",p:"/iːt/",vi:"ăn"},
+  {w:"study",p:"/ˈstʌdi/",vi:"học"},
+  {w:"work",p:"/wɜːrk/",vi:"làm việc"},
+  {w:"play",p:"/pleɪ/",vi:"chơi"},
+  {w:"sleep",p:"/sliːp/",vi:"ngủ"},
+  {w:"travel",p:"/ˈtræv.əl/",vi:"du lịch"},
+];
+
+const vocabTime=[
+  {w:"yesterday",p:"/ˈjestərdeɪ/",vi:"hôm qua"},
+  {w:"last night",p:"/læst naɪt/",vi:"tối qua"},
+  {w:"last week",p:"/læst wiːk/",vi:"tuần trước"},
+  {w:"this morning",p:"/ðɪs ˈmɔːrnɪŋ/",vi:"sáng nay"},
+];
+
+const exNegative=[
+  {en:"I didn't go to work yesterday.",vi:"Tôi không đi làm hôm qua.",tag:"didn't + go"},
+  {en:"She didn't watch TV last night.",vi:"Cô ấy không xem TV tối qua.",tag:"didn't + watch"},
+  {en:"He didn't call me.",vi:"Anh ấy không gọi cho tôi.",tag:"didn't + call"},
+  {en:"He didn't read books last night.",vi:"Anh ấy không đọc sách tối qua.",tag:"didn't + read"},
+  {en:"She didn't watch anything.",vi:"Cô ấy không xem gì cả.",tag:"didn't + watch + anything"},
+];
+
+const exYesno=[
+  {en:"Did you go to work yesterday?",vi:"Hôm qua bạn có đi làm không?",tag:"Did + go"},
+  {en:"Did she watch TV last night?",vi:"Cô ấy có xem TV tối qua không?",tag:"Did + watch"},
+  {en:"Did you read books yesterday?",vi:"Hôm qua bạn có đọc sách không?",tag:"Did + read"},
+  {en:"Did they cook dinner last night?",vi:"Tối qua họ có nấu bữa tối không?",tag:"Did + cook"},
+  {en:"Did they watch a movie this morning?",vi:"Sáng nay họ có xem phim không?",tag:"Did + watch"},
+];
+
+const exWH=[
+  {en:"Where did you go yesterday?",vi:"Bạn đã đi đâu hôm qua?",tag:"Where + did + go"},
+  {en:"What did she watch last night?",vi:"Cô ấy đã xem gì tối qua?",tag:"What + did + watch"},
+  {en:"What did you read yesterday?",vi:"Bạn đã đọc gì hôm qua?",tag:"What + did + read"},
+  {en:"When did they watch this movie?",vi:"Họ đã xem bộ phim này khi nào?",tag:"When + did + watch"},
+];
+
+const nwExercises=[
+  {prompt:"Tôi không đi làm hôm qua.",hint:"(S + didn't + V nguyên thể)",tag:"❌ Phủ định",a:"i didn't go to work yesterday"},
+  {prompt:"Cô ấy không xem TV tối qua.",hint:"(S + didn't + V nguyên thể)",tag:"❌ Phủ định",a:"she didn't watch tv last night"},
+  {prompt:"Anh ấy không gọi cho tôi.",hint:"(S + didn't + V nguyên thể)",tag:"❌ Phủ định",a:"he didn't call me"},
+  {prompt:"Anh ấy không đọc sách tối qua.",hint:"(S + didn't + V nguyên thể)",tag:"❌ Phủ định",a:"he didn't read books last night"},
+  {prompt:"Hôm qua bạn có đi làm không?",hint:"(Did + S + V nguyên thể?)",tag:"❓ Yes/No",a:"did you go to work yesterday"},
+  {prompt:"Cô ấy có xem TV tối qua không?",hint:"(Did + S + V nguyên thể?)",tag:"❓ Yes/No",a:"did she watch tv last night"},
+  {prompt:"Hôm qua bạn có đọc sách không?",hint:"(Did + S + V nguyên thể?)",tag:"❓ Yes/No",a:"did you read books yesterday"},
+  {prompt:"Tối qua họ có nấu bữa tối không?",hint:"(Did + S + V nguyên thể?)",tag:"❓ Yes/No",a:"did they cook dinner last night"},
+  {prompt:"Sáng nay họ có xem phim không?",hint:"(Did + S + V nguyên thể?)",tag:"❓ Yes/No",a:"did they watch a movie this morning"},
+  {prompt:"Bạn đã đi đâu hôm qua?",hint:"(Where + did + S + V nguyên thể?)",tag:"🔍 WH",a:"where did you go yesterday"},
+  {prompt:"Cô ấy đã xem gì tối qua?",hint:"(What + did + S + V nguyên thể?)",tag:"🔍 WH",a:"what did she watch last night"},
+  {prompt:"Bạn đã đọc gì hôm qua?",hint:"(What + did + S + V nguyên thể?)",tag:"🔍 WH",a:"what did you read yesterday"},
+  {prompt:"Họ đã xem bộ phim này khi nào?",hint:"(When + did + S + V nguyên thể?)",tag:"🔍 WH",a:"when did they watch this movie"},
+  {prompt:"Không, tôi không đi. Tôi ở nhà.",hint:"(Phản xạ trả lời ngắn + bổ sung câu)",tag:"💬 Trả lời",a:"no i didn't i stayed at home"},
+  {prompt:"Anh ấy không gọi cho tôi. Anh ấy bận.",hint:"(Phản xạ trả lời)",tag:"💬 Trả lời",a:"he didn't call me he was busy"},
+  {prompt:"Cô ấy không xem gì cả. Cô ấy học tiếng Anh.",hint:"(Phản xạ trả lời)",tag:"💬 Trả lời",a:"she didn't watch anything she studied english"},
+  {prompt:"Bố mẹ bạn có gọi cho bạn vào tuần trước không?",hint:"(Did + S nhiều + V nguyên thể?)",tag:"❓ Yes/No bổ sung",a:"did your parents call you last week"}
+];
+let nwIdx=0,nwCorrect=0,nwTotal=0;
+
+const dialogues=[
+  {title:"Hội thoại 1 – Công việc hôm qua",lines:[
+    {label:"A",vi:"Hôm qua bạn có đi làm không?",en:"Did you go to work yesterday?",color:"#1565c0"},
+    {label:"B",vi:"Không, tôi không đi. Tôi ở nhà.",en:"No, I didn't. I stayed at home.",color:"#b7410e"}
+  ]},
+  {title:"Hội thoại 2 – Cuộc gọi nhỡ",lines:[
+    {label:"A",vi:"Anh ấy có gọi cho bạn hôm qua không?",en:"Did he call you yesterday?",color:"#1565c0"},
+    {label:"B",vi:"Anh ấy không gọi cho tôi. Anh ấy bận.",en:"He didn't call me. He was busy.",color:"#2e7d32"}
+  ]},
+  {title:"Hội thoại 3 – Hoạt động tối qua",lines:[
+    {label:"A",vi:"Cô ấy đã xem gì tối qua?",en:"What did she watch last night?",color:"#1565c0"},
+    {label:"B",vi:"Cô ấy không xem gì cả. Cô ấy học tiếng Anh.",en:"She didn't watch anything. She studied English.",color:"#6a1b9a"}
+  ]}
+];
+
+const quizData=[
+  {q:'Chọn câu viết ĐÚNG ngữ pháp cho câu: "Tôi không đi làm hôm qua."',opts:["I didn't went to work yesterday.","I didn't go to work yesterday.","I not go to work yesterday.","I didn't goes to work yesterday."],ans:1},
+  {q:'Chọn câu viết ĐÚNG ngữ pháp cho câu: "Cô ấy không xem TV tối qua."',opts:["She didn't watched TV last night.","She not watch TV last night.","She didn't watch TV last night.","She doesn't watch TV last night."],ans:2},
+  {q:'"Hôm qua bạn có đi làm không?" dịch sang tiếng Anh đúng là:',opts:["Did you went to work yesterday?","Do you go to work yesterday?","Did you go to work yesterday?","Does you go to work yesterday?"],ans:2},
+  {q:'"Tối qua họ có nấu bữa tối không?" dịch sang tiếng Anh đúng là:',opts:["Did they cooked dinner last night?","Did they cook dinner last night?","Do they cook dinner last night?","Did they cooks dinner last night?"],ans:1},
+  {q:'"Bạn đã đi đâu hôm qua?" được viết đúng là:',opts:["Where you went yesterday?","Where did you go yesterday?","Where did you went yesterday?","Where do you go yesterday?"],ans:1},
+  {q:'"Khi nào họ đã xem bộ phim này?" dịch đúng cấu trúc là:',opts:["When did they watched this movie?","When they watch this movie?","When did they watch this movie?","When do they watch this movie?"],ans:2},
+  {q:'Chọn câu trả lời phủ định ngắn chính xác cho câu: "Did you watch it?"',opts:["No, I not.","No, I didn't.","No, I don't.","No, I wasn't."],ans:1},
+  {q:'Sau trợ động từ "did" hoặc "didn\'t", động từ chính phải ở dạng nào?',opts:["V-ed","V-ing","Giữ nguyên (Nguyên thể)","Thêm s/es"],ans:2},
+  {q:'"She didn\'t watch anything." nghĩa là gì?',opts:["Cô ấy đã xem một vài thứ.","Cô ấy đã không xem gì cả.","Cô ấy đã xem mọi thứ.","Cô ấy đã không xem TV."],ans:1},
+  {q:'Chọn câu SAI ngữ pháp trong các câu sau:',opts:["He didn't call me.","Did she go home?","What did you read?","They didn't cooked dinner."],ans:3}
+];
+
+const fillData=[
+  {answer:"didn't go",before:"Tôi không đi làm hôm qua: I ",after:" to work yesterday."},
+  {answer:"didn't watch",before:"Cô ấy không xem TV tối qua: She ",after:" TV last night."},
+  {answer:"didn't call",before:"Anh ấy không gọi cho tôi: He ",after:" me."},
+  {answer:"didn't read",before:"Anh ấy không đọc sách tối qua: He ",after:" books last night."},
+  {answer:"Did you go",before:"Hôm qua bạn có đi làm không: ",after:" to work yesterday?"},
+  {answer:"Did she watch",before:"Cô ấy có xem TV tối qua không: ",after:" TV last night?"},
+  {answer:"Did they cook",before:"Tối qua họ có nấu bữa tối không: ",after:" dinner last night?"},
+  {answer:"Where did you go",before:"Bạn đã đi đâu hôm qua: ",after:" yesterday?"},
+  {answer:"What did she watch",before:"Cô ấy đã xem gì tối qua: ",after:" last night?"},
+  {answer:"No, I didn't",before:"Trả lời phủ định: ",after:". I stayed at home."},
+  {answer:"didn't watch anything",before:"Cô ấy không xem gì cả: She ",after:". She studied English."},
+  {answer:"When did they watch",before:"Họ đã xem bộ phim này khi nào: ",after:" this movie?"}
+];
+
+const transData=[
+  {prompt:"Tôi không đi làm hôm qua.",answer:"i didn't go to work yesterday",dir:"vi→en"},
+  {prompt:"She didn't watch TV last night.",answer:"cô ấy không xem tv tối qua",dir:"en→vi"},
+  {prompt:"Hôm qua bạn có đi làm không?",answer:"did you go to work yesterday",dir:"vi→en"},
+  {prompt:"Did he call you yesterday?",answer:"anh ấy có gọi cho bạn hôm qua không",dir:"en→vi"},
+  {prompt:"Bạn đã đi đâu hôm qua?",answer:"where did you go yesterday",dir:"vi→en"},
+  {prompt:"What did she watch last night?",answer:"cô ấy đã xem gì tối qua",dir:"en→vi"},
+  {prompt:"Không, tôi không đi. Tôi ở nhà.",answer:"no i didn't i stayed at home",dir:"vi→en"},
+  {prompt:"He didn't call me. He was busy.",answer:"anh ấy không gọi cho tôi anh ấy bận",dir:"en→vi"},
+  {prompt:"Tối qua họ có nấu bữa tối không?",answer:"they didn't cook dinner last night",dir:"vi→en"},
+  {prompt:"Sáng nay họ có xem phim không?",answer:"did they watch a movie this morning",dir:"vi→en"},
+  {prompt:"Cô ấy không xem gì cả. Cô ấy học tiếng Anh.",answer:"she didn't watch anything she studied english",dir:"vi→en"}
+];
+
+const speakingData=[
+  {en:"I didn't go to work yesterday.",vi:"Tôi không đi làm hôm qua."},
+  {en:"She didn't watch TV last night.",vi:"Cô ấy không xem TV tối qua."},
+  {en:"He didn't call me.",vi:"Anh ấy không gọi cho tôi."},
+  {en:"They didn't cook dinner last night.",vi:"Họ không nấu bữa tối tối qua."},
+  {en:"Did you go to work yesterday?",vi:"Hôm qua bạn có đi làm không?"},
+  {en:"Did she watch TV last night?",vi:"Cô ấy có xem TV tối qua không?"},
+  {en:"Did they cook dinner last night?",vi:"Tối qua họ có nấu bữa tối không?"},
+  {en:"No, I didn't. I stayed at home.",vi:"Không, tôi không đi. Tôi ở nhà."},
+  {en:"He didn't call me. He was busy.",vi:"Anh ấy không gọi cho tôi. Anh ấy bận."},
+  {en:"Where did you go yesterday?",vi:"Bạn đã đi đâu hôm qua?"},
+  {en:"What did she watch last night?",vi:"Cô ấy đã xem gì tối qua?"},
+  {en:"When did they watch this movie?",vi:"Họ đã xem bộ phim này khi nào?"},
+  {en:"She didn't watch anything. She studied English.",vi:"Cô ấy không xem gì cả. Cô ấy học tiếng Anh."}
+];
+
+// ══════════ STATE ══════════
+let quizCorrect=0,quizAnswered=0,fillCorrect=0,transCorrect=0;
+let secondsLeft=3600,timerInterval;
+
+function init(){
+  buildVocabTables();buildExamples();buildDialogues();
+  buildQuiz();buildFill();buildTrans();buildSpeaking();
+  initNW();startTimer();
+}
+
+function startTimer(){
+  timerInterval=setInterval(()=>{
+    secondsLeft--;
+    const m=String(Math.floor(secondsLeft/60)).padStart(2,'0');
+    const s=String(secondsLeft%60).padStart(2,'0');
+    document.getElementById('timer-bar').textContent='⏱ '+m+':'+s;
+    if(secondsLeft<=0)clearInterval(timerInterval);
+  },1000);
+}
+
+function buildVocabTables(){
+  function makeRows(data,id){
+    document.getElementById(id).innerHTML=data.map(v=>
+      '<tr><td class="w">'+v.w+'</td><td class="p">'+v.p+'</td><td>'+v.vi+'</td><td><button class="play-btn" onclick="speak(\''+v.w.replace(/'/g,"\\'")+'\')">▶</button></td></tr>'
+    ).join('');
+  }
+  makeRows(vocabGrammar,'vocab-grammar');
+  makeRows(vocabVerbs,'vocab-verbs');
+  makeRows(vocabTime,'vocab-time');
+}
+
+function buildExamples(){
+  function r(arr,id,color,bg){
+    document.getElementById(id).innerHTML=arr.map(e=>
+      '<div class="eb" style="background:'+bg+';border-color:'+color+'">'+
+      (e.tag?'<div class="tag">'+e.tag+'</div>':'')+
+      '<div class="en" style="color:'+color+'">'+e.en+'</div>'+
+      '<div class="vi">→ '+e.vi+'</div>'+
+      '<button class="psm" style="background:'+color+'" onclick="speak(\''+e.en.replace(/'/g,"\\'")+'\')">▶ Nghe</button></div>'
+    ).join('');
+  }
+  r(exNegative,'ex-negative','#b7410e','#fff3e0');
+  r(exYesno,'ex-yesno','#1565c0','#e3f2fd');
+  r(exWH,'ex-wh','#2e7d32','#e8f5e9');
+}
+
+function buildDialogues(){
+  document.getElementById('dialogue-container').innerHTML=dialogues.map((d,i)=>
+    '<div class="dbox"><div class="dtitle">💬 '+d.title+'</div>'+
+    d.lines.map(l=>'<div class="dline"><span class="dlabel" style="background:'+l.color+'">'+l.label+'</span><div><div class="dvi">'+l.vi+'</div><div class="den">'+l.en+'</div></div></div>').join('')+
+    '<button class="pdlg" onclick="speakDlg('+i+')">▶ Nghe hội thoại</button></div>'
+  ).join('');
+}
+async function speakDlg(i){
+  for(const l of dialogues[i].lines){speak(l.en);await new Promise(r=>setTimeout(r,l.en.length*65+900));}
+}
+
+function buildSpeaking(){
+  document.getElementById('speaking-container').innerHTML=speakingData.map((s,i)=>
+    '<div class="speak-card" style="background:'+s.color+'">'+
+    '<div class="slbl">📝 CÂU '+(i+1)+'</div>'+
+    '<div class="sen-en">'+s.en+'</div>'+
+    '<div class="sen-vi">'+s.vi+'</div>'+
+    '<button class="hear-btn" onclick="speak(\''+s.en.replace(/'/g,"\\'")+'\')">▶ Nghe mẫu</button></div>'
+  ).join('');
+}
+
+function initNW(){
+  nwIdx=0;nwCorrect=0;nwTotal=0;
+  document.getElementById('nw-score').textContent='0 / 0 đúng';
+  showNW();
+}
+function showNW(){
+  if(nwIdx>=nwExercises.length){
+    document.getElementById('nw-prompt').textContent='✅ Xong!';
+    document.getElementById('nw-hint').textContent='';
+    document.getElementById('nw-tag').textContent='';
+    document.getElementById('nw-fb').innerHTML='<span style="color:var(--yellow)">Bạn đã hoàn thành toàn bộ phần luyện viết câu mở rộng!</span>';
+    return;
+  }
+  const ex=nwExercises[nwIdx];
+  document.getElementById('nw-prompt').textContent=ex.prompt;
+  document.getElementById('nw-hint').textContent=ex.hint;
+  document.getElementById('nw-tag').textContent=ex.tag;
+  document.getElementById('nw-input').value='';
+  document.getElementById('nw-fb').textContent='';
+  document.getElementById('nw-input').focus();
+}
+function checkNW(){
+  if(nwIdx>=nwExercises.length)return;
+  const val=document.getElementById('nw-input').value.trim().toLowerCase().replace(/[.?!,']/g,'').replace(/\s+/g,' ');
+  const correct=nwExercises[nwIdx].a.toLowerCase();
+  nwTotal++;
+  const fb=document.getElementById('nw-fb');
+  const kw=correct.split(' ').filter(w=>w.length>1);
+  const ratio=kw.length?kw.filter(w=>val.includes(w)).length/kw.length:0;
+  if(ratio>=0.75 || val===correct){
+    fb.innerHTML='<span style="color:#FFD93D">✅ Đúng! Lựa chọn chính xác.</span>';
+    nwCorrect++;nwIdx++;setTimeout(showNW,1400);
+  }else{
+    fb.innerHTML='<span style="color:#ff8a80">❌ Chưa đúng! Hãy tự suy nghĩ và nhập lại câu hoàn chỉnh mà không có gợi ý.</span>';
+  }
+  document.getElementById('nw-score').textContent=nwCorrect+' / '+nwTotal+' đúng';
+}
+function nextNW(){if(nwIdx<nwExercises.length)nwIdx++;showNW();}
+
+function buildQuiz(){
+  document.getElementById('quiz-container').innerHTML=quizData.map((q,i)=>
+    '<div class="quiz-item" id="qi-'+i+'"><div class="quiz-q">'+(i+1)+'. '+q.q+'</div><div class="quiz-opts">'+
+    q.opts.map((o,j)=>'<button class="qopt" id="qo-'+i+'-'+j+'" onclick="answerQuiz('+i+','+j+')">'+o+'</button>').join('')+
+    '</div><div class="qfb" id="qf-'+i+'"></div></div>'
+  ).join('');
+}
+function answerQuiz(qi,choice){
+  const item=document.getElementById('qi-'+qi);
+  if(item.dataset.answered)return;
+  item.dataset.answered='1';
+  const q=quizData[qi];
+  item.querySelectorAll('.qopt').forEach(b=>b.disabled=true);
+  const fb=document.getElementById('qf-'+qi);
+  if(choice===q.ans){document.getElementById('qo-'+qi+'-'+choice).classList.add('sel-ok');item.classList.add('answered-ok');fb.textContent='✅ Đúng!';fb.className='qfb show ok';quizCorrect++;}
+  else{document.getElementById('qo-'+qi+'-'+choice).classList.add('sel-fail');item.classList.add('answered-fail');fb.textContent='❌ Sai rồi! Nhớ kĩ sau did/didn\'t động từ luôn ở dạng nguyên thể.';fb.className='qfb show fail';}
+  quizAnswered++;
+  document.getElementById('quiz-score').textContent=quizCorrect+' / '+quizAnswered;
+  if(quizAnswered===quizData.length){
+    const pct=Math.round((quizCorrect/quizData.length)*100);
+    document.getElementById(pct<80?'quiz-retry-section':'quiz-done-btn').style.display='block';
+  }
+}
+function retryQuiz(){
+  quizCorrect=0;quizAnswered=0;
+  document.getElementById('quiz-score').textContent='0 / 0';
+  document.getElementById('quiz-retry-section').style.display='none';
+  document.getElementById('quiz-done-btn').style.display='none';
+  buildQuiz();
+}
+
+function buildFill(){
+  document.getElementById('fill-container').innerHTML=fillData.map((f,i)=>
+    '<div class="fill-item" id="fi-'+i+'"><div class="fill-q">'+(i+1)+'. '+f.before+'<input type="text" id="finp-'+i+'" placeholder="...">'+f.after+'</div><div class="fill-ans" id="fa-'+i+'">❌ Ô nhập sai cấu trúc ngữ pháp. Hãy bấm làm lại!</div></div>'
+  ).join('');
+  fillCorrect=0;
+  document.getElementById('retry-fill-btn').style.display='none';
+  document.getElementById('fill-score-display').style.display='none';
+}
+function checkFill(){
+  fillCorrect=0;
+  fillData.forEach((f,i)=>{
+    const inp=document.getElementById('finp-'+i);
+    const item=document.getElementById('fi-'+i);
+    const ans=document.getElementById('fa-'+i);
+    const val=inp.value.trim().toLowerCase().replace(/[.?!,']/g,'').replace(/\s+/g,' ');
+    const correct=f.answer.toLowerCase();
+    inp.disabled=true;
+    const kw=correct.split(' ').filter(w=>w.length>1);
+    const ratio=kw.length?kw.filter(w=>val.includes(w)).length/kw.length:0;
+    if(ratio>=0.75 || val===correct){item.classList.add('correct');item.classList.remove('wrong');ans.classList.remove('show-wrong');fillCorrect++;}
+    else{item.classList.add('wrong');item.classList.remove('correct');ans.classList.add('show-wrong');}
+  });
+  const pct=Math.round((fillCorrect/fillData.length)*100);
+  const el=document.getElementById('fill-score-display');
+  el.style.display='block';
+  el.innerHTML='Điểm số điền từ đạt: <span style="color:'+(pct>=70?'#2e7d32':'#c0392b')+'">'+fillCorrect+'/'+fillData.length+' ('+pct+'%)</span>';
+  if(pct<70)document.getElementById('retry-fill-btn').style.display='inline-flex';
+}
+function retryFill(){
+  fillData.forEach((f,i)=>{
+    const inp=document.getElementById('finp-'+i);
+    const item=document.getElementById('fi-'+i);
+    const ans=document.getElementById('fa-'+i);
+    inp.value='';inp.disabled=false;item.classList.remove('correct','wrong');ans.classList.remove('show-wrong');
+  });
+  fillCorrect=0;document.getElementById('retry-fill-btn').style.display='none';document.getElementById('fill-score-display').style.display='none';
+}
+
+function buildTrans(){
+  document.getElementById('trans-container').innerHTML=transData.map((t,i)=>
+    '<div class="trans-item" id="ti-'+i+'"><div class="trans-lang">'+(t.dir==='vi→en'?'🇻🇳 Dịch sang Tiếng Anh':'🇬🇧 Dịch sang Tiếng Việt')+'</div><div class="trans-q">'+t.prompt+'</div><input class="trans-input" type="text" id="tinp-'+i+'" placeholder="Nhập kết quả dịch tự nhớ..."><div class="trans-ans" id="ta-'+i+'">❌ Bản dịch câu chưa chuẩn xác thành phần cấu trúc quá khứ.</div></div>'
+  ).join('');
+  transCorrect=0;document.getElementById('retry-trans-btn').style.display='none';document.getElementById('trans-score-display').style.display='none';
+}
+function normalize(s){return s.trim().toLowerCase().replace(/[.?!,']/g,'').replace(/\s+/g,' ');}
+function checkTrans(){
+  transCorrect=0;
+  transData.forEach((t,i)=>{
+    const inp=document.getElementById('tinp-'+i);
+    const item=document.getElementById('ti-'+i);
+    const ans=document.getElementById('ta-'+i);
+    const val=normalize(inp.value);
+    const correct=normalize(t.answer);
+    inp.disabled=true;
+    const kw=correct.split(' ').filter(w=>w.length>2);
+    const ratio=kw.length?kw.filter(w=>val.includes(w)).length/kw.length:0;
+    if(ratio>=0.65 || val===correct){item.classList.add('correct');item.classList.remove('wrong');ans.classList.remove('show');transCorrect++;}
+    else{item.classList.add('wrong');item.classList.remove('correct');ans.classList.add('show');}
+  });
+  const pct=Math.round((transCorrect/transData.length)*100);
+  const el=document.getElementById('trans-score-display');
+  el.style.display='block';
+  el.innerHTML='Điểm số dịch câu đạt: <span style="color:'+(pct>=70?'#2e7d32':'#c0392b')+'">'+transCorrect+'/'+transData.length+' ('+pct+'%)</span>';
+  if(pct<70)document.getElementById('retry-trans-btn').style.display='inline-flex';
+}
+function retryTrans(){
+  transData.forEach((t,i)=>{
+    const inp=document.getElementById('tinp-'+i);
+    const item=document.getElementById('ti-'+i);
+    const ans=document.getElementById('ta-'+i);
+    inp.value='';inp.disabled=false;item.classList.remove('correct','wrong');ans.classList.remove('show');
+  });
+  transCorrect=0;document.getElementById('retry-trans-btn').style.display='none';document.getElementById('trans-score-display').style.display='none';
+}
+
+function goPhase(n){
+  document.querySelectorAll('.phase').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.phase-tab').forEach((t,i)=>{t.classList.remove('active','done');if(i<n)t.classList.add('done');});
+  document.getElementById('phase-'+n).classList.add('active');
+  document.querySelectorAll('.phase-tab')[n].classList.add('active');
+  document.getElementById('progress-bar').style.width=Math.round((n/9)*100)+'%';
+  window.scrollTo(0,0);
+  if(n===9)showResult();
+}
+
+function showResult(){
+  const qT=quizData.length,fT=fillData.length,tT=transData.length;
+  const total=quizCorrect+fillCorrect+transCorrect;
+  const max=qT+fT+tT;
+  const pct=Math.round((total/max)*100);
+  document.getElementById('final-score').textContent=pct+'%';
+  let msg,desc;
+  if(pct>=90){msg='🏆 Hoàn thành xuất sắc!';desc='Bạn sử dụng chính xác tuyệt đối cấu trúc phủ định và câu hỏi quá khứ!';}
+  else if(pct>=75){msg='👍 Kết quả rất tốt!';desc='Hãy cố gắng duy trì phản xạ luyện viết câu thường xuyên để tăng năng lực.';}
+  else if(pct>=55){msg='📚 Điểm số mức trung bình!';desc='Bạn còn hay quên chuyển động từ về dạng nguyên thể sau did/didn\'t.'}
+  else{msg='💪 Thử sức lại lần nữa nhé!';desc='Điểm số chưa chạm ngưỡng quy định đạt chuẩn. Hãy xem lại phần lý thuyết.'}
+  document.getElementById('final-msg').textContent=msg;
+  document.getElementById('final-desc').textContent=desc;
+  document.getElementById('detail-score').innerHTML=
+    '🧠 Trắc nghiệm: <strong>'+quizCorrect+'/'+qT+'</strong> &nbsp;|&nbsp; ✏️ Ô trống điền từ: <strong>'+fillCorrect+'/'+fT+'</strong> &nbsp;|&nbsp; 🔄 Dịch câu song ngữ: <strong>'+transCorrect+'/'+tT+'</strong> &nbsp;|&nbsp; Tổng điểm đạt: <strong>'+total+'/'+max+' ('+pct+'%)</strong>';
+  clearInterval(timerInterval);
+}
+
+function restartLesson(){
+  quizCorrect=0;quizAnswered=0;fillCorrect=0;transCorrect=0;
+  secondsLeft=3600;clearInterval(timerInterval);
+  buildQuiz();buildFill();buildTrans();initNW();
+  document.getElementById('quiz-score').textContent='0 / 0';
+  document.getElementById('quiz-retry-section').style.display='none';
+  document.getElementById('quiz-done-btn').style.display='none';
+  goPhase(0);startTimer();
+}
+
+function speak(text){
+  if(!window.speechSynthesis)return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='en-US';u.rate=0.82;speechSynthesis.speak(u);
+}
+
+init();
+</script>
+</body>
+</html>
