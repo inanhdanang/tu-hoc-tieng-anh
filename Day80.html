@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 80 – VERBS STARTING WITH "P" – Động từ chữ P</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{--c1:#b7410e;--c2:#1565c0;--c3:#2e7d32;--c4:#6a1b9a;--c5:#00838f;--yellow:#FFD93D;--bg:#fafbff;--dark:#0d1b2a;--gray:#78909c;--radius:18px;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--dark);min-height:100vh;}
+  header{background:var(--dark);color:white;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 3px 14px rgba(0,0,0,.3);}
+  header h1{font-family:'Baloo 2',cursive;font-size:1.05rem;font-weight:800;text-align:center;flex:1;}
+  header h1 span{color:var(--yellow);}
+  #timer-bar{font-size:.95rem;font-weight:700;background:var(--yellow);color:var(--dark);padding:5px 14px;border-radius:30px;white-space:nowrap;}
+  .back-btn{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.25);color:white;padding:5px 13px;border-radius:30px;font-size:.78rem;font-weight:700;text-decoration:none;transition:all .2s;white-space:nowrap;}
+  .back-btn:hover{background:rgba(255,255,255,.22);}
+  #progress-wrap{background:#e9ecef;height:8px;}
+  #progress-bar{height:8px;background:linear-gradient(90deg,var(--c1),var(--c2),var(--c3),var(--c4));transition:width .6s ease;border-radius:0 4px 4px 0;}
+  #phase-nav{display:flex;gap:5px;padding:10px 16px;overflow-x:auto;background:white;border-bottom:2px solid #f1f3f4;}
+  .phase-tab{flex-shrink:0;padding:5px 11px;border-radius:20px;font-size:.72rem;font-weight:700;border:2px solid #dee2e6;background:white;cursor:pointer;transition:all .2s;color:var(--gray);}
+  .phase-tab.active{background:var(--dark);color:white;border-color:var(--dark);}
+  .phase-tab.done{background:var(--c3);color:white;border-color:var(--c3);}
+  main{padding:18px 14px 48px;max-width:780px;margin:0 auto;}
+  .phase{display:none;animation:fadeIn .4s ease;}
+  .phase.active{display:block;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+  .section-header{border-radius:var(--radius) var(--radius) 0 0;padding:13px 18px;}
+  .section-header .phase-label{font-size:.66rem;letter-spacing:2px;text-transform:uppercase;color:var(--yellow);font-weight:700;}
+  .section-header h2{font-family:'Baloo 2',cursive;font-size:1.2rem;font-weight:800;color:white;}
+  .section-header .duration{font-size:.76rem;color:rgba(255,255,255,.5);margin-top:1px;}
+  .section-body{background:white;border-radius:0 0 var(--radius) var(--radius);padding:18px;margin-bottom:20px;box-shadow:0 4px 18px rgba(0,0,0,.07);}
+  .tip-box{background:#fff8e1;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:.82rem;border-left:4px solid var(--yellow);line-height:1.75;}
+  .tip-box strong{color:#e65100;}
+  .tip-red{background:#fce4ec;border-left-color:var(--c1);}
+  .tip-red strong{color:var(--c1);}
+  .tip-green{background:#e8f5e9;border-left-color:var(--c3);}
+  .tip-green strong{color:var(--c3);}
+  .tip-blue{background:#e3f2fd;border-left-color:var(--c2);}
+  .tip-blue strong{color:var(--c2);}
+  .tip-purple{background:#f3e5f5;border-left-color:var(--c4);}
+  .tip-purple strong{color:var(--c4);}
+
+  .formula-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+  @media(max-width:520px){.formula-grid{grid-template-columns:1fr;}.quiz-opts{grid-template-columns:1fr;}}
+  .fc{border-radius:12px;padding:14px;}
+  .fc h3{font-family:'Baloo 2',cursive;font-size:.95rem;font-weight:800;margin-bottom:8px;color:white;}
+  .fc .fb{background:rgba(255,255,255,.18);border-radius:7px;padding:8px 11px;font-size:.8rem;font-weight:700;font-family:monospace;color:white;margin-bottom:6px;line-height:1.6;}
+  .fc .fn{font-size:.76rem;color:rgba(255,255,255,.88);line-height:1.9;}
+
+  .num-table{width:100%;border-collapse:collapse;margin-bottom:16px;font-size:.84rem;border-radius:11px;overflow:hidden;}
+  .num-table th{background:var(--dark);color:white;padding:9px 12px;text-align:left;font-weight:800;}
+  .num-table td{padding:9px 12px;border-bottom:1px solid #f0f0f0;vertical-align:middle;font-weight:600;}
+  .num-table tr:nth-child(even) td{background:#f8f9fa;}
+  .num-table .w{font-weight:800;color:var(--c1);}
+  .num-table .p{font-size:.72rem;font-style:italic;color:var(--gray);}
+  .play-btn{background:none;border:1px solid #dee2e6;border-radius:20px;padding:2px 8px;font-size:.68rem;font-weight:700;cursor:pointer;color:var(--c3);font-family:'Nunito',sans-serif;}
+  .play-btn:hover{background:var(--c3);color:white;border-color:var(--c3);}
+
+  .ex-title{font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;padding:4px 12px;border-radius:20px;color:white;display:inline-block;margin-bottom:8px;}
+  .eb{border-radius:11px;padding:11px 14px;margin-bottom:8px;border-left:4px solid;}
+  .eb .en{font-size:.93rem;font-weight:700;margin-bottom:2px;}
+  .eb .vi{font-size:.81rem;color:#495057;margin-bottom:5px;}
+  .eb .tag{font-size:.72rem;font-weight:800;display:inline-block;background:#0d1b2a;color:var(--yellow);border-radius:6px;padding:2px 8px;margin-bottom:5px;}
+  .divider{height:1px;background:#e9ecef;margin:14px 0;}
+  .psm{border:none;border-radius:20px;padding:4px 12px;font-size:.72rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:4px;font-family:'Nunito',sans-serif;color:white;}
+
+  .dbox{background:#f8f9fa;border-radius:13px;padding:14px;margin-bottom:11px;border:2px solid #e9ecef;}
+  .dtitle{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--gray);margin-bottom:9px;}
+  .dline{display:flex;gap:7px;margin-bottom:7px;align-items:flex-start;}
+  .dlabel{font-size:.7rem;font-weight:800;padding:2px 7px;border-radius:7px;color:white;flex-shrink:0;margin-top:2px;min-width:24px;text-align:center;}
+  .dvi{font-size:.84rem;font-weight:700;color:#1565c0;}
+  .den{font-size:.84rem;font-weight:700;color:#212121;}
+  .pdlg{margin-top:7px;background:#2e7d32;color:white;border:none;border-radius:20px;padding:5px 13px;font-size:.74rem;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;display:inline-flex;align-items:center;gap:4px;}
+
+  .nw-box{background:linear-gradient(135deg,#b7410e,#8d2800);border-radius:16px;padding:18px;margin-bottom:16px;color:white;text-align:center;}
+  .nw-box h3{font-family:'Baloo 2',cursive;font-size:1rem;font-weight:800;margin-bottom:10px;}
+  .nw-display{font-family:'Baloo 2',cursive;font-size:1.4rem;font-weight:800;color:var(--yellow);margin-bottom:4px;line-height:1.4;}
+  .nw-vi{font-size:.82rem;color:rgba(255,255,255,.75);margin-bottom:10px;}
+  .nw-tag{display:inline-block;background:rgba(255,255,255,.18);border-radius:7px;padding:2px 9px;font-size:.7rem;font-weight:800;margin-bottom:10px;}
+  .nw-input{width:100%;border:3px solid var(--yellow);border-radius:10px;padding:8px 14px;font-size:.96rem;font-family:'Nunito',sans-serif;font-weight:700;outline:none;text-align:center;background:rgba(255,255,255,.12);color:white;}
+  .nw-input::placeholder{color:rgba(255,255,255,.5);}
+  .nw-btns{display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap;}
+  .nw-btn{border:none;border-radius:10px;padding:7px 16px;font-size:.82rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;}
+  .nw-check{background:var(--yellow);color:var(--dark);}
+  .nw-next{background:rgba(255,255,255,.2);color:white;border:1.5px solid rgba(255,255,255,.4);}
+  .nw-fb{min-height:22px;font-size:.84rem;font-weight:700;margin-top:8px;}
+  .nw-score{font-size:.78rem;color:rgba(255,255,255,.7);margin-top:6px;}
+
+  .quiz-item{background:#f8f9fa;border-radius:13px;padding:14px;margin-bottom:12px;border:2px solid transparent;transition:border-color .3s;}
+  .quiz-item.answered-ok{border-color:#2e7d32;background:#f1f8e9;}
+  .quiz-item.answered-fail{border-color:#c0392b;background:#fbe9e7;}
+  .quiz-q{font-size:.9rem;font-weight:700;margin-bottom:10px;}
+  .quiz-opts{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+  .qopt{background:white;border:2px solid #dee2e6;border-radius:9px;padding:7px 9px;font-size:.81rem;font-weight:700;cursor:pointer;transition:all .2s;font-family:'Nunito',sans-serif;text-align:center;}
+  .qopt:hover:not(:disabled){border-color:#1565c0;color:#1565c0;}
+  .qopt.sel-ok{background:#2e7d32;color:white;border-color:#2e7d32;}
+  .qopt.sel-fail{background:#c0392b;color:white;border-color:#c0392b;}
+  .qopt:disabled{cursor:default;}
+  .qfb{margin-top:6px;font-size:.77rem;font-weight:700;display:none;}
+  .qfb.show{display:block;}
+  .qfb.ok{color:#2e7d32;}
+  .qfb.fail{color:#c0392b;}
+
+  .fill-item{background:#f8f9fa;border-radius:12px;padding:13px;margin-bottom:10px;border:2px solid transparent;}
+  .fill-item.correct{border-color:#2e7d32;background:#f1f8e9;}
+  .fill-item.wrong{border-color:#c0392b;background:#fbe9e7;}
+  .fill-q{font-size:.9rem;font-weight:700;margin-bottom:6px;line-height:2.4;}
+  .fill-q input{border:2px solid #1565c0;border-radius:7px;padding:2px 8px;font-size:.86rem;font-family:'Nunito',sans-serif;font-weight:700;width:200px;text-align:center;outline:none;background:white;}
+  .fill-vi{font-size:.78rem;color:#78909c;margin-bottom:4px;}
+  .fill-ans{font-size:.78rem;font-weight:700;margin-top:4px;display:none;}
+  .fill-ans.show-wrong{display:block;color:#c0392b;}
+
+  .trans-item{background:#f8f9fa;border-radius:12px;padding:13px;margin-bottom:10px;border:2px solid transparent;}
+  .trans-item.correct{border-color:#2e7d32;background:#f1f8e9;}
+  .trans-item.wrong{border-color:#c0392b;background:#fbe9e7;}
+  .trans-lang{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;color:var(--gray);}
+  .trans-q{font-size:.92rem;font-weight:700;margin-bottom:6px;color:var(--dark);}
+  .trans-input{width:100%;border:2px solid #1565c0;border-radius:8px;padding:6px 10px;font-size:.86rem;font-family:'Nunito',sans-serif;font-weight:700;outline:none;background:white;}
+  .trans-ans{font-size:.78rem;font-weight:700;margin-top:4px;display:none;color:#c0392b;}
+  .trans-ans.show{display:block;}
+
+  .speak-card{border-radius:12px;padding:13px 16px;margin-bottom:9px;color:white;}
+  .slbl{font-size:.66rem;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:3px;}
+  .sen-en{font-size:.97rem;font-weight:800;margin-bottom:2px;}
+  .sen-vi{font-size:.8rem;color:rgba(255,255,255,.75);margin-bottom:9px;}
+  .hear-btn{background:var(--yellow);color:var(--dark);border:none;border-radius:20px;padding:6px 14px;font-weight:800;font-size:.8rem;cursor:pointer;font-family:'Nunito',sans-serif;transition:transform .15s;}
+  .hear-btn:hover{transform:scale(1.04);}
+
+  #score-section{text-align:center;padding:24px 12px;}
+  .score-circle{width:120px;height:120px;border-radius:50%;background:linear-gradient(135deg,var(--c1),var(--c2));display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 6px 20px rgba(21,101,192,.3);}
+  .score-circle .num{font-family:'Baloo 2',cursive;font-size:2rem;font-weight:800;color:white;line-height:1;}
+  .score-circle .lbl{font-size:.7rem;font-weight:700;color:rgba(255,255,255,.8);}
+  #score-section h2{font-family:'Baloo 2',cursive;font-size:1.4rem;font-weight:800;margin-bottom:6px;}
+  #score-section p{color:var(--gray);font-size:.86rem;max-width:340px;margin:0 auto 16px;}
+  .score-inline{background:#f1f3f5;border-radius:9px;padding:8px 14px;margin-bottom:12px;font-size:.81rem;font-weight:700;display:flex;align-items:center;gap:7px;}
+  .score-badge{background:var(--yellow);color:var(--dark);border-radius:20px;padding:2px 11px;font-weight:800;font-size:.81rem;}
+  .btn-next{background:var(--c2);color:white;border:none;border-radius:11px;padding:10px 24px;font-size:.9rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;margin-top:12px;display:inline-flex;align-items:center;gap:6px;transition:all .2s;}
+  .btn-next:hover{opacity:.88;}
+  .btn-check{background:var(--c3);color:white;border:none;border-radius:11px;padding:9px 20px;font-size:.86rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;margin-top:10px;display:inline-flex;align-items:center;gap:5px;}
+  .btn-primary{background:var(--dark);color:white;border:none;border-radius:11px;padding:10px 24px;font-size:.9rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;display:inline-flex;align-items:center;gap:6px;}
+  .retry-btn{background:#c0392b;color:white;border:none;border-radius:11px;padding:9px 20px;font-size:#86rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;margin-top:8px;display:inline-flex;align-items:center;gap:5px;margin-right:8px;}
+  .home-btn{background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.3);color:white;border-radius:11px;padding:9px 20px;font-size:.86rem;font-weight:800;text-decoration:none;display:inline-flex;align-items:center;gap:5px;margin-top:8px;}
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="back-btn">&#8592; Trang chủ</a>
+  <h1>📌 <span>DAY 80</span> – Động từ chữ P: Promise, Prepare, Pretend</h1>
+  <div id="timer-bar">⏱ 60:00</div>
+</header>
+<div id="progress-wrap"><div id="progress-bar" style="width:0%"></div></div>
+
+<nav id="phase-nav">
+  <button class="phase-tab active" onclick="goPhase(0)">1. Lý thuyết</button>
+  <button class="phase-tab" onclick="goPhase(1)">2. Từ vựng</button>
+  <button class="phase-tab" onclick="goPhase(2)">3. Câu mẫu</button>
+  <button class="phase-tab" onclick="goPhase(3)">4. Luyện viết câu</button>
+  <button class="phase-tab" onclick="goPhase(4)">5. Hội thoại</button>
+  <button class="phase-tab" onclick="goPhase(5)">6. Quiz</button>
+  <button class="phase-tab" onclick="goPhase(6)">7. Điền từ</button>
+  <button class="phase-tab" onclick="goPhase(7)">8. Dịch câu</button>
+  <button class="phase-tab" onclick="goPhase(8)">9. Nói</button>
+  <button class="phase-tab" onclick="goPhase(9)">10. Kết quả</button>
+</nav>
+
+<main>
+
+<!-- ══ PHASE 0: LÝ THUYẾT ══ -->
+<div class="phase active" id="phase-0">
+  <div class="section-header" style="background:var(--dark)">
+    <div class="phase-label">📖 Giai đoạn 1 – 8 phút</div>
+    <h2>Cấu trúc các Động từ chữ P thông dụng</h2>
+    <div class="duration">Promise (Hứa) · Prepare (Chuẩn bị) · Pretend (Giả vờ)</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box"><strong>📌 Hôm nay học gì?</strong> Học cách sử dụng và chia động từ ở các thì đối với ba động từ bắt đầu bằng chữ P phổ biến: <strong>Promise</strong>, <strong>Prepare</strong>, và <strong>Pretend</strong> cùng các cụm từ đi kèm hằng ngày.</div>
+
+    <div class="formula-grid">
+      <div class="fc" style="background:#b7410e">
+        <h3>🤝 Promise – Hứa hẹn</h3>
+        <div class="fb">promise to + V nguyên thể / make a promise</div>
+        <div class="fn">
+          • <strong>I promise.</strong> (Tôi hứa đấy!)<br>
+          • <strong>promise to do sth:</strong> Hứa làm gì.<br>
+          <i>I promise to study hard.</i><br>
+          • <strong>make a promise:</strong> Đưa ra một lời hứa.<br>
+          • <strong>break your promise:</strong> Thất hứa.
+        </div>
+      </div>
+      <div class="fc" style="background:#1565c0">
+        <h3>🍳 Prepare – Chuẩn bị</h3>
+        <div class="fb">prepare sth / prepare for sth</div>
+        <div class="fn">
+          • <strong>prepare sth:</strong> Chuẩn bị cái gì.<br>
+          <i>I am preparing breakfast.</i><br>
+          • <strong>prepare for sth:</strong> Chuẩn bị cho việc gì.<br>
+          <i>We prepared for the test.</i>
+        </div>
+      </div>
+      <div class="fc" style="background:#2e7d32">
+        <h3>🎭 Pretend – Giả vờ</h3>
+        <div class="fb">pretend to + V nguyên thể / pretend to be + Adj</div>
+        <div class="fn">
+          • <strong>pretend to do sth:</strong> Giả vờ làm gì.<br>
+          <i>I pretend to sleep.</i><br>
+          • <strong>pretend to be + tính từ:</strong> Giả vờ như thế nào.<br>
+          <i>She pretends to be happy.</i>
+        </div>
+      </div>
+      <div class="fc" style="background:#6a1b9a">
+        <h3>⏳ Thì động từ &amp; Chia đuôi</h3>
+        <div class="fb">Hiện tại đơn · Hiện tại tiếp diễn · Quá khứ đơn</div>
+        <div class="fn">
+          • Hiện tại đơn (Chủ ngữ số ít số nhiều): <i>prepares</i>, <i>pretends</i>, <i>promises</i>.<br>
+          • Hiện tại tiếp diễn: <i>am preparing</i>.<br>
+          • Quá khứ đơn (Đuôi -ed): <i>prepared</i>, <i>pretended</i>, <i>made</i>.
+        </div>
+      </div>
+    </div>
+
+    <div class="tip-box tip-red">
+      <strong>⚠️ Lỗi thường gặp:</strong><br>
+      ❌ "She promises help me" → ✅ "She promises <u>to</u> help me" (Sau promise phải có động từ nguyên thể có *to*).<br>
+      ❌ "We prepared the test" → ✅ "We prepared <u>for</u> the test" (Chuẩn bị *cho* một bài kiểm tra/cuộc họp cần có giới từ *for*).<br>
+      ❌ "He pretended to happy" → ✅ "He pretended to <u>be</u> happy" (Sau *to* cần động từ nguyên thể *be* khi đi với tính từ).
+    </div>
+
+    <button class="btn-next" onclick="goPhase(1)">Tiếp theo: Từ vựng →</button>
+  </div>
+</div>
+
+<!-- ══ PHASE 1: TỪ VỰNG ══ -->
+<div class="phase" id="phase-1">
+  <div class="section-header" style="background:var(--c2)">
+    <div class="phase-label">📚 Giai đoạn 2 – 8 phút</div>
+    <h2>Từ vựng &amp; Phát âm</h2>
+    <div class="duration">Nhấp ▶ để nghe phát âm mẫu</div>
+  </div>
+  <div class="section-body">
+    <span class="ex-title" style="background:#b7410e">🔑 Ba động từ chính chữ P</span>
+    <table class="num-table">
+      <thead><tr><th>Tiếng Anh</th><th>Phát âm</th><th>Tiếng Việt</th><th>▶</th></tr></thead>
+      <tbody id="vocab-main"></tbody>
+    </table>
+
+    <div class="divider"></div>
+    <span class="ex-title" style="background:#1565c0">🎯 Danh từ và cụm từ ngữ cảnh</span>
+    <table class="num-table">
+      <thead><tr><th>Tiếng Anh</th><th>Ý nghĩa thành phần</th><th>▶</th></tr></thead>
+      <tbody id="vocab-context"></tbody>
+    </table>
+
+    <button class="btn-next" onclick="goPhase(2)">Tiếp theo: Câu mẫu →</button>
+  </div>
+</div>
+
+<!-- ══ PHASE 2: CÂU MẪU ══ -->
+<div class="phase" id="phase-2">
+  <div class="section-header" style="background:var(--c1)">
+    <div class="phase-label">📝 Giai đoạn 3 – 8 phút</div>
+    <h2>Câu mẫu chuẩn tài liệu</h2>
+    <div class="duration">Nghe phát âm chuẩn và nhại giọng theo tài liệu mẫu</div>
+  </div>
+  <div class="section-body">
+    <span class="ex-title" style="background:#b7410e">🤝 Mẫu câu với PROMISE</span>
+    <div id="ex-promise"></div>
+    <div class="divider"></div>
+    <span class="ex-title" style="background:#1565c0">🍳 Mẫu câu với PREPARE</span>
+    <div id="ex-prepare"></div>
+    <div class="divider"></div>
+    <span class="ex-title" style="background:#2e7d32">🎭 Mẫu câu với PRETEND</span>
+    <div id="ex-pretend"></div>
+    <button class="btn-next" onclick="goPhase(3)">Tiếp theo: Luyện viết câu →</button>
+  </div>
+</div>
+
+<!-- ══ PHASE 3: LUYỆN VIẾC CÂU ══ -->
+<div class="phase" id="phase-3">
+  <div class="section-header" style="background:var(--c4)">
+    <div class="phase-label">✏️ Giai đoạn 4 – 12 phút</div>
+    <h2>Luyện viết câu phản xạ (Mở rộng số lượng)</h2>
+    <div class="duration">Tự xây dựng lại câu hoàn chỉnh bằng Tiếng Anh (Không gợi ý)</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box tip-purple"><strong>📌 Hướng dẫn thực hành sâu:</strong> Đọc kỹ tình huống Tiếng Việt ➔ Tự gõ lại câu Tiếng Anh tương ứng. Hãy chú ý chia động từ số ít/nhiều (promises, pretends), thì quá khứ (prepared, pretended), hoặc tiếp diễn (am preparing). Phần này đã bổ sung nhiều câu hơn để tối ưu thời gian học 1 giờ của bạn!</div>
+    <div class="nw-box">
+      <h3>✍️ Viết câu tiếng Anh khuyết thiếu</h3>
+      <div class="nw-display" id="nw-prompt">...</div>
+      <div class="nw-tag" id="nw-tag"></div>
+      <input class="nw-input" type="text" id="nw-input" placeholder="Gõ câu tiếng Anh hoàn chỉnh vào đây..." onkeydown="if(event.key==='Enter')checkNW()">
+      <div class="nw-fb" id="nw-fb"></div>
+      <div class="nw-score" id="nw-score">0 / 0 đúng</div>
+      <div class="nw-btns">
+        <button class="nw-btn nw-check" onclick="checkNW()">✅ Kiểm tra đáp án</button>
+        <button class="nw-btn nw-next" onclick="nextNW()">⏭ Bỏ qua câu này</button>
+      </div>
+    </div>
+    <button class="btn-next" onclick="goPhase(4)">Tiếp theo: Hội thoại →</button>
+  </div>
+</div>
+
+<!-- ══ PHASE 4: HỘI THOẠI ══ -->
+<div class="phase" id="phase-4">
+  <div class="section-header" style="background:var(--c5)">
+    <div class="phase-label">💬 Giai đoạn 5 – 6 phút</div>
+    <h2>Hội thoại đàm thoại ngữ cảnh ngắn</h2>
+    <div class="duration">Luyện đọc và nghe giao tiếp sử dụng động từ chữ P hằng ngày</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box"><strong>🎯 Luyện tập phản xạ:</strong> Theo dõi nội dung hỏi đáp ngắn dưới đây ➔ Nhấn nút ▶ để nghe audio phát ngôn tự động ➔ Đọc nhại giọng bám đuổi (Shadowing).</div>
+    <div id="dialogue-container"></div>
+    <button class="btn-next" onclick="goPhase(5)">Tiếp theo: Quiz trắc nghiệm →</button>
+  </div>
+</div>
+
+<!-- ══ PHASE 5: QUIZ ══ -->
+<div class="phase" id="phase-5">
+  <div class="section-header" style="background:var(--dark)">
+    <div class="phase-label">🧠 Giai đoạn 6 – 8 phút</div>
+    <h2>Bài tập trắc nghiệm phân hóa ngữ pháp</h2>
+    <div class="duration">Tự suy nghĩ độc lập – Đạt trên 80% câu đúng để vượt qua</div>
+  </div>
+  <div class="section-body">
+    <div class="score-inline">Điểm hiện tại: <span class="score-badge" id="quiz-score">0 / 0</span></div>
+    <div class="tip-box tip-red"><strong>⚠️ Quy chế chặng:</strong> Bài tập không hiển thị bất kỳ gợi ý nào. Bạn cần đạt tối thiểu từ 80% trở lên, nếu thấp hơn sẽ phải thực hiện lại từ đầu phần Quiz này.</div>
+    <div id="quiz-container"></div>
+    <div id="quiz-retry-section" style="display:none;margin-top:12px;">
+      <button class="retry-btn" onclick="retryQuiz()">🔄 Làm lại bài trắc nghiệm</button>
+      <button class="btn-next" onclick="goPhase(6)" style="margin-top:0">Tiếp theo: Điền từ →</button>
+    </div>
+    <div id="quiz-done-btn" style="display:none"><button class="btn-next" onclick="goPhase(6)">Tiếp theo: Điền từ →</button></div>
+  </div>
+</div>
+
+<!-- ══ PHASE 6: ĐIỀN TỪ ══ -->
+<div class="phase" id="phase-6">
+  <div class="section-header" style="background:var(--c1)">
+    <div class="phase-label">✏️ Giai đoạn 7 – 8 phút</div>
+    <h2>Điền từ vào chỗ trống ô trống</h2>
+    <div class="duration">Không có từ gợi ý sẵn – Hoàn thành tất cả các câu mới kiểm tra</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box tip-red"><strong>⚠️ Tiêu chuẩn đạt điểm:</strong> Điền chính xác động từ chữ P chia đúng thì hằng ngày. Dưới 70% số câu chính xác hệ thống sẽ yêu cầu thực hiện lại từ đầu chặng này.</div>
+    <div id="fill-container"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">
+      <button class="btn-check" onclick="checkFill()">✅ Kiểm tra bài điền từ</button>
+      <button class="retry-btn" onclick="retryFill()" id="retry-fill-btn" style="display:none">🔄 Làm lại phần điền từ</button>
+    </div>
+    <div id="fill-score-display" style="margin-top:10px;font-weight:700;font-size:.9rem;display:none;"></div>
+    <br><button class="btn-next" onclick="goPhase(7)" style="margin-top:8px">Tiếp theo: Dịch câu →</button>
+  </div>
+</div>
+
+<!-- ══ PHASE 7: DỊCH CÂU ══ -->
+<div class="phase" id="phase-7">
+  <div class="section-header" style="background:var(--c5)">
+    <div class="phase-label">🔄 Giai đoạn 8 – 7 phút</div>
+    <h2>Dịch câu song ngữ Anh - Việt</h2>
+    <div class="duration">Dịch thuật phản xạ tự nhiên – Hệ thống không cung cấp đáp án mẫu</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box"><strong>Hướng dẫn thực hiện:</strong> Tự nhớ lại từ vựng để dịch câu hoàn chỉnh vào ô trống. Điểm số đạt chuẩn quy định từ 70% trở lên để qua màn. Chú ý các cấu trúc đi kèm giới từ và động từ to be!</div>
+    <div id="trans-container"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">
+      <button class="btn-check" onclick="checkTrans()">✅ Kiểm tra bài dịch câu</button>
+      <button class="retry-btn" onclick="retryTrans()" id="retry-trans-btn" style="display:none">🔄 Thử lại bài dịch câu</button>
+    </div>
+    <div id="trans-score-display" style="margin-top:10px;font-weight:700;font-size:.9rem;display:none;"></div>
+    <br><button class="btn-next" onclick="goPhase(8)" style="margin-top:8px">Tiếp theo: Luyện nói →</button>
+  </div>
+</div>
+
+<!-- ══ PHASE 8: NÓI ══ -->
+<div class="phase" id="phase-8">
+  <div class="section-header" style="background:var(--c3)">
+    <div class="phase-label">🎤 Giai đoạn 9 – 5 phút</div>
+    <h2>Luyện nói phát âm câu mẫu</h2>
+    <div class="duration">Tự đọc to trước khi bật âm thanh mẫu kiểm tra đối chiếu</div>
+  </div>
+  <div class="section-body">
+    <div class="tip-box"><strong>Hướng dẫn nói:</strong> Nhìn câu tiếng Anh hiển thị ➔ Tự phát âm thật to rõ ràng thành tiếng ➔ Bấm nút ▶ nghe giọng máy chuẩn bản xứ phát âm để tự sửa lỗi âm đuôi và ngữ điệu câu.</div>
+    <div id="speaking-container"></div>
+    <button class="btn-next" onclick="goPhase(9)">Xem kết quả tổng kết phiên học →</button>
+  </div>
+</div>
+
+<!-- ══ PHASE 9: KẾT QUẢ ══ -->
+<div class="phase" id="phase-9">
+  <div class="section-header" style="background:var(--dark)">
+    <div class="phase-label">🏆 Báo cáo thành tích</div>
+    <h2>Tổng kết phiên học Day 80</h2>
+    <div class="duration">Đánh giá toàn diện năng lực phản xạ cấu trúc động từ chữ P</div>
+  </div>
+  <div class="section-body">
+    <div id="score-section">
+      <div class="score-circle"><div class="num" id="final-score">—</div><div class="lbl">điểm số</div></div>
+      <h2 id="final-msg">Hoàn thành bài học!</h2>
+      <p id="final-desc">Hệ thống đang xử lý dữ liệu tổng kết...</p>
+      <div id="detail-score" style="margin:12px 0;font-size:.85rem;font-weight:700;background:#f8f9fa;border-radius:10px;padding:12px 16px;text-align:left;"></div>
+      <div style="background:#f8f9fa;border-radius:13px;padding:14px;text-align:left;margin:14px 0;">
+        <h3 style="font-size:.86rem;font-weight:800;margin-bottom:10px;">📋 Tóm tắt kiến thức cốt lõi:</h3>
+        <div style="font-size:.82rem;line-height:2.2;">
+          <div>🔴 <strong>Promise to + V / make a promise:</strong> Hứa làm gì / Đưa ra lời hứa. Giữ lời hứa khác với thất hứa (break your promise).</div>
+          <div>🔵 <strong>Prepare sth / Prepare for sth:</strong> Chuẩn bị cái gì / Chuẩn bị cho việc gì. Quá khứ thêm -ed thành *prepared*.</div>
+          <div>🟢 <strong>Pretend to + V / Pretend to be + Adj:</strong> Giả vờ làm gì / Giả vờ như thế nào. Quá khứ thành *pretended*.</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+        <button class="btn-primary" onclick="restartLesson()">🔄 Học lại phiên này từ đầu</button>
+        <a href="index.html" class="home-btn">🏠 Quay lại trang chủ</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+// ══════════ DATA CONTROL SYSTEM ARCHITECTURE ══════════
+
+const vocabMain=[
+  {w:"promise", p:"/ˈprɒm.ɪs/", vi:"hứa / lời hứa"},
+  {w:"prepare", p:"/prɪˈpeər/", vi:"chuẩn bị"},
+  {w:"pretend", p:"/prɪˈtend/", vi:"giả vờ / đóng giả"}
+];
+
+const vocabContext=[
+  {w:"study hard", vi:"học tập chăm chỉ"},
+  {w:"break your promise", vi:"thất hứa / nuốt lời hứa"},
+  {w:"make a promise", vi:"đưa ra một lời hứa"},
+  {w:"carefully", vi:"một cách cẩn thận / kỹ lưỡng"},
+  {w:"the meeting", vi:"cuộc họp / buổi gặp mặt"},
+  {w:"prepare breakfast", vi:"chuẩn bị bữa ăn sáng"},
+  {w:"prepare for the test", vi:"chuẩn bị cho bài kiểm tra"},
+  {w:"happy / sick", vi:"vui vẻ / bị ốm, bị bệnh"},
+  {w:"everything", vi:"mọi thứ / tất cả mọi điều"}
+];
+
+const exPromise=[
+  {en:"I promise.", vi:"Tôi hứa đấy!"},
+  {en:"I promise to study hard.", vi:"Tôi hứa sẽ học chăm chỉ."},
+  {en:"Don't break your promise.", vi:"Đừng thất hứa đấy nhé!"},
+  {en:"He made a promise.", vi:"Anh ấy đã đưa ra một lời hứa."},
+  {en:"She promises to help me.", vi:"Cô ấy hứa sẽ giúp tôi."}
+];
+
+const exPrepare=[
+  {en:"She always prepares the lesson carefully.",vi:"Cô ấy luôn chuẩn bị bài học cẩn thận."},
+  {en:"What have you prepared for the meeting?",vi:"Bạn đã chuẩn bị gì cho cuộc họp rồi?"},
+  {en:"I am preparing breakfast.",vi:"Tôi đang chuẩn bị bữa sáng."},
+  {en:"We prepared for the test.",vi:"Chúng tôi đã chuẩn bị cho bài kiểm tra rồi."},
+  {en:"They didn't prepare anything for the meeting.",vi:"Họ đã không chuẩn bị bất cứ thứ gì cho cuộc họp."}
+];
+
+const exPretend=[
+  {en:"I pretend to sleep.",vi:"Tôi giả vờ ngủ."},
+  {en:"She pretends to be happy.",vi:"Cô ấy giả vờ vui vẻ."},
+  {en:"Don't pretend to know everything.",vi:"Đừng giả vờ như bạn biết mọi thứ."},
+  {en:"He pretended to be sick yesterday.",vi:"Hôm qua anh ấy đã giả vờ bị ốm."}
+];
+
+// Kho bài tập luyện viết câu mở rộng số lượng (15 câu phân hóa đầy đủ ngôi thì ngữ cảnh)
+const nwExercises=[
+  {prompt:"Tôi hứa đấy!",tag:"🤝 Promise",a:"i promise"},
+  {prompt:"Tôi hứa sẽ học chăm chỉ.",tag:"🤝 Promise",a:"i promise to study hard"},
+  {prompt:"Đừng thất hứa đấy nhé!",tag:"🤝 Promise",a:"don't break your promise"},
+  {prompt:"Anh ấy đã đưa ra một lời hứa.",tag:"🤝 Promise",a:"he made a promise"},
+  {prompt:"Cô ấy hứa sẽ giúp tôi.",tag:"🤝 Promise",a:"she promises to help me"},
+  {prompt:"Cô ấy luôn chuẩn bị bài học cẩn thận.",tag:"🍳 Prepare",a:"she always prepares the lesson carefully"},
+  {prompt:"Tôi đang chuẩn bị bữa sáng.",tag:"🍳 Prepare",a:"i am preparing breakfast"},
+  {prompt:"Chúng tôi đã chuẩn bị cho bài kiểm tra rồi.",tag:"🍳 Prepare",a:"we prepared for the test"},
+  {prompt:"Họ đã không chuẩn bị bất cứ thứ gì cho cuộc họp.",tag:"🍳 Prepare",a:"they didn't prepare anything for the meeting"},
+  {prompt:"Tôi giả vờ ngủ.",tag:"🎭 Pretend",a:"i pretend to sleep"},
+  {prompt:"Cô ấy giả vờ vui vẻ.",tag:"🎭 Pretend",a:"she pretends to be happy"},
+  {prompt:"Đừng giả vờ như bạn biết mọi thứ.",tag:"🎭 Pretend",a:"don't pretend to know everything"},
+  {prompt:"Hôm qua anh ấy đã giả vờ bị ốm.",tag:"🎭 Pretend",a:"he pretended to be sick yesterday"},
+  {prompt:"Bạn đã chuẩn bị gì cho cuộc họp rồi?",tag:"🍳 Prepare",a:"what have you prepared for the meeting"},
+  {prompt:"Tôi hứa sẽ chuẩn bị bài học cẩn thận.",tag:"🚀 Kết hợp",a:"i promise to prepare the lesson carefully"}
+];
+let nwIdx=0,nwCorrect=0,nwTotal=0;
+
+const dialogues=[
+  {title:"Đoạn hội thoại mẫu số 1 – Ôn tập thi cử và lời hứa",lines:[
+    {label:"A",vi:"Bạn đã chuẩn bị cho bài kiểm tra chưa?",en:"Have you prepared for the test yet?"},
+    {label:"B",vi:"Chúng tôi đã chuẩn bị cho bài kiểm tra rồi. Tôi hứa sẽ học chăm chỉ.",en:"We prepared for the test. I promise to study hard."},
+    {label:"A",vi:"Tốt lắm, đừng thất hứa đấy nhé!",en:"Good, don't break your promise."}
+  ]},
+  {title:"Đoạn hội thoại mẫu số 2 – Tình hình chuẩn bị cuộc họp công sở",lines:[
+    {label:"Sếp",vi:"Bạn đã chuẩn bị gì cho cuộc họp rồi?",en:"What have you prepared for the meeting?"},
+    {label:"Nhân viên",vi:"Thưa sếp, cô ấy luôn chuẩn bị bài học cẩn thận, nhưng họ đã không chuẩn bị bất cứ thứ gì cho cuộc họp hôm nay.",en:"Sir, she always prepares the lesson carefully, but they didn't prepare anything for the meeting today."},
+    {label:"Sếp",vi:"Đừng giả vờ như bạn biết mọi thứ, hãy đi kiểm tra lại ngay!",en:"Don't pretend to know everything, go check it again right now!"}
+  ]},
+  {title:"Đoạn hội thoại mẫu số 3 – Cư xử kỳ lạ của đồng nghiệp",lines:[
+    {label:"A",vi:"Hôm qua anh ấy trông lạ lắm.",en:"He looked strange yesterday."},
+    {label:"B",vi:"Hôm qua anh ấy đã giả vờ bị ốm. Khi tôi vào phòng, anh ấy giả vờ ngủ.",en:"He pretended to be sick yesterday. When I entered the room, he pretended to sleep."},
+    {label:"A",vi:"Còn cô ấy thì sao?",en:"What about her?"},
+    {label:"B",vi:"Cô ấy cũng đang gặp rắc rối nhưng cô ấy giả vờ vui vẻ.",en:"She is having trouble too, but she pretends to be happy."}
+  ]}
+];
+
+const quizData=[
+  {q:'Sau động từ "promise" và "pretend", động từ theo sau được chia ở dạng thức nào?',opts:["V-ing","To + V nguyên thể","V-ed","Dạng nguyên thể không to"],ans:1},
+  {q:'"Họ đã không chuẩn bị bất cứ thứ gì cho cuộc họp" chọn câu dịch chính xác:',opts:["They didn't prepare anything for the meeting.","They didn't prepared anything for the meeting.","They not prepare anything for the meeting.","They didn't prepare nothing for the meeting."],ans:0},
+  {q:'Cụm từ "make a promise" mang ý nghĩa là gì?',opts:["Thất hứa / Nuốt lời","Đưa ra một lời hứa","Giữ một lời hứa","Gi giả vờ hứa hẹn"],ans:1},
+  {q:'Điền giới từ thích hợp: "We prepared ______ the test yesterday."',opts:["for","to","with","at Jin"],ans:0},
+  {q:'"He pretended to be sick yesterday." Hành động giả vờ diễn ra ở thời gian nào?',opts:["Hiện tại tiếp diễn","Tương lai đơn","Quá khứ đơn","Hiện tại hoàn thành"],ans:2},
+  {q:'Chọn câu viết ĐÚNG quy tắc chính tả và ngữ pháp:',opts:["She promises help me with my work.","Don't break your promise.","I am prepare breakfast now.","She pretend to be happy."],ans:1},
+  {q:'Cụm từ "break your promise" mang nghĩa trái ngược hoàn toàn với cụm nào?',opts:["make a promise","keep a promise","pretend to promise","forget a promise"],ans:1},
+  {q:'Hoàn thành câu: "She always ______ the lesson carefully."',opts:["prepare","prepares","preparing","prepared"],ans:1},
+  {q:'"Don\'t pretend to know everything." mang ý nghĩa răn đe điều gì?',opts:["Đừng hứa làm tất cả mọi thứ.","Đừng chuẩn bị thiếu cẩn thận. Im","Đừng giả vờ như bạn biết mọi thứ.","Đừng giả vờ ngủ gật."],ans:2},
+  {q:'Sau cấu trúc "pretend to be", thành phần từ loại điền phía sau là gì?',opts:["Danh từ số nhiều","Trạng từ chỉ tần suất","Tính từ (hoặc cụm danh từ)","Động từ thêm đuôi -ed"],ans:2}
+];
+
+const fillData=[
+  {answer:"promise to study",before:"Tôi hứa sẽ học chăm chỉ: I ______ hard.",after:""},
+  {answer:"break your promise",before:"Đừng thất hứa đấy nhé: Don't ______.",after:""},
+  {answer:"made a promise",before:"Anh ấy đã đưa ra một lời hứa: He ______.",after:""},
+  {answer:"promises to help",before:"Cô ấy hứa sẽ giúp tôi: She ______ me.",after:""},
+  {answer:"prepares the lesson",before:"Cô ấy luôn chuẩn bị bài học: She always ______ carefully.",after:""},
+  {answer:"preparing breakfast",before:"Tôi đang chuẩn bị bữa sáng: I am ______.",after:""},
+  {answer:"prepared for the",before:"Chúng tôi đã chuẩn bị cho bài kiểm tra: We ______ test.",after:""},
+  {answer:"didn't prepare anything",before:"Họ đã không chuẩn bị bất cứ thứ gì: They ______ for the meeting.",after:""},
+  {answer:"pretends to be happy",before:"Cô ấy giả vờ vui vẻ: She ______.",after:""},
+  {answer:"pretended to be sick",before:"Hôm qua anh ấy đã giả vờ bị ốm: He ______ yesterday.",after:""}
+];
+
+const transData=[
+  {prompt:"Tôi hứa sẽ học chăm chỉ.",answer:"i promise to study hard",dir:"vi→en"},
+  {prompt:"Don't break your promise.",answer:"đừng thất hứa đấy nhé",dir:"en→vi"},
+  {prompt:"Cô ấy hứa sẽ giúp tôi.",answer:"she promises to help me",dir:"vi→en"},
+  {prompt:"She always prepares the lesson carefully.",answer:"cô ấy luôn chuẩn bị bài học cẩn thận",dir:"en→vi"},
+  {prompt:"Tôi đang chuẩn bị bữa sáng.",answer:"i am preparing breakfast",dir:"vi→en"},
+  {prompt:"We prepared for the test.",answer:"chúng tôi đã chuẩn bị cho bài kiểm tra rồi",dir:"en→vi"},
+  {prompt:"Họ đã không chuẩn bị bất cứ thứ gì cho cuộc họp.",answer:"they didn't prepare anything for the meeting",dir:"vi→en"},
+  {prompt:"I pretend to sleep.",answer:"tôi giả vờ ngủ",dir:"en→vi"},
+  {prompt:"Cô ấy giả vờ vui vẻ.",answer:"she pretends to be happy",dir:"vi→en"},
+  {prompt:"He pretended to be sick yesterday.",answer:"hôm qua anh ấy đã giả vờ bị ốm",dir:"en→vi"}
+];
+
+const speakingData=[
+  {en:"I promise to study hard.",vi:"Tôi hứa sẽ học chăm chỉ.",color:"#b7410e"},
+  {en:"Don't break your promise.",vi:"Đừng thất hứa đấy nhé!",color:"#b7410e"},
+  {en:"She promises to help me.",vi:"Cô ấy hứa sẽ giúp tôi.",color:"#1565c0"},
+  {en:"She always prepares the lesson carefully.",vi:"Cô ấy luôn chuẩn bị bài học cẩn thận.",color:"#1565c0"},
+  {en:"I am preparing breakfast.",vi:"Tôi đang chuẩn bị bữa sáng.",color:"#2e7d32"},
+  {en:"We prepared for the test.",vi:"Chúng tôi đã chuẩn bị cho bài kiểm tra rồi.",color:"#2e7d32"},
+  {en:"They didn't prepare anything for the meeting.",vi:"Họ đã không chuẩn bị bất cứ thứ gì cho cuộc họp.",color:"#6a1b9a"},
+  {en:"I pretend to sleep.",vi:"Tôi giả vờ ngủ.",color:"#6a1b9a"},
+  {en:"She pretends to be happy.",vi:"Cô ấy giả vờ vui vẻ.",color:"#00838f"},
+  {en:"He pretended to be sick yesterday.",vi:"Hôm qua anh ấy đã giả vờ bị ốm.",color:"#00838f"}
+];
+
+// ══════════ ENGINE CONTROLLER PROCESS CONTROL LOGIC ══════════
+let quizCorrect=0,quizAnswered=0,fillCorrect=0,transCorrect=0;
+let secondsLeft=3600,timerInterval;
+
+function init(){
+  buildVocabTables();buildExamples();buildDialogues();
+  buildQuiz();buildFill();buildTrans();buildSpeaking();
+  initNW();startTimer();
+}
+
+function startTimer(){
+  timerInterval=setInterval(()=>{
+    secondsLeft--;
+    const m=String(Math.floor(secondsLeft/60)).padStart(2,'0');
+    const s=String(secondsLeft%60).padStart(2,'0');
+    document.getElementById('timer-bar').textContent='⏱ '+m+':'+s;
+    if(secondsLeft<=0)clearInterval(timerInterval);
+  },1000);
+}
+
+function buildVocabTables(){
+  function makeRows(data,id){
+    document.getElementById(id).innerHTML=data.map(v=>
+      '<tr><td class="w">'+v.w+'</td><td class="p">'+(v.p||'')+'</td><td>'+v.vi+'</td><td><button class="play-btn" onclick="speak(\''+v.w.replace(/'/g,"\\'")+'\')">▶</button></td></tr>'
+    ).join('');
+  }
+  makeRows(vocabMain,'vocab-main');
+  makeRows(vocabContext,'vocab-context');
+}
+
+function buildExamples(){
+  function r(arr,id,color,bg){
+    document.getElementById(id).innerHTML=arr.map(e=>
+      '<div class="eb" style="background:'+bg+';border-color:'+color+'">'+
+      '<div class="en" style="color:'+color+'">'+e.en+'</div>'+
+      '<div class="vi">→ '+e.vi+'</div>'+
+      '<button class="psm" style="background:'+color+'" onclick="speak(\''+e.en.replace(/'/g,"\\'")+'\')">▶ Nghe phát âm mẫu</button></div>'
+    ).join('');
+  }
+  r(exPromise,'ex-promise','#b7410e','#fff3e0');
+  r(exPrepare,'ex-prepare','#1565c0','#e3f2fd');
+  r(exPretend,'ex-pretend','#2e7d32','#e8f5e9');
+}
+
+function buildDialogues(){
+  document.getElementById('dialogue-container').innerHTML=dialogues.map((d,i)=>
+    '<div class="dbox"><div class="dtitle">💬 '+d.title+'</div>'+
+    d.lines.map(l=>'<div class="dline"><span class="dlabel" style="background:'+l.color+'">'+l.label+'</span><div><div class="dvi">'+l.vi+'</div><div class="den">'+l.en+'</div></div></div>').join('')+
+    '<button class="pdlg" onclick="speakDlg('+i+')">▶ Nghe đoạn hội thoại</button></div>'
+  ).join('');
+}
+async function speakDlg(i){
+  for(const l of dialogues[i].lines){speak(l.en);await new Promise(r=>setTimeout(r,l.en.length*65+900));}
+}
+
+function buildSpeaking(){
+  document.getElementById('speaking-container').innerHTML=speakingData.map((s,i)=>
+    '<div class="speak-card" style="background:'+s.color+'">'+
+    '<div class="slbl">📝 CÂU THỰC HÀNH PHÁT ÂM '+(i+1)+'</div>'+
+    '<div class="sen-en">'+s.en+'</div>'+
+    '<div class="sen-vi">'+s.vi+'</div>'+
+    '<button class="hear-btn" onclick="speak(\''+s.en.replace(/'/g,"\\'")+'\')">▶ Audio mẫu gốc</button></div>'
+  ).join('');
+}
+
+function initNW(){
+  nwIdx=0;nwCorrect=0;nwTotal=0;
+  document.getElementById('nw-score').textContent='0 / 0 đúng';
+  showNW();
+}
+function showNW(){
+  if(nwIdx>=nwExercises.length){
+    document.getElementById('nw-prompt').textContent='✅ Xong chặng!';
+    document.getElementById('nw-tag').textContent='';
+    document.getElementById('nw-fb').innerHTML='<span style="color:var(--yellow)">Bạn đã hoàn thành xong tất cả các câu viết mở rộng số lượng!</span>';
+    return;
+  }
+  const ex=nwExercises[nwIdx];
+  document.getElementById('nw-prompt').textContent=ex.prompt;
+  document.getElementById('nw-tag').textContent=ex.tag;
+  document.getElementById('nw-input').value='';
+  document.getElementById('nw-fb').textContent='';
+  document.getElementById('nw-input').focus();
+}
+function checkNW(){
+  if(nwIdx>=nwExercises.length)return;
+  const val=document.getElementById('nw-input').value.trim().toLowerCase().replace(/[.?!,']/g,'').replace(/\s+/g,' ');
+  const correct=nwExercises[nwIdx].a.toLowerCase();
+  nwTotal++;
+  const fb=document.getElementById('nw-fb');
+  const kw=correct.split(' ').filter(w=>w.length>1);
+  const ratio=kw.length?kw.filter(w=>val.includes(w)).length/kw.length:0;
+  if(ratio>=0.75 || val===correct){
+    fb.innerHTML='<span style="color:#FFD93D">✅ Đúng rồi! Viết rất chính xác.</span>';
+    nwCorrect++;nwIdx++;setTimeout(showNW,1400);
+  }else{
+    fb.innerHTML='<span style="color:#ff8a80">❌ Chưa đúng! Hãy tự tư duy bám sát cấu trúc ngữ pháp động từ và viết lại (Không có gợi ý).</span>';
+  }
+  document.getElementById('nw-score').textContent=nwCorrect+' / '+nwTotal+' đúng';
+}
+function nextNW(){if(nwIdx<nwExercises.length)nwIdx++;showNW();}
+
+function buildQuiz(){
+  document.getElementById('quiz-container').innerHTML=quizData.map((q,i)=>
+    '<div class="quiz-item" id="qi-'+i+'"><div class="quiz-q">'+(i+1)+'. '+q.q+'</div><div class="quiz-opts">'+
+    q.opts.map((o,j)=>'<button class="qopt" id="qo-'+i+'-'+j+'" onclick="answerQuiz('+i+','+j+')">'+o+'</button>').join('')+
+    '</div><div class="qfb" id="qf-'+i+'"></div></div>'
+  ).join('');
+}
+function answerQuiz(qi,choice){
+  const item=document.getElementById('qi-'+qi);
+  if(item.dataset.answered)return;
+  item.dataset.answered='1';
+  const q=quizData[qi];
+  item.querySelectorAll('.qopt').forEach(b=>b.disabled=true);
+  const fb=document.getElementById('qf-'+qi);
+  if(choice===q.ans){document.getElementById('qo-'+qi+'-'+choice).classList.add('sel-ok');item.classList.add('answered-ok');fb.textContent='✅ Đúng!';fb.className='qfb show ok';quizCorrect++;}
+  else{document.getElementById('qo-'+qi+'-'+choice).classList.add('sel-fail');item.classList.add('answered-fail');fb.textContent='❌ Sai rồi! Xem kỹ lại quy tắc chia động từ nguyên thể có *to* hoặc giới từ đi kèm.';fb.className='qfb show fail';}
+  quizAnswered++;
+  document.getElementById('quiz-score').textContent=quizCorrect+' / '+quizAnswered;
+  if(quizAnswered===quizData.length){
+    const pct=Math.round((quizCorrect/quizData.length)*100);
+    document.getElementById(pct<80?'quiz-retry-section':'quiz-done-btn').style.display='block';
+  }
+}
+function retryQuiz(){
+  quizCorrect=0;quizAnswered=0;
+  document.getElementById('quiz-score').textContent='0 / 0';
+  document.getElementById('quiz-retry-section').style.display='none';
+  document.getElementById('quiz-done-btn').style.display='none';
+  buildQuiz();
+}
+
+function buildFill(){
+  document.getElementById('fill-container').innerHTML=fillData.map((f,i)=>
+    '<div class="fill-item" id="fi-'+i+'"><div class="fill-q">'+(i+1)+'. '+f.before+'<input type="text" id="finp-'+i+'" placeholder="...">'+f.after+'</div><div class="fill-ans" id="fa-'+i+'">❌ Ô điền từ bị sai hoặc chia chia sai ngôi/thì động từ!</div></div>'
+  ).join('');
+  fillCorrect=0;
+  document.getElementById('retry-fill-btn').style.display='none';
+  document.getElementById('fill-score-display').style.display='none';
+}
+function checkFill(){
+  fillCorrect=0;
+  fillData.forEach((f,i)=>{
+    const inp=document.getElementById('finp-'+i);
+    const item=document.getElementById('fi-'+i);
+    const ans=document.getElementById('fa-'+i);
+    const val=inp.value.trim().toLowerCase().replace(/[.?!,']/g,'').replace(/\s+/g,' ');
+    const correct=f.answer.toLowerCase().replace(/[.?!,']/g,'');
+    inp.disabled=true;
+    const kw=correct.split(' ').filter(w=>w.length>1);
+    const ratio=kw.length?kw.filter(w=>val.includes(w)).length/kw.length:0;
+    if(val===correct || ratio>=0.75){item.classList.add('correct');item.classList.remove('wrong');ans.classList.remove('show-wrong');fillCorrect++;}
+    else{item.classList.add('wrong');item.classList.remove('correct');ans.classList.add('show-wrong');}
+  });
+  const pct=Math.round((fillCorrect/fillData.length)*100);
+  const el=document.getElementById('fill-score-display');
+  el.style.display='block';
+  el.innerHTML='Điểm số điền từ đạt: <span style="color:'+(pct>=70?'#2e7d32':'#c0392b')+'">'+fillCorrect+'/'+fillData.length+' ('+pct+'%)</span>';
+  if(pct<70)document.getElementById('retry-fill-btn').style.display='inline-flex';
+}
+function retryFill(){
+  fillCorrect=0;
+  buildFill();
+}
+
+function buildTrans(){
+  document.getElementById('trans-container').innerHTML=transData.map((t,i)=>
+    '<div class="trans-item" id="ti-'+i+'"><div class="trans-lang">'+(t.dir==='vi→en'?'🇻🇳 Dịch thuật sang Tiếng Anh':'🇬🇧 Dịch thuật sang Tiếng Việt')+'</div><div class="trans-q">'+t.prompt+'</div><input class="trans-input" type="text" id="tinp-'+i+'" placeholder="Nhập bản dịch tự nhớ..."><div class="trans-ans" id="ta-'+i+'">❌ Bản dịch chưa chính xác hoặc viết sai quy tắc thì động từ.</div></div>'
+  ).join('');
+  transCorrect=0;document.getElementById('retry-trans-btn').style.display='none';document.getElementById('trans-score-display').style.display='none';
+}
+function checkTrans(){
+  transCorrect=0;
+  transData.forEach((t,i)=>{
+    const inp=document.getElementById('tinp-'+i);
+    const item=document.getElementById('ti-'+i);
+    const ans=document.getElementById('ta-'+i);
+    const val=normalize(inp.value);
+    const correct=normalize(t.answer);
+    inp.disabled=true;
+    const kw=correct.split(' ').filter(w=>w.length>2);
+    const ratio=kw.length?kw.filter(w=>val.includes(w)).length/kw.length:0;
+    if(ratio>=0.65 || val===correct){item.classList.add('correct');item.classList.remove('wrong');ans.classList.remove('show');transCorrect++;}
+    else{item.classList.add('wrong');item.classList.remove('correct');ans.classList.add('show');}
+  });
+  const pct=Math.round((transCorrect/transData.length)*100);
+  const el=document.getElementById('trans-score-display');
+  el.style.display='block';
+  el.innerHTML='Điểm số bài dịch đạt: <span style="color:'+(pct>=70?'#2e7d32':'#c0392b')+'">'+transCorrect+'/'+transData.length+' ('+pct+'%)</span>';
+  if(pct<70)document.getElementById('retry-trans-btn').style.display='inline-flex';
+}
+function retryTrans(){
+  buildTrans();
+}
+
+function goPhase(n){
+  document.querySelectorAll('.phase').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.phase-tab').forEach((t,i)=>{t.classList.remove('active','done');if(i<n)t.classList.add('done');});
+  document.getElementById('phase-'+n).classList.add('active');
+  document.querySelectorAll('.phase-tab')[n].classList.add('active');
+  document.getElementById('progress-bar').style.width=Math.round((n/9)*100)+'%';
+  window.scrollTo(0,0);
+  if(n===9)showResult();
+}
+
+function showResult(){
+  const qT=quizData.length,fT=fillData.length,tT=transData.length;
+  const total=quizCorrect+fillCorrect+transCorrect;
+  const max=qT+fT+tT;
+  const pct=Math.round((total/max)*100);
+  document.getElementById('final-score').textContent=pct+'%';
+  let msg,desc;
+  if(pct>=90){msg='🏆 Hoàn thành xuất sắc!';desc='Bạn nắm rất chắc cách chia động từ và cụm từ ngữ cảnh đi kèm!';}
+  else if(pct>=75){msg='👍 Kết quả rất tốt!';desc='Hãy cố gắng cải thiện phản xạ viết dịch câu để ghi nhớ lâu bền.';}
+  else if(pct>=55){msg='📚 Điểm số mức trung bình!';desc='Bạn còn hay nhầm lẫn cách chia ngôi số ít và giới từ đi kèm động từ.'}
+  else{msg='💪 Không nản chí, làm lại nhé!';desc='Điểm số phiên học chưa chạm ngưỡng quy định đạt chuẩn. Hãy xem lại kỹ phần lý thuyết.'}
+  document.getElementById('final-msg').textContent=msg;
+  document.getElementById('final-desc').textContent=desc;
+  document.getElementById('detail-score').innerHTML=
+    '🧠 Trắc nghiệm: <strong>'+quizCorrect+'/'+qT+'</strong> &nbsp;|&nbsp; ✏️ Ô trống điền từ: <strong>'+fillCorrect+'/'+fT+'</strong> &nbsp;|&nbsp; 🔄 Dịch câu song ngữ: <strong>'+transCorrect+'/'+tT+'</strong> &nbsp;|&nbsp; Tổng điểm đạt: <strong>'+total+'/'+max+' ('+pct+'%)</strong>';
+  clearInterval(timerInterval);
+}
+
+function restartLesson(){
+  quizCorrect=0;quizAnswered=0;fillCorrect=0;transCorrect=0;
+  secondsLeft=3600;clearInterval(timerInterval);
+  buildQuiz();buildFill();buildTrans();initNW();
+  document.getElementById('quiz-score').textContent='0 / 0';
+  document.getElementById('quiz-retry-section').style.display='none';
+  document.getElementById('quiz-done-btn').style.display='none';
+  goPhase(0);startTimer();
+}
+
+init();
+</script>
+</body>
+</html>
