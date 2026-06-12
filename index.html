@@ -2014,37 +2014,30 @@ const ALL_PRACTICE_SENTENCES = [
   { day:80, en:"Practice makes perfect, so keep speaking every day.", vi:"Có công mài sắt có ngày nên kim, hãy luyện nói mỗi ngày." },
 ];
 
-// ── Hằng số: 5 câu / bài học ──
-const SENTENCES_PER_LESSON = 5;
-
-// Tổng số câu hiển thị = số bài × 5 (luôn giữ theo hệ số này)
-var TOTAL_DISPLAY = 0; // sẽ tính sau khi LESSONS loaded
-
-// Session sentences: 5 câu ngẫu nhiên được chọn khi tab mở
+// ── Toàn bộ câu luyện nói (xáo trộn 1 lần khi tải trang) ──
+// SESSION_SENTENCES = ALL_PRACTICE_SENTENCES đã shuffle → duyệt tuần tự không giới hạn
 var SESSION_SENTENCES = [];
 var practiceIndex = 0;
 var practiceTabInit = false;
 
-// Chọn ngẫu nhiên 5 câu khác nhau từ ngân hàng
-function pickRandomSentences(){
-  var pool = ALL_PRACTICE_SENTENCES.slice();
-  // Xáo trộn Fisher-Yates
+function shuffleArray(arr){
+  var pool = arr.slice();
   for(var i = pool.length - 1; i > 0; i--){
     var j = Math.floor(Math.random() * (i + 1));
     var tmp = pool[i]; pool[i] = pool[j]; pool[j] = tmp;
   }
-  return pool.slice(0, SENTENCES_PER_LESSON);
+  return pool;
 }
 
 function initPracticeTab(){
-  // Tổng hiển thị = số bài × 5
-  TOTAL_DISPLAY = LESSONS.length * SENTENCES_PER_LESSON;
-  // Mỗi lần mở tab: chọn 5 câu ngẫu nhiên
-  SESSION_SENTENCES = pickRandomSentences();
+  if(!practiceTabInit){
+    // Xáo trộn toàn bộ ngân hàng câu 1 lần khi lần đầu mở tab
+    SESSION_SENTENCES = shuffleArray(ALL_PRACTICE_SENTENCES);
+    practiceTabInit = true;
+  }
   practiceIndex = 0;
-  document.getElementById('prac-total').textContent = TOTAL_DISPLAY;
+  document.getElementById('prac-total').textContent = SESSION_SENTENCES.length;
   renderPracticeSentence();
-  practiceTabInit = true;
 }
 
 function renderPracticeSentence(){
@@ -2052,7 +2045,8 @@ function renderPracticeSentence(){
   document.getElementById('prac-sentence').textContent = item.en;
   document.getElementById('prac-translation').textContent = item.vi;
   document.getElementById('prac-day').textContent = item.day;
-  document.getElementById('prac-index').textContent = (practiceIndex+1);
+  document.getElementById('prac-index').textContent = (practiceIndex + 1);
+  document.getElementById('prac-total').textContent = SESSION_SENTENCES.length;
   document.getElementById('prac-heard').textContent = '—';
   document.getElementById('prac-score-row').style.display = 'none';
   document.getElementById('prac-text-input').value = '';
@@ -2061,6 +2055,8 @@ function renderPracticeSentence(){
 
 function nextSentence(){
   practiceIndex = (practiceIndex + 1) % SESSION_SENTENCES.length;
+  // Nếu đã đi hết một vòng → shuffle lại để không lặp theo thứ tự cũ
+  if(practiceIndex === 0) SESSION_SENTENCES = shuffleArray(ALL_PRACTICE_SENTENCES);
   renderPracticeSentence();
 }
 function prevSentence(){
@@ -2130,7 +2126,7 @@ function checkPronunciation(){
     document.getElementById('prac-score-row').style.display = 'none';
     return;
   }
-  var target = normalize(PRACTICE_SENTENCES[practiceIndex].en);
+  var target = normalize(SESSION_SENTENCES[practiceIndex].en);
   var said = normalize(heard);
   var targetWords = target.split(' ');
   var saidWords = said.split(' ');
