@@ -293,6 +293,208 @@ main{max-width:900px;margin:0 auto;padding:32px 16px 64px;}
 @media(max-width:420px){
   .lesson-grid{grid-template-columns:1fr;}
 }
+
+/* ── TAB NAV ── */
+.main-tabs{
+  display:flex;gap:8px;
+  max-width:900px;margin:0 auto;
+  padding:0 16px;
+  margin-top:18px;
+  flex-wrap:wrap;
+}
+.tab-btn{
+  flex:1;min-width:120px;
+  background:white;
+  border:2px solid #e9ecef;
+  border-radius:14px;
+  padding:12px 14px;
+  font-family:'Nunito',sans-serif;
+  font-size:.86rem;font-weight:800;
+  color:#868e96;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:all .2s;
+}
+.tab-btn:hover{border-color:var(--blue);color:var(--blue);}
+.tab-btn.active{
+  background:var(--primary);
+  border-color:var(--primary);
+  color:white;
+  box-shadow:var(--shadow);
+}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+
+/* ── AI CHAT TAB ── */
+.chat-wrap{
+  background:var(--card);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:18px;
+  display:flex;flex-direction:column;
+  height:min(70vh,640px);
+}
+.chat-setup{
+  background:#fff8db;
+  border:2px dashed var(--accent);
+  border-radius:12px;
+  padding:14px 16px;
+  margin-bottom:14px;
+  font-size:.84rem;line-height:1.7;
+  color:#7c5c00;font-weight:600;
+}
+.chat-setup input{
+  width:100%;margin-top:8px;
+  padding:9px 12px;border-radius:10px;
+  border:2px solid #ffe066;font-size:.84rem;
+  font-family:inherit;outline:none;
+}
+.chat-messages{
+  flex:1;overflow-y:auto;
+  display:flex;flex-direction:column;gap:12px;
+  padding:8px 4px;margin-bottom:12px;
+}
+.chat-msg{
+  max-width:80%;
+  padding:10px 14px;
+  border-radius:14px;
+  font-size:.9rem;line-height:1.6;
+  word-wrap:break-word;
+}
+.chat-msg.user{
+  align-self:flex-end;
+  background:var(--blue);color:white;
+  border-bottom-right-radius:4px;
+}
+.chat-msg.ai{
+  align-self:flex-start;
+  background:#f1f3f5;color:var(--primary);
+  border-bottom-left-radius:4px;
+}
+.chat-msg .speak-btn{
+  margin-left:8px;background:none;border:none;cursor:pointer;
+  font-size:.9rem;opacity:.7;
+}
+.chat-msg .speak-btn:hover{opacity:1;}
+.chat-input-row{
+  display:flex;gap:8px;align-items:center;
+}
+.chat-input-row input[type=text]{
+  flex:1;padding:12px 16px;border-radius:30px;
+  border:2px solid #dee2e6;font-size:.9rem;font-family:inherit;
+  outline:none;
+}
+.chat-input-row input[type=text]:focus{border-color:var(--blue);}
+.chat-btn-icon{
+  width:46px;height:46px;border-radius:50%;
+  border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;flex-shrink:0;
+  transition:all .2s;
+}
+.chat-btn-send{background:var(--blue);color:white;}
+.chat-btn-send:hover{background:#1864ab;}
+.chat-btn-mic{background:#f1f3f5;color:var(--primary);}
+.chat-btn-mic.recording{background:var(--red);color:white;animation:pulse 1.2s infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(201,42,42,.5);}50%{box-shadow:0 0 0 10px rgba(201,42,42,0);}}
+
+/* ── PRONUNCIATION PRACTICE TAB ── */
+.practice-wrap{
+  background:var(--card);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:20px;
+}
+.practice-note{
+  background:#e7f5ff;
+  border:2px dashed var(--blue);
+  border-radius:12px;
+  padding:12px 16px;
+  font-size:.84rem;line-height:1.7;
+  color:#1864ab;font-weight:600;
+  margin-bottom:16px;
+}
+.practice-sentence-box{
+  background:linear-gradient(135deg,#0d1b2a,#1a3a5c);
+  color:white;
+  border-radius:14px;
+  padding:24px 20px;
+  text-align:center;
+  margin-bottom:16px;
+}
+.practice-sentence-box .label{
+  font-size:.72rem;font-weight:900;letter-spacing:2px;
+  text-transform:uppercase;color:var(--accent);margin-bottom:10px;
+}
+.practice-sentence-box .sentence{
+  font-family:'Baloo 2',cursive;
+  font-size:clamp(1.2rem,4vw,1.7rem);font-weight:700;
+  line-height:1.5;
+}
+.practice-sentence-box .vi-translation{
+  margin-top:10px;font-size:.84rem;color:rgba(255,255,255,.65);font-weight:600;
+}
+.practice-controls{
+  display:flex;gap:10px;justify-content:center;flex-wrap:wrap;
+  margin-bottom:18px;
+}
+.practice-controls button{
+  border:none;border-radius:12px;
+  padding:11px 18px;font-size:.86rem;font-weight:800;
+  font-family:inherit;cursor:pointer;
+  display:flex;align-items:center;gap:6px;
+  transition:all .2s;
+}
+.pc-listen{background:#e9ecef;color:var(--primary);}
+.pc-listen:hover{background:#dee2e6;}
+.pc-mic{background:var(--green);color:white;}
+.pc-mic:hover{background:#2b8a3e;}
+.pc-mic.recording{background:var(--red);animation:pulse 1.2s infinite;}
+.pc-next{background:var(--primary);color:white;}
+.pc-next:hover{background:#1a3a5c;}
+.pc-prev{background:#f1f3f5;color:var(--primary);}
+.pc-prev:hover{background:#e9ecef;}
+.practice-result{
+  background:#f8f9fa;border-radius:12px;padding:16px;
+  min-height:60px;
+}
+.practice-result .you-said{
+  font-size:.78rem;font-weight:900;color:#868e96;
+  text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;
+}
+.practice-result .heard-text{
+  font-size:1rem;font-weight:700;color:var(--primary);min-height:24px;
+}
+.practice-result .score-row{
+  margin-top:10px;display:flex;align-items:center;gap:10px;
+}
+.score-badge{
+  padding:4px 14px;border-radius:20px;font-size:.82rem;font-weight:900;
+}
+.score-badge.good{background:#d3f9d8;color:#2b8a3e;}
+.score-badge.mid{background:#fff3bf;color:#e67700;}
+.score-badge.bad{background:#ffe3e3;color:#c92a2a;}
+.practice-progress{
+  font-size:.78rem;color:#868e96;font-weight:700;text-align:center;margin-top:14px;
+}
+.practice-input-section{
+  margin-top:18px;border-top:2px dashed #e9ecef;padding-top:16px;
+}
+.practice-input-section label{
+  font-size:.8rem;font-weight:800;color:#868e96;display:block;margin-bottom:8px;
+}
+.practice-input-row{display:flex;gap:8px;}
+.practice-input-row input[type=text]{
+  flex:1;padding:12px 16px;border-radius:30px;
+  border:2px solid #dee2e6;font-size:.9rem;font-family:inherit;outline:none;
+}
+.practice-input-row input[type=text]:focus{border-color:var(--green);}
+
+@media(max-width:600px){
+  .main-tabs{margin-top:12px;}
+  .tab-btn{font-size:.78rem;padding:10px;min-width:90px;}
+  .chat-wrap{height:75vh;}
+}
 </style>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0d1b2a">
@@ -1022,8 +1224,18 @@ document.addEventListener('DOMContentLoaded', buildSite);
   </div>
 </div>
 
+<!-- ══════════════ TAB NAV ══════════════ -->
+<div class="main-tabs">
+  <button class="tab-btn active" data-tab="lessons" onclick="switchTab('lessons')">📚 Bài học</button>
+  <button class="tab-btn" data-tab="ai-chat" onclick="switchTab('ai-chat')">🤖 Chat với AI</button>
+  <button class="tab-btn" data-tab="speak-practice" onclick="switchTab('speak-practice')">🗣️ Luyện nói</button>
+</div>
+
 <!-- ══════════════ MAIN ══════════════ -->
 <main>
+
+<!-- ═══════ TAB: BÀI HỌC ═══════ -->
+<div class="tab-panel active" id="tab-lessons">
 
   <!-- LESSON GRID -->
   <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:18px;">
@@ -1041,6 +1253,7 @@ document.addEventListener('DOMContentLoaded', buildSite);
   <div id="load-more-hint" style="text-align:center;padding:16px 0;color:#868e96;font-size:.82rem;font-weight:700;">
     ↓ Cuộn xuống để tải thêm bài học...
   </div>
+
 
   <!-- HOW TO ADD NEW LESSONS -->
   <div class="update-box">
@@ -1063,7 +1276,83 @@ document.addEventListener('DOMContentLoaded', buildSite);
     </div>
   </div>
 
+</div>
+<!-- ═══════ /TAB: BÀI HỌC ═══════ -->
+
+<!-- ═══════ TAB: CHAT VỚI AI ═══════ -->
+<div class="tab-panel" id="tab-ai-chat">
+  <div class="section-title">🤖 Chat trực tiếp với AI (luyện giao tiếp)</div>
+  <div class="chat-wrap">
+    <div class="chat-setup" id="chat-setup">
+      💡 <strong>Cách dùng:</strong> Nhập API Key của Anthropic (Claude) để bắt đầu trò chuyện bằng tiếng Anh với AI.
+      Key chỉ lưu trên máy bạn (localStorage), không gửi đi đâu khác.
+      Lấy key tại <strong>console.anthropic.com</strong>.
+      <input type="password" id="api-key-input" placeholder="sk-ant-...">
+      <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="pc-next" style="border:none;border-radius:10px;padding:8px 16px;font-weight:800;font-family:inherit;cursor:pointer;" onclick="saveApiKey()">💾 Lưu Key</button>
+        <button class="pc-prev" style="border:none;border-radius:10px;padding:8px 16px;font-weight:800;font-family:inherit;cursor:pointer;" onclick="clearApiKey()">🗑️ Xoá Key</button>
+      </div>
+    </div>
+    <div class="chat-messages" id="chat-messages">
+      <div class="chat-msg ai">👋 Hi! I'm your English conversation partner. Type or press 🎤 to speak, and let's chat in English!<button class="speak-btn" onclick="speakText(this.parentElement.textContent)">🔊</button></div>
+    </div>
+    <div class="chat-input-row">
+      <button class="chat-btn-icon chat-btn-mic" id="chat-mic-btn" onclick="toggleChatMic()" title="Nói bằng giọng (mobile)">🎤</button>
+      <input type="text" id="chat-text-input" placeholder="Type a message in English..." onkeydown="if(event.key==='Enter')sendChatMessage()">
+      <button class="chat-btn-icon chat-btn-send" onclick="sendChatMessage()" title="Gửi">➤</button>
+    </div>
+  </div>
+</div>
+<!-- ═══════ /TAB: CHAT VỚI AI ═══════ -->
+
+<!-- ═══════ TAB: LUYỆN NÓI ═══════ -->
+<div class="tab-panel" id="tab-speak-practice">
+  <div class="section-title">🗣️ Luyện nói từng câu (Speech-to-Text)</div>
+  <div class="practice-wrap">
+    <div class="practice-note">
+      📱 <strong>Lưu ý:</strong> Tính năng nhận diện giọng nói (Speech-to-Text) hoạt động tốt nhất trên
+      <strong>điện thoại (Android/iOS) với bàn phím Google (Gboard)</strong> hoặc trình duyệt Chrome.
+      Nhấn 🎙️ <strong>Bắt đầu nói</strong>, đọc to câu tiếng Anh, kết quả sẽ tự động được nhập vào ô bên dưới để bạn đối chiếu phát âm.
+    </div>
+
+    <div class="practice-sentence-box">
+      <div class="label">Câu cần luyện (Day <span id="prac-day">1</span>)</div>
+      <div class="sentence" id="prac-sentence">Loading...</div>
+      <div class="vi-translation" id="prac-translation"></div>
+    </div>
+
+    <div class="practice-controls">
+      <button class="pc-listen" onclick="listenSentence()">🔊 Nghe mẫu</button>
+      <button class="pc-mic" id="prac-mic-btn" onclick="togglePracticeMic()">🎙️ Bắt đầu nói</button>
+      <button class="pc-prev" onclick="prevSentence()">⬅ Câu trước</button>
+      <button class="pc-next" onclick="nextSentence()">Câu tiếp ➡</button>
+    </div>
+
+    <div class="practice-result">
+      <div class="you-said">Bạn đã nói:</div>
+      <div class="heard-text" id="prac-heard">—</div>
+      <div class="score-row" id="prac-score-row" style="display:none;">
+        <span class="score-badge" id="prac-score-badge"></span>
+        <span style="font-size:.82rem;color:#868e96;font-weight:700;" id="prac-score-detail"></span>
+      </div>
+    </div>
+
+    <div class="practice-input-section">
+      <label>✏️ Ô nhập tự động (kết quả giọng nói sẽ điền vào đây):</label>
+      <div class="practice-input-row">
+        <input type="text" id="prac-text-input" placeholder="Nhấn 🎙️ và nói câu tiếng Anh ở trên..." oninput="checkPronunciation()">
+      </div>
+    </div>
+
+    <div class="practice-progress">
+      Câu <span id="prac-index">1</span> / <span id="prac-total">1</span>
+    </div>
+  </div>
+</div>
+<!-- ═══════ /TAB: LUYỆN NÓI ═══════ -->
+
 </main>
+
 
 <!-- ══════════════ FOOTER ══════════════ -->
 <footer class="site-footer">
@@ -1079,6 +1368,326 @@ document.addEventListener('DOMContentLoaded', buildSite);
         .catch(function(err) { console.log('SW lỗi:', err); });
     });
   }
+</script>
+
+<!-- ══════════════ TAB SWITCHING ══════════════ -->
+<script>
+function switchTab(name){
+  document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+  document.getElementById('tab-'+name).classList.add('active');
+  document.querySelector('.tab-btn[data-tab="'+name+'"]').classList.add('active');
+  if(name==='speak-practice') initPracticeTab();
+}
+</script>
+
+<!-- ══════════════ AI CHAT TAB ══════════════ -->
+<script>
+var CHAT_HISTORY = [];
+
+function saveApiKey(){
+  var key = document.getElementById('api-key-input').value.trim();
+  if(!key){ alert('Vui lòng nhập API Key.'); return; }
+  localStorage.setItem('claude_api_key', key);
+  document.getElementById('chat-setup').style.display = 'none';
+  alert('Đã lưu API Key! Bạn có thể bắt đầu chat.');
+}
+function clearApiKey(){
+  localStorage.removeItem('claude_api_key');
+  document.getElementById('api-key-input').value = '';
+  alert('Đã xoá API Key.');
+}
+function getApiKey(){
+  return localStorage.getItem('claude_api_key') || '';
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  if(getApiKey()){
+    document.getElementById('chat-setup').style.display = 'none';
+  }
+});
+
+function appendChatMessage(role, text){
+  var wrap = document.getElementById('chat-messages');
+  var div = document.createElement('div');
+  div.className = 'chat-msg ' + (role==='user' ? 'user' : 'ai');
+  div.textContent = text;
+  if(role !== 'user'){
+    var btn = document.createElement('button');
+    btn.className = 'speak-btn';
+    btn.textContent = '🔊';
+    btn.title = 'Nghe lại';
+    btn.onclick = function(){ speakText(text); };
+    div.appendChild(btn);
+  }
+  wrap.appendChild(div);
+  wrap.scrollTop = wrap.scrollHeight;
+}
+
+function speakText(text){
+  if(!('speechSynthesis' in window)) return;
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US';
+  u.rate = 0.95;
+  speechSynthesis.cancel();
+  speechSynthesis.speak(u);
+}
+
+function sendChatMessage(){
+  var input = document.getElementById('chat-text-input');
+  var text = input.value.trim();
+  if(!text) return;
+  appendChatMessage('user', text);
+  input.value = '';
+  CHAT_HISTORY.push({role:'user', content: text});
+
+  var key = getApiKey();
+  if(!key){
+    document.getElementById('chat-setup').style.display = 'block';
+    appendChatMessage('ai', '⚠️ Vui lòng nhập API Key ở phía trên để tiếp tục chat với AI.');
+    return;
+  }
+
+  appendChatMessage('ai', '⏳ ...');
+  var thinkingMsg = document.querySelector('#chat-messages .chat-msg.ai:last-child');
+
+  fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': key,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-6',
+      max_tokens: 400,
+      system: 'You are a friendly English conversation partner helping a Vietnamese learner practice spoken English. Reply in simple, natural English (A2-B1 level). Keep replies short (1-3 sentences). Gently correct grammar mistakes by rephrasing naturally, and occasionally ask a follow-up question to keep the conversation going.',
+      messages: CHAT_HISTORY
+    })
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(data){
+    var reply = '⚠️ Lỗi: không nhận được phản hồi.';
+    if(data && data.content){
+      reply = data.content.map(function(b){ return b.text || ''; }).join('').trim() || reply;
+    } else if(data && data.error){
+      reply = '⚠️ Lỗi API: ' + (data.error.message || JSON.stringify(data.error));
+    }
+    thinkingMsg.remove();
+    appendChatMessage('ai', reply);
+    CHAT_HISTORY.push({role:'assistant', content: reply});
+    speakText(reply);
+  })
+  .catch(function(err){
+    thinkingMsg.remove();
+    appendChatMessage('ai', '⚠️ Lỗi kết nối: ' + err.message);
+  });
+}
+
+// ── Voice input cho tab chat (Web Speech API / Gboard mic trên mobile) ──
+var chatRecognition = null;
+var chatRecording = false;
+
+function toggleChatMic(){
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR){
+    alert('Trình duyệt không hỗ trợ nhận diện giọng nói. Trên điện thoại, hãy nhấn vào ô nhập và dùng nút 🎤 trên bàn phím Google (Gboard) để nói.');
+    return;
+  }
+  var btn = document.getElementById('chat-mic-btn');
+  if(chatRecording){
+    chatRecognition.stop();
+    return;
+  }
+  chatRecognition = new SR();
+  chatRecognition.lang = 'en-US';
+  chatRecognition.interimResults = false;
+  chatRecognition.maxAlternatives = 1;
+  chatRecognition.onstart = function(){
+    chatRecording = true;
+    btn.classList.add('recording');
+  };
+  chatRecognition.onresult = function(e){
+    var text = e.results[0][0].transcript;
+    document.getElementById('chat-text-input').value = text;
+  };
+  chatRecognition.onerror = function(){
+    chatRecording = false;
+    btn.classList.remove('recording');
+  };
+  chatRecognition.onend = function(){
+    chatRecording = false;
+    btn.classList.remove('recording');
+  };
+  chatRecognition.start();
+}
+</script>
+
+<!-- ══════════════ LUYỆN NÓI TAB ══════════════ -->
+<script>
+// Ngân hàng câu luyện nói — lấy theo chủ đề các bài học
+const PRACTICE_SENTENCES = [
+  { en: "Hello, my name is Anna. Nice to meet you.", vi: "Xin chào, tôi tên là Anna. Rất vui được gặp bạn." },
+  { en: "Thank you so much for your help.", vi: "Cảm ơn bạn rất nhiều vì đã giúp đỡ." },
+  { en: "I'm sorry, I didn't understand that.", vi: "Tôi xin lỗi, tôi không hiểu điều đó." },
+  { en: "What is your name?", vi: "Tên bạn là gì?" },
+  { en: "Where do you live?", vi: "Bạn sống ở đâu?" },
+  { en: "Why are you learning English?", vi: "Tại sao bạn học tiếng Anh?" },
+  { en: "Where is the nearest bus station?", vi: "Trạm xe buýt gần nhất ở đâu?" },
+  { en: "How old are you?", vi: "Bạn bao nhiêu tuổi?" },
+  { en: "Are you married?", vi: "Bạn đã kết hôn chưa?" },
+  { en: "This is my mother and that is my father.", vi: "Đây là mẹ tôi và đó là cha tôi." },
+  { en: "I have two brothers and one sister.", vi: "Tôi có hai anh em trai và một em gái." },
+  { en: "He works as an engineer in the city.", vi: "Anh ấy làm kỹ sư trong thành phố." },
+  { en: "Can you help me, please?", vi: "Bạn có thể giúp tôi không?" },
+  { en: "I would like to introduce myself to you.", vi: "Tôi muốn tự giới thiệu với bạn." },
+  { en: "This is my book and that is your pen.", vi: "Đây là sách của tôi và đó là bút của bạn." },
+  { en: "I can count from one to one hundred.", vi: "Tôi có thể đếm từ một đến một trăm." },
+  { en: "How much does this cost?", vi: "Cái này giá bao nhiêu?" },
+  { en: "I was born in nineteen ninety-five.", vi: "Tôi sinh năm một nghìn chín trăm chín mươi lăm." },
+  { en: "My head hurts and my stomach feels sick.", vi: "Đầu tôi đau và bụng tôi cảm thấy không khoẻ." },
+  { en: "I am wearing a blue shirt and black shoes.", vi: "Tôi đang mặc áo sơ mi xanh và giày đen." },
+  { en: "She is wearing a beautiful red dress today.", vi: "Hôm nay cô ấy mặc một chiếc váy đỏ rất đẹp." },
+  { en: "I bought a new watch and a pair of sunglasses.", vi: "Tôi đã mua một cái đồng hồ mới và một cặp kính râm." },
+  { en: "The hospital is next to the supermarket.", vi: "Bệnh viện ở bên cạnh siêu thị." },
+  { en: "I would like to order a coffee, please.", vi: "Tôi muốn gọi một cốc cà phê." },
+  { en: "Could you call a taxi for me?", vi: "Bạn có thể gọi taxi giúp tôi không?" },
+  { en: "What time does the train leave?", vi: "Mấy giờ tàu chạy?" },
+  { en: "I am looking forward to our vacation.", vi: "Tôi rất mong chờ kỳ nghỉ của chúng ta." },
+  { en: "Let's negotiate a better price for this order.", vi: "Hãy cùng thương lượng một mức giá tốt hơn cho đơn hàng này." },
+  { en: "I need to buy a ticket to Hanoi.", vi: "Tôi cần mua một vé đi Hà Nội." },
+  { en: "Practice makes perfect, so keep speaking every day.", vi: "Có công mài sắt có ngày nên kim, hãy luyện nói mỗi ngày." }
+];
+
+var practiceIndex = 0;
+var practiceTabInit = false;
+
+function initPracticeTab(){
+  document.getElementById('prac-total').textContent = PRACTICE_SENTENCES.length;
+  renderPracticeSentence();
+  practiceTabInit = true;
+}
+
+function renderPracticeSentence(){
+  var item = PRACTICE_SENTENCES[practiceIndex];
+  document.getElementById('prac-sentence').textContent = item.en;
+  document.getElementById('prac-translation').textContent = item.vi;
+  document.getElementById('prac-day').textContent = (practiceIndex+1);
+  document.getElementById('prac-index').textContent = (practiceIndex+1);
+  document.getElementById('prac-heard').textContent = '—';
+  document.getElementById('prac-score-row').style.display = 'none';
+  document.getElementById('prac-text-input').value = '';
+  document.getElementById('prac-text-input').placeholder = 'Nhấn 🎙️ và nói câu tiếng Anh ở trên...';
+}
+
+function nextSentence(){
+  practiceIndex = (practiceIndex + 1) % PRACTICE_SENTENCES.length;
+  renderPracticeSentence();
+}
+function prevSentence(){
+  practiceIndex = (practiceIndex - 1 + PRACTICE_SENTENCES.length) % PRACTICE_SENTENCES.length;
+  renderPracticeSentence();
+}
+function listenSentence(){
+  speakText(PRACTICE_SENTENCES[practiceIndex].en);
+}
+
+// ── Speech recognition để tự nhập câu nói vào ô input ──
+var practiceRecognition = null;
+var practiceRecording = false;
+
+function togglePracticeMic(){
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  var btn = document.getElementById('prac-mic-btn');
+
+  if(!SR){
+    alert('Trình duyệt này không hỗ trợ nhận diện giọng nói trực tiếp.\n\n👉 Trên ĐIỆN THOẠI: hãy chạm vào ô nhập "✏️ Ô nhập tự động" bên dưới, sau đó nhấn nút 🎤 micro trên bàn phím Google (Gboard) và đọc câu tiếng Anh — kết quả sẽ tự động được nhập vào ô đó để bạn đối chiếu.');
+    document.getElementById('prac-text-input').focus();
+    return;
+  }
+
+  if(practiceRecording){
+    practiceRecognition.stop();
+    return;
+  }
+
+  practiceRecognition = new SR();
+  practiceRecognition.lang = 'en-US';
+  practiceRecognition.interimResults = false;
+  practiceRecognition.maxAlternatives = 1;
+
+  practiceRecognition.onstart = function(){
+    practiceRecording = true;
+    btn.classList.add('recording');
+    btn.textContent = '🔴 Đang nghe...';
+  };
+  practiceRecognition.onresult = function(e){
+    var text = e.results[0][0].transcript;
+    document.getElementById('prac-text-input').value = text;
+    checkPronunciation();
+  };
+  practiceRecognition.onerror = function(){
+    practiceRecording = false;
+    btn.classList.remove('recording');
+    btn.textContent = '🎙️ Bắt đầu nói';
+  };
+  practiceRecognition.onend = function(){
+    practiceRecording = false;
+    btn.classList.remove('recording');
+    btn.textContent = '🎙️ Bắt đầu nói';
+  };
+  practiceRecognition.start();
+}
+
+// So sánh đơn giản giữa câu mẫu và câu nói được nhận diện
+function normalize(s){
+  return s.toLowerCase().replace(/[^a-z0-9\s]/g,'').trim().replace(/\s+/g,' ');
+}
+
+function checkPronunciation(){
+  var heard = document.getElementById('prac-text-input').value;
+  document.getElementById('prac-heard').textContent = heard || '—';
+  if(!heard.trim()){
+    document.getElementById('prac-score-row').style.display = 'none';
+    return;
+  }
+  var target = normalize(PRACTICE_SENTENCES[practiceIndex].en);
+  var said = normalize(heard);
+  var targetWords = target.split(' ');
+  var saidWords = said.split(' ');
+
+  var matched = 0;
+  var saidCopy = saidWords.slice();
+  targetWords.forEach(function(w){
+    var idx = saidCopy.indexOf(w);
+    if(idx >= 0){ matched++; saidCopy.splice(idx,1); }
+  });
+  var pct = Math.round((matched / targetWords.length) * 100);
+
+  var row = document.getElementById('prac-score-row');
+  var badge = document.getElementById('prac-score-badge');
+  var detail = document.getElementById('prac-score-detail');
+  row.style.display = 'flex';
+
+  if(said === target){
+    badge.className = 'score-badge good';
+    badge.textContent = '✅ Hoàn hảo!';
+    detail.textContent = 'Bạn đã nói đúng 100% câu mẫu.';
+  } else if(pct >= 80){
+    badge.className = 'score-badge good';
+    badge.textContent = '👍 Tốt (' + pct + '%)';
+    detail.textContent = 'Rất gần với câu mẫu, tiếp tục luyện tập!';
+  } else if(pct >= 50){
+    badge.className = 'score-badge mid';
+    badge.textContent = '🙂 Khá (' + pct + '%)';
+    detail.textContent = 'Hãy nghe lại câu mẫu và thử lại.';
+  } else {
+    badge.className = 'score-badge bad';
+    badge.textContent = '🔁 Thử lại (' + pct + '%)';
+    detail.textContent = 'Phát âm chưa khớp nhiều, hãy nghe mẫu rồi nói lại chậm rãi.';
+  }
+}
 </script>
 </body>
 </html>
