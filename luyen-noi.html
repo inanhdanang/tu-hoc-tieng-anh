@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Luyện Nói – Tự Học Tiếng Anh</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#0d1b2a;--accent:#FFD93D;--green:#2f9e44;--blue:#1971c2;--orange:#e67700;--red:#c92a2a;--bg:#f0f4f8;--card:#ffffff;--radius:18px;--shadow:0 4px 24px rgba(13,27,42,0.10);}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--primary);min-height:100vh;}
+.site-header{background:var(--primary);color:white;padding:0;position:sticky;top:0;z-index:200;box-shadow:0 3px 18px rgba(0,0,0,0.35);}
+.header-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 20px;}
+.logo{font-family:'Baloo 2',cursive;font-size:1.4rem;font-weight:800;display:flex;align-items:center;gap:10px;}
+.logo .flag{font-size:1.6rem;}
+.logo em{color:var(--accent);font-style:normal;}
+.back-btn{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:6px 16px;color:white;font-size:.8rem;font-weight:700;text-decoration:none;display:flex;align-items:center;gap:6px;transition:background .2s;}
+.back-btn:hover{background:rgba(255,255,255,.2);}
+main{max-width:900px;margin:0 auto;padding:28px 16px 64px;}
+.section-title{font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;color:var(--primary);margin-bottom:18px;display:flex;align-items:center;gap:10px;}
+.section-title::after{content:'';flex:1;height:2px;background:linear-gradient(90deg,#e9ecef,transparent);border-radius:2px;}
+
+.practice-wrap{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;}
+.practice-note{background:#e7f5ff;border:2px dashed var(--blue);border-radius:12px;padding:12px 16px;font-size:.84rem;line-height:1.7;color:#1864ab;font-weight:600;margin-bottom:16px;}
+.practice-sentence-box{background:linear-gradient(135deg,#0d1b2a,#1a3a5c);color:white;border-radius:14px;padding:24px 20px;text-align:center;margin-bottom:16px;}
+.practice-sentence-box .label{font-size:.72rem;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;}
+.practice-sentence-box .sentence{font-family:'Baloo 2',cursive;font-size:clamp(1.2rem,4vw,1.7rem);font-weight:700;line-height:1.5;}
+.practice-sentence-box .vi-translation{margin-top:10px;font-size:.84rem;color:rgba(255,255,255,.65);font-weight:600;}
+.practice-controls{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:18px;}
+.practice-controls button{border:none;border-radius:12px;padding:11px 18px;font-size:.86rem;font-weight:800;font-family:inherit;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s;}
+.pc-listen{background:#e9ecef;color:var(--primary);}
+.pc-listen:hover{background:#dee2e6;}
+.pc-mic{background:var(--green);color:white;}
+.pc-mic:hover{background:#2b8a3e;}
+.pc-mic.recording{background:var(--red);animation:pulse 1.2s infinite;}
+.pc-next{background:var(--primary);color:white;}
+.pc-next:hover{background:#1a3a5c;}
+.pc-prev{background:#f1f3f5;color:var(--primary);}
+.pc-prev:hover{background:#e9ecef;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(201,42,42,.5);}50%{box-shadow:0 0 0 10px rgba(201,42,42,0);}}
+.practice-result{background:#f8f9fa;border-radius:12px;padding:16px;min-height:60px;}
+.practice-result .you-said{font-size:.78rem;font-weight:900;color:#868e96;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+.practice-result .heard-text{font-size:1rem;font-weight:700;color:var(--primary);min-height:24px;}
+.practice-result .score-row{margin-top:10px;display:flex;align-items:center;gap:10px;}
+.score-badge{padding:4px 14px;border-radius:20px;font-size:.82rem;font-weight:900;}
+.score-badge.good{background:#d3f9d8;color:#2b8a3e;}
+.score-badge.mid{background:#fff3bf;color:#e67700;}
+.score-badge.bad{background:#ffe3e3;color:#c92a2a;}
+.practice-progress{font-size:.78rem;color:#868e96;font-weight:700;text-align:center;margin-top:14px;}
+.practice-input-section{margin-top:18px;border-top:2px dashed #e9ecef;padding-top:16px;}
+.practice-input-section label{font-size:.8rem;font-weight:800;color:#868e96;display:block;margin-bottom:8px;}
+.practice-input-row{display:flex;gap:8px;}
+.practice-input-row input[type=text]{flex:1;padding:12px 16px;border-radius:30px;border:2px solid #dee2e6;font-size:.9rem;font-family:inherit;outline:none;}
+.practice-input-row input[type=text]:focus{border-color:var(--green);}
+
+.site-footer{background:var(--primary);color:rgba(255,255,255,.5);text-align:center;padding:24px 20px;font-size:.8rem;font-weight:600;}
+.site-footer strong{color:var(--accent);}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo"><span class="flag">🇺🇸</span>Tự Học <em>Tiếng Anh</em></div>
+    <a href="index.html" class="back-btn">← Về trang chủ</a>
+  </div>
+</header>
+
+<main>
+  <div class="section-title">🗣️ Luyện nói từng câu (Speech-to-Text)</div>
+  <div class="practice-wrap">
+    <div class="practice-note">
+      📱 <strong>Lưu ý:</strong> Tính năng nhận diện giọng nói (Speech-to-Text) hoạt động tốt nhất trên
+      <strong>điện thoại (Android/iOS) với bàn phím Google (Gboard)</strong> hoặc trình duyệt Chrome.
+      Nhấn 🎙️ <strong>Bắt đầu nói</strong>, đọc to câu tiếng Anh, kết quả sẽ tự động được nhập vào ô bên dưới để bạn đối chiếu phát âm.
+    </div>
+
+    <div class="practice-sentence-box">
+      <div class="label">Câu cần luyện (Day <span id="prac-day">1</span>)</div>
+      <div class="sentence" id="prac-sentence">Loading...</div>
+      <div class="vi-translation" id="prac-translation"></div>
+    </div>
+
+    <div class="practice-controls">
+      <button class="pc-listen" onclick="listenSentence()">🔊 Nghe mẫu</button>
+      <button class="pc-mic" id="prac-mic-btn" onclick="togglePracticeMic()">🎙️ Bắt đầu nói</button>
+      <button class="pc-prev" onclick="prevSentence()">⬅ Câu trước</button>
+      <button class="pc-next" onclick="nextSentence()">Câu tiếp ➡</button>
+    </div>
+
+    <div class="practice-result">
+      <div class="you-said">Bạn đã nói:</div>
+      <div class="heard-text" id="prac-heard">—</div>
+      <div class="score-row" id="prac-score-row" style="display:none;">
+        <span class="score-badge" id="prac-score-badge"></span>
+        <span style="font-size:.82rem;color:#868e96;font-weight:700;" id="prac-score-detail"></span>
+      </div>
+    </div>
+
+    <div class="practice-input-section">
+      <label>✏️ Ô nhập tự động (kết quả giọng nói sẽ điền vào đây):</label>
+      <div class="practice-input-row">
+        <input type="text" id="prac-text-input" placeholder="Nhấn 🎙️ và nói câu tiếng Anh ở trên..." oninput="checkPronunciation()">
+      </div>
+    </div>
+
+    <div class="practice-progress">
+      Câu <span id="prac-index">1</span> / <span id="prac-total">1</span>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <p>🎓 Chương trình <strong>Tự Học Tiếng Anh – 1 Giờ Mỗi Ngày</strong></p>
+  <p style="margin-top:6px;font-size:.74rem;">Kiên trì mỗi ngày · Tiến bộ từng bước · Không bỏ cuộc 💪</p>
+</footer>
+
+<script>
+function speakText(text){
+  if(!('speechSynthesis' in window)) return;
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US';
+  u.rate = 0.95;
+  speechSynthesis.cancel();
+  speechSynthesis.speak(u);
+}
+
+// ═══════════════════════════════════════════════════════════
+// NGÂN HÀNG CÂU LUYỆN NÓI – Day 1 đến Day 80 (5 câu / ngày)
+// ═══════════════════════════════════════════════════════════
+const ALL_PRACTICE_SENTENCES = [
+  // Day 1 - Short Phrases
+  { day:1, en:"Hello! My name is Anna. Nice to meet you.", vi:"Xin chào! Tôi tên là Anna. Rất vui được gặp bạn." },
+  { day:1, en:"How are you today?", vi:"Hôm nay bạn khỏe không?" },
+  { day:1, en:"Thank you so much for your help.", vi:"Cảm ơn bạn rất nhiều vì đã giúp đỡ." },
+  { day:1, en:"I'm sorry, could you say that again?", vi:"Xin lỗi, bạn có thể nói lại được không?" },
+  { day:1, en:"Have a great day!", vi:"Chúc một ngày tốt lành!" },
+  // Day 2 - Wh-Questions
+  { day:2, en:"What is your name?", vi:"Tên bạn là gì?" },
+  { day:2, en:"Where do you live?", vi:"Bạn sống ở đâu?" },
+  { day:2, en:"Why are you learning English?", vi:"Tại sao bạn học tiếng Anh?" },
+  { day:2, en:"When did you start learning?", vi:"Bạn bắt đầu học từ khi nào?" },
+  { day:2, en:"Who is your English teacher?", vi:"Ai là giáo viên tiếng Anh của bạn?" },
+  // Day 3 - Where is / Where are
+  { day:3, en:"Excuse me, where is the nearest bus station?", vi:"Xin lỗi, trạm xe buýt gần nhất ở đâu?" },
+  { day:3, en:"Where are the toilets in this building?", vi:"Nhà vệ sinh trong tòa nhà này ở đâu?" },
+  { day:3, en:"Where is the nearest hospital?", vi:"Bệnh viện gần nhất ở đâu?" },
+  { day:3, en:"Where are my keys? I can't find them!", vi:"Chìa khóa của tôi đâu? Tôi không tìm thấy!" },
+  { day:3, en:"I think they are on the table near the door.", vi:"Tôi nghĩ chúng ở trên bàn gần cửa." },
+  // Day 4 - Age & Marital Status
+  { day:4, en:"How old are you?", vi:"Bạn bao nhiêu tuổi?" },
+  { day:4, en:"I am twenty-five years old.", vi:"Tôi hai mươi lăm tuổi." },
+  { day:4, en:"Are you married?", vi:"Bạn đã kết hôn chưa?" },
+  { day:4, en:"No, I am still single.", vi:"Chưa, tôi vẫn còn đơn thân." },
+  { day:4, en:"Do you have any children?", vi:"Bạn có con chưa?" },
+  // Day 5 - Family Members
+  { day:5, en:"Tell me about your family.", vi:"Hãy kể cho tôi về gia đình bạn." },
+  { day:5, en:"I have two brothers and one sister.", vi:"Tôi có hai anh trai và một em gái." },
+  { day:5, en:"Are you the oldest in your family?", vi:"Bạn có phải là con cả trong gia đình không?" },
+  { day:5, en:"My parents live in the countryside.", vi:"Cha mẹ tôi sống ở quê." },
+  { day:5, en:"We are very close. We meet every weekend.", vi:"Chúng tôi rất thân thiết. Chúng tôi gặp nhau mỗi cuối tuần." },
+  // Day 6 - Extended Family
+  { day:6, en:"Do you have a big family?", vi:"Bạn có một gia đình lớn không?" },
+  { day:6, en:"My grandparents live in the village.", vi:"Ông bà tôi sống ở làng." },
+  { day:6, en:"Do you have any cousins?", vi:"Bạn có anh chị em họ không?" },
+  { day:6, en:"I have two aunts and one uncle.", vi:"Tôi có hai cô và một chú." },
+  { day:6, en:"We have a big family reunion every Lunar New Year.", vi:"Chúng tôi có một buổi họp mặt gia đình lớn mỗi Tết." },
+  // Day 7 - Jobs
+  { day:7, en:"What do you do for a living?", vi:"Bạn làm nghề gì?" },
+  { day:7, en:"I work as an engineer in the city.", vi:"Tôi làm kỹ sư trong thành phố." },
+  { day:7, en:"I am a nurse at the local hospital.", vi:"Tôi là y tá ở bệnh viện địa phương." },
+  { day:7, en:"Do you enjoy your job?", vi:"Bạn có thích công việc của mình không?" },
+  { day:7, en:"My father is a farmer and works very hard.", vi:"Cha tôi là nông dân và làm việc rất chăm chỉ." },
+  // Day 8 - Object Pronouns
+  { day:8, en:"Can you help me, please?", vi:"Bạn có thể giúp tôi được không?" },
+  { day:8, en:"Can you give it to her?", vi:"Bạn có thể đưa nó cho cô ấy không?" },
+  { day:8, en:"She gave him a gift earlier too.", vi:"Cô ấy cũng đã tặng anh ấy một món quà trước đó." },
+  { day:8, en:"We saw them at the market yesterday.", vi:"Chúng tôi đã gặp họ ở chợ hôm qua." },
+  { day:8, en:"He sent us an invitation to his party.", vi:"Anh ấy đã gửi cho chúng tôi lời mời đến tiệc của anh ấy." },
+  // Day 9 - Pronouns & Possessive
+  { day:9, en:"Is this your bag?", vi:"Đây có phải là túi của bạn không?" },
+  { day:9, en:"No, it is not mine. I think it is hers.", vi:"Không, đó không phải là của tôi. Tôi nghĩ là của cô ấy." },
+  { day:9, en:"Maybe it is his. Ask him when he comes back.", vi:"Có thể là của anh ấy. Hỏi anh ấy khi anh ấy về." },
+  { day:9, en:"Their bags all look very similar.", vi:"Túi của họ trông rất giống nhau." },
+  { day:9, en:"Labels are so important.", vi:"Nhãn dán rất quan trọng." },
+  // Day 10 - This/That/These/Those
+  { day:10, en:"What is this?", vi:"Đây là cái gì?" },
+  { day:10, en:"This is my new phone. Do you like it?", vi:"Đây là điện thoại mới của tôi. Bạn có thích nó không?" },
+  { day:10, en:"What are those over there?", vi:"Những thứ đó ở đằng kia là gì?" },
+  { day:10, en:"These are for my English class.", vi:"Những thứ này là cho lớp tiếng Anh của tôi." },
+  { day:10, en:"That is a map of the world. I love geography!", vi:"Đó là bản đồ thế giới. Tôi yêu địa lý!" },
+  // Day 11 - Số đếm 0-99
+  { day:11, en:"How many students are in your class?", vi:"Lớp bạn có bao nhiêu học sinh?" },
+  { day:11, en:"There are thirty-five students.", vi:"Có ba mươi lăm học sinh." },
+  { day:11, en:"My phone number ends in seventy-eight.", vi:"Số điện thoại của tôi kết thúc bằng bảy mươi tám." },
+  { day:11, en:"My apartment is on the fifteenth floor.", vi:"Căn hộ của tôi ở tầng mười lăm." },
+  { day:11, en:"High floors are always better!", vi:"Tầng cao luôn tốt hơn!" },
+  // Day 12 - Số đếm Trăm-Triệu
+  { day:12, en:"How much does that laptop cost?", vi:"Cái laptop đó giá bao nhiêu?" },
+  { day:12, en:"It costs about fifteen million dong.", vi:"Nó tốn khoảng mười lăm triệu đồng." },
+  { day:12, en:"How many people live in Da Nang?", vi:"Bao nhiêu người sống ở Đà Nẵng?" },
+  { day:12, en:"About one million two hundred thousand people.", vi:"Khoảng một triệu hai trăm nghìn người." },
+  { day:12, en:"It is the biggest city in Vietnam.", vi:"Đó là thành phố lớn nhất Việt Nam." },
+  // Day 13 - How much
+  { day:13, en:"Excuse me, how much is this shirt?", vi:"Xin lỗi, cái áo này giá bao nhiêu?" },
+  { day:13, en:"It is two hundred and fifty thousand dong.", vi:"Nó là hai trăm năm mươi nghìn đồng." },
+  { day:13, en:"Can I get a discount if I buy both?", vi:"Tôi có được giảm giá nếu mua cả hai không?" },
+  { day:13, en:"That saves me eighty thousand. Deal!", vi:"Vậy là tôi tiết kiệm được tám mươi nghìn. Đồng ý!" },
+  { day:13, en:"Let me wrap them up for you.", vi:"Để tôi gói chúng lại cho bạn." },
+  // Day 14 - Years
+  { day:14, en:"When were you born?", vi:"Bạn sinh năm nào?" },
+  { day:14, en:"I was born in nineteen ninety-eight.", vi:"Tôi sinh năm một nghìn chín trăm chín mươi tám." },
+  { day:14, en:"When did you graduate from university?", vi:"Bạn tốt nghiệp đại học năm nào?" },
+  { day:14, en:"I graduated in twenty twenty-three.", vi:"Tôi tốt nghiệp năm hai nghìn hai mươi ba." },
+  { day:14, en:"Vietnam hosted the SEA Games in twenty twenty-two.", vi:"Việt Nam đăng cai SEA Games năm hai nghìn hai mươi hai." },
+  // Day 15 - Body Parts
+  { day:15, en:"Are you okay? You look like you are in pain.", vi:"Bạn ổn không? Bạn trông như đang bị đau." },
+  { day:15, en:"My back hurts from sitting too long.", vi:"Lưng tôi đau vì ngồi quá lâu." },
+  { day:15, en:"I have a headache too.", vi:"Tôi cũng bị đau đầu." },
+  { day:15, en:"She broke her arm while playing basketball yesterday.", vi:"Cô ấy bị gãy tay khi chơi bóng rổ hôm qua." },
+  { day:15, en:"I hope she recovers quickly.", vi:"Tôi hy vọng cô ấy sẽ hồi phục nhanh." },
+  // Day 16 - Clothing
+  { day:16, en:"What are you wearing to the party tonight?", vi:"Bạn sẽ mặc gì đến tiệc tối nay?" },
+  { day:16, en:"I am wearing a blue shirt and black trousers.", vi:"Tôi đang mặc áo xanh và quần đen." },
+  { day:16, en:"I bought a beautiful red dress for the occasion.", vi:"Tôi đã mua một chiếc váy đỏ đẹp cho dịp này." },
+  { day:16, en:"His trousers are too long. He needs to shorten them.", vi:"Quần của anh ấy quá dài. Anh ấy cần sửa ngắn lại." },
+  { day:16, en:"That tailor does great work!", vi:"Người thợ may đó làm việc rất tốt!" },
+  // Day 17 - Clothes mở rộng
+  { day:17, en:"It is cold outside today. Are you wearing a coat?", vi:"Hôm nay ngoài trời lạnh. Bạn có mặc áo khoác không?" },
+  { day:17, en:"I have a warm coat and a scarf.", vi:"Tôi có một áo khoác ấm và một chiếc khăn." },
+  { day:17, en:"She bought a new swimsuit for her vacation.", vi:"Cô ấy đã mua một bộ đồ tắm mới cho kỳ nghỉ." },
+  { day:17, en:"I love casual clothes on weekends.", vi:"Tôi thích quần áo bình thường vào cuối tuần." },
+  { day:17, en:"He wore a suit and tie to the interview yesterday.", vi:"Anh ấy đã mặc bộ đồ vest và cà vạt đến buổi phỏng vấn hôm qua." },
+  // Day 18 - Accessories
+  { day:18, en:"I love your watch! Where did you buy it?", vi:"Tôi thích đồng hồ của bạn! Bạn mua nó ở đâu?" },
+  { day:18, en:"She wears a gold necklace every day to work.", vi:"Cô ấy đeo dây chuyền vàng đi làm mỗi ngày." },
+  { day:18, en:"Do not forget to bring your umbrella today.", vi:"Đừng quên mang theo dù hôm nay." },
+  { day:18, en:"His leather belt matches his shoes perfectly.", vi:"Dây nịt da của anh ấy hợp hoàn hảo với giày." },
+  { day:18, en:"He always dresses so well.", vi:"Anh ấy luôn ăn mặc rất đẹp." },
+  // Day 19 - Places
+  { day:19, en:"Excuse me, is there a pharmacy near here?", vi:"Xin lỗi, có hiệu thuốc nào gần đây không?" },
+  { day:19, en:"Where is the post office?", vi:"Bưu điện ở đâu?" },
+  { day:19, en:"We met at the coffee shop downtown yesterday.", vi:"Chúng tôi đã gặp nhau ở quán cà phê trung tâm hôm qua." },
+  { day:19, en:"The hospital is next to the museum.", vi:"Bệnh viện ở cạnh viện bảo tàng." },
+  { day:19, en:"There are signs everywhere.", vi:"Có biển chỉ dẫn ở mọi nơi." },
+  // Day 20 - Transportation
+  { day:20, en:"How do you get to work every day?", vi:"Hàng ngày bạn đi làm bằng cách nào?" },
+  { day:20, en:"I take the bus. It is cheaper than riding a motorbike.", vi:"Tôi đi xe buýt. Rẻ hơn đi xe máy." },
+  { day:20, en:"Can I walk to the station from here?", vi:"Tôi có thể đi bộ đến trạm từ đây không?" },
+  { day:20, en:"It is only a ten minute walk.", vi:"Chỉ đi bộ mười phút." },
+  { day:20, en:"I prefer flying to taking the train.", vi:"Tôi thích bay hơn là đi tàu." },
+  // Day 21 - In the Living Room
+  { day:21, en:"Your living room is so nice! I love the sofa.", vi:"Phòng khách của bạn rất đẹp! Tôi thích bộ sofa." },
+  { day:21, en:"Where did you put the television?", vi:"Bạn đặt tivi ở đâu?" },
+  { day:21, en:"The television is on the wall, opposite the sofa.", vi:"Tivi được treo trên tường, đối diện với sofa." },
+  { day:21, en:"That large bookshelf next to the window looks great.", vi:"Cái kệ sách lớn cạnh cửa sổ trông rất đẹp." },
+  { day:21, en:"The lamp on the table gives a very warm light.", vi:"Cái đèn trên bàn cho ánh sáng rất ấm áp." },
+  // Day 22 - Sentence Structure
+  { day:22, en:"She reads books every night before sleeping.", vi:"Cô ấy đọc sách mỗi tối trước khi ngủ." },
+  { day:22, en:"I drink coffee every morning to stay awake.", vi:"Tôi uống cà phê mỗi sáng để giữ tỉnh táo." },
+  { day:22, en:"The children play in the garden after school.", vi:"Trẻ con chơi trong vườn sau khi đi học." },
+  { day:22, en:"We cook dinner together on Sundays.", vi:"Chúng tôi cùng nấu bữa tối vào ngày Chủ Nhật." },
+  { day:22, en:"Reading before bed helps you relax and sleep better.", vi:"Đọc sách trước khi ngủ giúp bạn thư giãn và ngủ ngon hơn." },
+  // Day 23 - Opening Phrases
+  { day:23, en:"Good morning! How have you been lately?", vi:"Chào buổi sáng! Gần đây bạn thế nào?" },
+  { day:23, en:"By the way, did you hear about the new restaurant?", vi:"Nhân tiện, bạn có nghe về nhà hàng mới chưa?" },
+  { day:23, en:"Do you have a minute?", vi:"Bạn có thời gian không?" },
+  { day:23, en:"To be honest, I am not sure how to start this.", vi:"Thật ra, tôi không biết nên bắt đầu thế nào." },
+  { day:23, en:"I wish you the very best of luck!", vi:"Tôi chúc bạn may mắn nhất!" },
+  // Day 24 - Polite Communication
+  { day:24, en:"Excuse me, could you please pass me the salt?", vi:"Xin lỗi, bạn có thể đưa tôi lọ muối không?" },
+  { day:24, en:"Would you mind opening the window?", vi:"Bạn có thể mở cửa sổ giúp được không?" },
+  { day:24, en:"May I ask you a quick question?", vi:"Tôi có thể hỏi bạn một câu hỏi nhanh không?" },
+  { day:24, en:"I was wondering if you could help me with this form.", vi:"Tôi muốn hỏi liệu bạn có thể giúp tôi với mẫu đơn này không." },
+  { day:24, en:"I would be happy to help.", vi:"Tôi rất sẵn lòng giúp đỡ." },
+  // Day 25 - How much & how many
+  { day:25, en:"How many people are coming to the party?", vi:"Bao nhiêu người sẽ đến tiệc?" },
+  { day:25, en:"How much food should we prepare?", vi:"Chúng ta nên chuẩn bị bao nhiêu thức ăn?" },
+  { day:25, en:"How many languages can you speak?", vi:"Bạn nói được bao nhiêu ngôn ngữ?" },
+  { day:25, en:"How much water do you drink per day?", vi:"Mỗi ngày bạn uống bao nhiêu nước?" },
+  { day:25, en:"There are not many seats left in the theater.", vi:"Không còn nhiều ghế trống trong rạp." },
+  // Day 26 - Many/Much/A lot of
+  { day:26, en:"There are a lot of cars on the road today.", vi:"Hôm nay có rất nhiều xe trên đường." },
+  { day:26, en:"He has many friends in different countries.", vi:"Anh ấy có nhiều bạn ở các nước khác nhau." },
+  { day:26, en:"We got a lot of rain last month.", vi:"Tháng trước có nhiều mưa." },
+  { day:26, en:"She does not have much free time on weekdays.", vi:"Cô ấy không có nhiều thời gian rảnh vào ngày thường." },
+  { day:26, en:"I do not have much money left in my wallet.", vi:"Tôi không còn nhiều tiền trong ví." },
+  // Day 27 - Some/Any/No
+  { day:27, en:"Is there any milk left in the fridge?", vi:"Còn sữa trong tủ lạnh không?" },
+  { day:27, en:"There is some milk, but not much.", vi:"Có một ít sữa, nhưng không nhiều." },
+  { day:27, en:"There is no sugar in my coffee.", vi:"Không có đường trong cà phê của tôi." },
+  { day:27, en:"I do not have any idea where she went.", vi:"Tôi không biết cô ấy đi đâu." },
+  { day:27, en:"Can I have some water, please?", vi:"Tôi có thể xin một ít nước được không?" },
+  // Day 28 - Đại từ bất định mở rộng
+  { day:28, en:"Everybody knows that exercise is good for health.", vi:"Mọi người đều biết tập thể dục tốt cho sức khỏe." },
+  { day:28, en:"Something strange happened this morning.", vi:"Có điều gì kỳ lạ xảy ra sáng nay." },
+  { day:28, en:"Somebody left a mysterious package at the door.", vi:"Ai đó đã để lại một gói hàng bí ẩn trước cửa." },
+  { day:28, en:"Nobody told me about the meeting change today.", vi:"Không ai nói với tôi về việc thay đổi buổi họp hôm nay." },
+  { day:28, en:"Is there anything I can do to help you?", vi:"Có gì tôi có thể giúp bạn không?" },
+  // Day 29 - Was/Were
+  { day:29, en:"I was very tired after the long trip yesterday.", vi:"Tôi rất mệt sau chuyến đi dài hôm qua." },
+  { day:29, en:"Were you able to sleep on the bus?", vi:"Bạn có ngủ được trên xe buýt không?" },
+  { day:29, en:"They were at the cinema.", vi:"Họ đã ở rạp chiếu phim." },
+  { day:29, en:"We were late because the traffic was terrible.", vi:"Chúng tôi đến muộn vì giao thông quá tệ." },
+  { day:29, en:"The weather was perfect for a picnic.", vi:"Thời tiết hoàn hảo cho một buổi đi chơi ngoài trời." },
+  // Day 30 - Was & Were luyện tập
+  { day:30, en:"He was not at the office yesterday.", vi:"Hôm qua anh ấy không có ở văn phòng." },
+  { day:30, en:"Were you nervous during the presentation?", vi:"Bạn có lo lắng khi thuyết trình không?" },
+  { day:30, en:"There were a lot of people at the concert last night.", vi:"Có rất nhiều người tại buổi hòa nhạc tối qua." },
+  { day:30, en:"Why were they so quiet during the opening act?", vi:"Tại sao họ lại im lặng trong phần mở đầu?" },
+  { day:30, en:"The wait was almost two hours!", vi:"Việc chờ đợi gần hai giờ!" },
+  // Day 31 - Didn't & Did
+  { day:31, en:"I did not understand the instructions at first.", vi:"Ban đầu tôi không hiểu hướng dẫn." },
+  { day:31, en:"Did she call you back after the meeting?", vi:"Cô ấy có gọi lại cho bạn sau buổi họp không?" },
+  { day:31, en:"He did not come to work because he was sick.", vi:"Anh ấy không đi làm vì bị bệnh." },
+  { day:31, en:"Did you enjoy the movie last night?", vi:"Bạn có thích bộ phim tối qua không?" },
+  { day:31, en:"They did not finish the project on time.", vi:"Họ không hoàn thành dự án đúng hạn." },
+  // Day 32 - Didn't & Did luyện tập
+  { day:32, en:"I did my homework before dinner last night.", vi:"Tôi đã làm bài tập trước bữa tối hôm qua." },
+  { day:32, en:"Did they travel to Europe last summer?", vi:"Họ có đi châu Âu mùa hè trước không?" },
+  { day:32, en:"She did not eat anything for breakfast this morning.", vi:"Sáng nay cô ấy không ăn gì." },
+  { day:32, en:"We did not know about the problem until later.", vi:"Chúng tôi không biết về vấn đề đó cho đến sau này." },
+  { day:32, en:"Did he seem upset?", vi:"Anh ấy có vẻ khó chịu không?" },
+  // Day 33 - Động từ thêm -ed
+  { day:33, en:"What did you do last weekend?", vi:"Bạn đã làm gì vào cuối tuần trước?" },
+  { day:33, en:"I cleaned the house and cooked a big meal.", vi:"Tôi đã dọn nhà và nấu một bữa ăn lớn." },
+  { day:33, en:"I walked to the park and played badminton.", vi:"Tôi đã đi bộ đến công viên và chơi cầu lông." },
+  { day:33, en:"She watched a movie and listened to music all afternoon.", vi:"Cô ấy đã xem phim và nghe nhạc cả buổi chiều." },
+  { day:33, en:"He worked late and finished the report by nine o'clock.", vi:"Anh ấy đã làm việc muộn và hoàn thành báo cáo lúc chín giờ." },
+  // Day 34 - Irregular verbs 1
+  { day:34, en:"Where did you go last night?", vi:"Tối qua bạn đã đi đâu?" },
+  { day:34, en:"I went to the cinema. I saw a great action film.", vi:"Tôi đã đi xem phim. Tôi đã xem một bộ phim hành động hay." },
+  { day:34, en:"Who did you go with?", vi:"Bạn đã đi với ai?" },
+  { day:34, en:"We ate at a restaurant near the cinema.", vi:"Chúng tôi đã ăn tại một nhà hàng gần rạp chiếu phim." },
+  { day:34, en:"I had grilled fish. It was delicious!", vi:"Tôi đã ăn cá nướng. Rất ngon!" },
+  // Day 35 - Irregular verbs 2
+  { day:35, en:"Did you sleep well last night?", vi:"Tối qua bạn ngủ ngon không?" },
+  { day:35, en:"I woke up at three in the morning.", vi:"Tôi đã thức dậy lúc ba giờ sáng." },
+  { day:35, en:"She wrote a long letter and sent it to her friend abroad.", vi:"Cô ấy đã viết một lá thư dài và gửi cho người bạn ở nước ngoài." },
+  { day:35, en:"He bought a new motorbike and drove it to work today.", vi:"Anh ấy đã mua một chiếc xe máy mới và lái nó đi làm hôm nay." },
+  { day:35, en:"We got to the station late and missed the train.", vi:"Chúng tôi đến trạm muộn và lỡ chuyến tàu." },
+  // Day 36 - Irregular verbs 3
+  { day:36, en:"I read an interesting article about climate change this morning.", vi:"Sáng nay tôi đã đọc một bài báo thú vị về biến đổi khí hậu." },
+  { day:36, en:"I heard about it too! Someone told me yesterday.", vi:"Tôi cũng đã nghe về điều đó! Ai đó đã nói với tôi hôm qua." },
+  { day:36, en:"She thought about it all day and felt very worried.", vi:"Cô ấy đã nghĩ về điều đó cả ngày và cảm thấy rất lo lắng." },
+  { day:36, en:"They found a new solution to reduce plastic waste.", vi:"Họ đã tìm ra một giải pháp mới để giảm rác thải nhựa." },
+  { day:36, en:"I left my reusable bag at home today.", vi:"Hôm nay tôi đã để quên túi tái sử dụng ở nhà." },
+  // Day 37 - Irregular verbs & prepositions
+  { day:37, en:"Where did you go after work yesterday?", vi:"Hôm qua sau khi đi làm bạn đã đi đâu?" },
+  { day:37, en:"I walked into the bookstore and looked around for an hour.", vi:"Tôi đã đi vào nhà sách và xem xung quanh trong một giờ." },
+  { day:37, en:"I picked up a novel and took it home with me.", vi:"Tôi đã chọn một cuốn tiểu thuyết và mang nó về nhà." },
+  { day:37, en:"She ran out of the building when the alarm went off.", vi:"Cô ấy đã chạy ra khỏi tòa nhà khi chuông báo động kêu." },
+  { day:37, en:"It turned out to be a fire drill.", vi:"Hóa ra đó là một buổi tập diễn cứu hỏa." },
+  // Day 38 - Prepositions of place
+  { day:38, en:"Where is the cat? I cannot find it anywhere.", vi:"Con mèo ở đâu? Tôi không tìm thấy nó ở đâu cả." },
+  { day:38, en:"It is under the bed in the bedroom.", vi:"Nó ở dưới giường trong phòng ngủ." },
+  { day:38, en:"I put them in the drawer next to the door.", vi:"Tôi đã để chúng trong ngăn kéo cạnh cửa." },
+  { day:38, en:"The supermarket is between the bank and the post office.", vi:"Siêu thị nằm giữa ngân hàng và bưu điện." },
+  { day:38, en:"It is in front of it, on the left side of the entrance.", vi:"Nó ở phía trước, bên trái lối vào." },
+  // Day 39 - Where + giới từ vị trí
+  { day:39, en:"Excuse me, where exactly is the conference room?", vi:"Xin lỗi, phòng họp ở đâu chính xác?" },
+  { day:39, en:"It is on the third floor, at the end of the corridor.", vi:"Nó ở tầng ba, cuối hành lang." },
+  { day:39, en:"Is it on the left or the right?", vi:"Nó ở bên trái hay bên phải?" },
+  { day:39, en:"Where do you usually park your car?", vi:"Bạn thường đậu xe ở đâu?" },
+  { day:39, en:"There is one at the corner of the street, next to the pharmacy.", vi:"Có một cái ở góc đường, cạnh hiệu thuốc." },
+  // Day 40 - Comparisons & prepositions of time
+  { day:40, en:"The weather in December is colder than in November.", vi:"Thời tiết tháng Mười Hai lạnh hơn tháng Mười Một." },
+  { day:40, en:"I always wake up at six in the morning on weekdays.", vi:"Tôi luôn thức dậy lúc sáu giờ sáng vào ngày thường." },
+  { day:40, en:"The meeting is on Friday at three in the afternoon.", vi:"Cuộc họp diễn ra vào thứ Sáu lúc ba giờ chiều." },
+  { day:40, en:"This coffee is stronger than the one from yesterday.", vi:"Cà phê này đậm hơn cái hôm qua." },
+  { day:40, en:"In summer, the days are longer than in winter.", vi:"Vào mùa hè, ngày dài hơn mùa đông." },
+  // Day 41 - Movement verbs
+  { day:41, en:"Where did you go this morning?", vi:"Sáng nay bạn đã đi đâu?" },
+  { day:41, en:"I walked to the market and then cycled along the beach.", vi:"Tôi đã đi bộ ra chợ và sau đó đi xe đạp dọc bãi biển." },
+  { day:41, en:"Did you swim in the sea?", vi:"Bạn có bơi ở biển không?" },
+  { day:41, en:"She climbed the hill and ran all the way back down.", vi:"Cô ấy đã trèo lên đồi và chạy hết quãng đường xuống." },
+  { day:41, en:"He drove to the mountains and hiked for six hours.", vi:"Anh ấy đã lái xe lên núi và đi bộ leo núi sáu giờ." },
+  // Day 42 - Tính từ -ed & -ing
+  { day:42, en:"How was the lecture today?", vi:"Buổi giảng hôm nay thế nào?" },
+  { day:42, en:"It was so boring! I was bored after ten minutes.", vi:"Nó rất nhàm chán! Tôi cảm thấy buồn chán sau mười phút." },
+  { day:42, en:"I was confused by all the technical terms.", vi:"Tôi đã bối rối với tất cả các thuật ngữ kỹ thuật." },
+  { day:42, en:"I was shocked by the ending! It was very exciting.", vi:"Tôi đã bị sốc bởi kết thúc! Nó rất thú vị." },
+  { day:42, en:"She looked exhausted after the long meeting.", vi:"Cô ấy trông rất mệt sau buổi họp dài." },
+  // Day 43 - Adjectives -ed & -ing ôn tập
+  { day:43, en:"The concert last night was absolutely amazing!", vi:"Buổi hòa nhạc tối qua thật tuyệt vời!" },
+  { day:43, en:"I was amazed by the singer's voice.", vi:"Tôi đã rất ngạc nhiên trước giọng hát của ca sĩ." },
+  { day:43, en:"I was so entertained the whole time.", vi:"Tôi đã rất thích thú suốt thời gian đó." },
+  { day:43, en:"The light show was breathtaking.", vi:"Buổi trình diễn ánh sáng thật ngoạn mục." },
+  { day:43, en:"I was thrilled when they played my favorite song.", vi:"Tôi đã rất phấn khích khi họ chơi bài hát tôi yêu thích." },
+  // Day 44 - Personality 1
+  { day:44, en:"What is your new colleague like?", vi:"Đồng nghiệp mới của bạn như thế nào?" },
+  { day:44, en:"She is very friendly and outgoing.", vi:"Cô ấy rất thân thiện và hướng ngoại." },
+  { day:44, en:"He is a bit strict but very hardworking and fair.", vi:"Anh ấy hơi nghiêm khắc nhưng rất chăm chỉ và công bằng." },
+  { day:44, en:"My neighbor is so kind. He always helps me.", vi:"Người hàng xóm của tôi rất tốt bụng. Anh ấy luôn giúp tôi." },
+  { day:44, en:"Shy people are often very thoughtful and sensitive.", vi:"Những người nhút nhát thường rất tâm lý và nhạy cảm." },
+  // Day 45 - Personality 2
+  { day:45, en:"I find it difficult to work with arrogant people.", vi:"Tôi thấy khó làm việc với người kiêu ngạo." },
+  { day:45, en:"I prefer colleagues who are humble and cooperative.", vi:"Tôi thích đồng nghiệp khiêm tốn và hợp tác." },
+  { day:45, en:"She is extremely patient with her students.", vi:"Cô ấy rất kiên nhẫn với học sinh của mình." },
+  { day:45, en:"He can be quite stubborn sometimes.", vi:"Đôi khi anh ấy khá cứng đầu." },
+  { day:45, en:"A generous and patient person is hard to find.", vi:"Một người rộng lượng và kiên nhẫn rất khó tìm." },
+  // Day 46 - Personality 3
+  { day:46, en:"How would you describe yourself in three words?", vi:"Bạn sẽ miêu tả bản thân trong ba từ như thế nào?" },
+  { day:46, en:"I would say I am ambitious, creative, and reliable.", vi:"Tôi nghĩ tôi là người có hoài bão, sáng tạo và đáng tin cậy." },
+  { day:46, en:"Empathy is so important in life.", vi:"Sự đồng cảm rất quan trọng trong cuộc sống." },
+  { day:46, en:"For me, integrity is the most valuable trait.", vi:"Đối với tôi, sự trung thực là đặc điểm quan trọng nhất." },
+  { day:46, en:"I also value resilience.", vi:"Tôi cũng đánh giá cao khả năng phục hồi." },
+  // Day 47 - Adverbs of degree
+  { day:47, en:"How was the food at the new restaurant?", vi:"Đồ ăn ở nhà hàng mới thế nào?" },
+  { day:47, en:"It was extremely delicious!", vi:"Nó rất ngon!" },
+  { day:47, en:"It was quite expensive, but totally worth it.", vi:"Nó khá đắt, nhưng hoàn toàn đáng giá." },
+  { day:47, en:"The weather today is rather hot, do you not think?", vi:"Thời tiết hôm nay khá nóng, bạn có nghĩ vậy không?" },
+  { day:47, en:"I am absolutely exhausted.", vi:"Tôi hoàn toàn mệt lả." },
+  // Day 48 - Adjective order
+  { day:48, en:"Did you see what she was wearing today?", vi:"Bạn có thấy hôm nay cô ấy mặc gì không?" },
+  { day:48, en:"She had on a gorgeous long purple silk scarf.", vi:"Cô ấy đeo một chiếc khăn lụa tím dài lộng lẫy." },
+  { day:48, en:"He arrived in a stylish new German sports car.", vi:"Anh ấy đến trong một chiếc xe thể thao Đức mới phong cách." },
+  { day:48, en:"We stayed in a charming old stone cottage last summer.", vi:"Chúng tôi đã ở trong một ngôi nhà đá cổ kính đáng yêu hè trước." },
+  { day:48, en:"He gave her a lovely small round wooden box.", vi:"Anh ấy đã tặng cô ấy một chiếc hộp gỗ nhỏ tròn xinh xắn." },
+  // Day 49 - Khẩu vị 1
+  { day:49, en:"How do you like your coffee?", vi:"Bạn thích cà phê như thế nào?" },
+  { day:49, en:"I like it slightly sweet but not too much sugar.", vi:"Tôi thích nó hơi ngọt nhưng không quá nhiều đường." },
+  { day:49, en:"I prefer mine bitter, with no sugar at all.", vi:"Tôi thích loại đắng, không cần đường." },
+  { day:49, en:"Have you tried the tamarind sauce? It is very sour.", vi:"Bạn đã thử nước sốt me chưa? Nó rất chua." },
+  { day:49, en:"This soup is too salty for my taste.", vi:"Món súp này quá mặn đối với tôi." },
+  // Day 50 - Khẩu vị 2
+  { day:50, en:"How do you like your food generally? Spicy or mild?", vi:"Bạn thích đồ ăn thế nào nói chung? Cay hay nhẹ?" },
+  { day:50, en:"I love spicy food! The hotter the better for me.", vi:"Tôi thích đồ ăn cay! Càng cay càng tốt với tôi." },
+  { day:50, en:"I cannot handle spicy at all.", vi:"Tôi hoàn toàn không ăn được cay." },
+  { day:50, en:"The fried chicken here is a bit too greasy.", vi:"Gà chiên ở đây hơi nhiều dầu." },
+  { day:50, en:"I prefer grilled or steamed dishes.", vi:"Tôi thích món nướng hoặc hấp hơn." },
+  // Day 51 - Mô tả đồ ăn
+  { day:51, en:"How was the pho you had for breakfast?", vi:"Tô phở bạn ăn sáng thế nào?" },
+  { day:51, en:"It was rich and flavorful. The broth was delicious.", vi:"Nó đậm đà và đầy hương vị. Nước dùng rất ngon." },
+  { day:51, en:"A little greasy, but still wonderful.", vi:"Hơi nhiều dầu, nhưng vẫn rất tuyệt." },
+  { day:51, en:"It was crispy on the outside and soft inside.", vi:"Nó giòn bên ngoài và mềm bên trong." },
+  { day:51, en:"Vietnamese food is truly amazing.", vi:"Đồ ăn Việt Nam thực sự tuyệt vời." },
+  // Day 52 - In the garden
+  { day:52, en:"Your garden is beautiful! Do you spend a lot of time here?", vi:"Vườn của bạn rất đẹp! Bạn dành nhiều thời gian ở đây không?" },
+  { day:52, en:"I water the plants every morning and pull out the weeds.", vi:"Tôi tưới cây mỗi sáng và nhổ cỏ dại." },
+  { day:52, en:"I grow tomatoes, herbs, and some flowers along the fence.", vi:"Tôi trồng cà chua, rau thơm và một vài loại hoa dọc hàng rào." },
+  { day:52, en:"That rose bush is stunning. When does it bloom?", vi:"Bụi hoa hồng đó thật đẹp. Khi nào nó ra hoa?" },
+  { day:52, en:"Start with easy plants like herbs.", vi:"Hãy bắt đầu với các loại cây dễ trồng như rau thơm." },
+  // Day 53 - Activities at home
+  { day:53, en:"What do you usually do in the evenings at home?", vi:"Bạn thường làm gì vào buổi tối ở nhà?" },
+  { day:53, en:"I cook dinner, do the dishes, and then watch a series.", vi:"Tôi nấu bữa tối, rửa bát rồi xem phim." },
+  { day:53, en:"Do you exercise at home?", vi:"Bạn có tập thể dục ở nhà không?" },
+  { day:53, en:"Sometimes I do yoga or follow a workout video.", vi:"Đôi khi tôi tập yoga hoặc xem video tập luyện." },
+  { day:53, en:"Balance is everything.", vi:"Cân bằng là tất cả." },
+  // Day 54 - Outdoor activities
+  { day:54, en:"What do you like to do outdoors on weekends?", vi:"Bạn thích làm gì ngoài trời vào cuối tuần?" },
+  { day:54, en:"I love cycling along the beach and having picnics in the park.", vi:"Tôi thích đi xe đạp dọc bãi biển và đi picnic ở công viên." },
+  { day:54, en:"Do you ever go hiking?", vi:"Bạn có hay đi leo núi không?" },
+  { day:54, en:"I hiked Son Tra peninsula last month. It was breathtaking.", vi:"Tôi đã leo bán đảo Sơn Trà tháng trước. Thật ngoạn mục." },
+  { day:54, en:"Outdoor activities are so good for your health and mood.", vi:"Các hoạt động ngoài trời rất tốt cho sức khỏe và tâm trạng." },
+  // Day 55 - Thời tiết
+  { day:55, en:"What is the weather like today?", vi:"Thời tiết hôm nay thế nào?" },
+  { day:55, en:"It is quite cloudy and a bit windy.", vi:"Trời khá nhiều mây và hơi gió." },
+  { day:55, en:"Should I bring an umbrella?", vi:"Tôi nên mang dù không?" },
+  { day:55, en:"Yesterday was so sunny and warm.", vi:"Hôm qua trời rất nắng và ấm." },
+  { day:55, en:"I love sunny but breezy days.", vi:"Tôi thích những ngày nắng nhưng có gió mát." },
+  // Day 56 - Must & Have to
+  { day:56, en:"You must wear a helmet when riding a motorbike.", vi:"Bạn phải đội mũ bảo hiểm khi đi xe máy." },
+  { day:56, en:"Do you have to work this weekend?", vi:"Bạn có phải làm việc cuối tuần này không?" },
+  { day:56, en:"I have to finish a report by Monday.", vi:"Tôi phải hoàn thành báo cáo trước thứ Hai." },
+  { day:56, en:"Students must not use phones during exams.", vi:"Học sinh không được dùng điện thoại trong giờ thi." },
+  { day:56, en:"I do not have to give a presentation this time.", vi:"Lần này tôi không cần thuyết trình." },
+  // Day 57 - Have a plan to
+  { day:57, en:"What are your plans for the weekend?", vi:"Kế hoạch cuối tuần của bạn là gì?" },
+  { day:57, en:"I plan to visit my parents in Hoi An on Saturday.", vi:"Tôi định đến thăm cha mẹ ở Hội An vào thứ Bảy." },
+  { day:57, en:"She has a plan to start her own business next year.", vi:"Cô ấy có kế hoạch khởi nghiệp riêng vào năm sau." },
+  { day:57, en:"That is a brilliant idea! Does she have investors?", vi:"Đó là một ý tưởng tuyệt vời! Cô ấy có nhà đầu tư chưa?" },
+  { day:57, en:"She is planning to apply for a small business loan.", vi:"Cô ấy đang định xin một khoản vay kinh doanh nhỏ." },
+  // Day 58 - It's + adj + to V
+  { day:58, en:"It is important to stay hydrated in this hot weather.", vi:"Việc giữ đủ nước trong thời tiết nóng là rất quan trọng." },
+  { day:58, en:"It is difficult to learn a new language as an adult.", vi:"Học một ngôn ngữ mới khi trưởng thành là khó." },
+  { day:58, en:"It is possible if you practice every day.", vi:"Điều đó có thể nếu bạn luyện tập mỗi ngày." },
+  { day:58, en:"It is dangerous to drive while using your phone.", vi:"Lái xe khi dùng điện thoại là nguy hiểm." },
+  { day:58, en:"It is wonderful to have good friends around you.", vi:"Có những người bạn tốt bên cạnh là điều tuyệt vời." },
+  // Day 59 - Questions with "any"
+  { day:59, en:"Do you have any questions about the lesson?", vi:"Bạn có câu hỏi gì về bài học không?" },
+  { day:59, en:"Is there any homework for tomorrow?", vi:"Có bài tập về nhà cho ngày mai không?" },
+  { day:59, en:"There is not any homework this week.", vi:"Không có bài tập về nhà tuần này." },
+  { day:59, en:"Are there any events happening this weekend?", vi:"Có sự kiện gì diễn ra cuối tuần này không?" },
+  { day:59, en:"Did you find any good restaurants?", vi:"Bạn có tìm được nhà hàng nào ngon không?" },
+  // Day 60 - Relative clauses
+  { day:60, en:"The woman who lives next door is a doctor.", vi:"Người phụ nữ sống cạnh nhà là một bác sĩ." },
+  { day:60, en:"The hospital which she works at is very modern.", vi:"Bệnh viện cô ấy làm việc rất hiện đại." },
+  { day:60, en:"The book that I lent you, have you finished it yet?", vi:"Cuốn sách tôi mượn cho bạn, bạn đọc xong chưa?" },
+  { day:60, en:"The characters who appear in the second half are the best.", vi:"Các nhân vật xuất hiện ở nửa sau là hay nhất." },
+  { day:60, en:"The ending, which surprised everyone, was brilliant.", vi:"Cái kết, làm mọi người ngạc nhiên, thật xuất sắc." },
+  // Day 61 - Confusing words
+  { day:61, en:"I always confuse 'lend' and 'borrow'. Can you explain?", vi:"Tôi luôn nhầm lẫn giữa 'lend' và 'borrow'. Bạn giải thích được không?" },
+  { day:61, en:"You lend something to someone, and you borrow from someone.", vi:"Bạn cho ai đó mượn (lend), và bạn mượn (borrow) từ ai đó." },
+  { day:61, en:"Another confusing pair is 'rise' and 'raise'.", vi:"Một cặp dễ nhầm khác là 'rise' và 'raise'." },
+  { day:61, en:"The sun rises but you raise your hand.", vi:"Mặt trời mọc (rises) nhưng bạn giơ tay (raise)." },
+  { day:61, en:"Affect is the verb and effect is the noun.", vi:"Affect là động từ và effect là danh từ." },
+  // Day 62 - Verbs starting with P
+  { day:62, en:"Please pay attention during the training session today.", vi:"Vui lòng chú ý trong buổi tập huấn hôm nay." },
+  { day:62, en:"I plan to participate in the whole workshop.", vi:"Tôi định tham gia toàn bộ buổi hội thảo." },
+  { day:62, en:"We need to prepare all the materials before the guests arrive.", vi:"Chúng ta cần chuẩn bị tất cả tài liệu trước khi khách đến." },
+  { day:62, en:"Can you also push the chairs closer together?", vi:"Bạn có thể đẩy các ghế lại gần nhau hơn không?" },
+  { day:62, en:"Do not forget to plug in the projector.", vi:"Đừng quên cắm điện cho máy chiếu." },
+  // Day 63 - Have/Has + Ever
+  { day:63, en:"Have you ever been to Japan?", vi:"Bạn đã từng đến Nhật Bản chưa?" },
+  { day:63, en:"Yes! I have been there twice.", vi:"Có! Tôi đã đến đó hai lần." },
+  { day:63, en:"Have you ever tried skydiving?", vi:"Bạn đã từng nhảy dù chưa?" },
+  { day:63, en:"Has she ever lived abroad?", vi:"Cô ấy đã từng sống ở nước ngoài chưa?" },
+  { day:63, en:"Have you ever won a competition or award?", vi:"Bạn đã từng thắng cuộc thi hay giải thưởng nào chưa?" },
+  // Day 64 - Already/Just/Yet/Still
+  { day:64, en:"Have you eaten lunch yet?", vi:"Bạn ăn trưa chưa?" },
+  { day:64, en:"No, not yet. I have just finished a meeting.", vi:"Chưa. Tôi vừa kết thúc một buổi họp." },
+  { day:64, en:"I have already eaten. The new noodle shop is great.", vi:"Tôi đã ăn rồi. Quán mì mới rất ngon." },
+  { day:64, en:"Is it still crowded?", vi:"Nó vẫn còn đông không?" },
+  { day:64, en:"He has not replied to my message yet.", vi:"Anh ấy vẫn chưa trả lời tin nhắn của tôi." },
+  // Day 65 - Phrasal verbs
+  { day:65, en:"Can you turn off the air conditioning? I am cold.", vi:"Bạn có thể tắt điều hòa được không? Tôi lạnh." },
+  { day:65, en:"Do not forget to turn on the lights before you leave.", vi:"Đừng quên mở đèn trước khi bạn ra về." },
+  { day:65, en:"I need to look up this word in the dictionary.", vi:"Tôi cần tra từ này trong từ điển." },
+  { day:65, en:"To call off means to cancel something.", vi:"Call off có nghĩa là hủy bỏ điều gì đó." },
+  { day:65, en:"I ran out of coffee this morning!", vi:"Sáng nay tôi hết cà phê rồi!" },
+  // Day 66 - Expressing preferences
+  { day:66, en:"Do you prefer coffee or tea in the morning?", vi:"Bạn thích cà phê hay trà vào buổi sáng?" },
+  { day:66, en:"I am a big fan of Vietnamese iced coffee. I love it!", vi:"Tôi rất thích cà phê đá Việt Nam. Tôi yêu nó!" },
+  { day:66, en:"I adore green tea. It is so calming.", vi:"Tôi rất thích trà xanh. Nó rất thư thái." },
+  { day:66, en:"I cannot stand loud music.", vi:"Tôi không chịu được nhạc to." },
+  { day:66, en:"I would rather work from home.", vi:"Tôi thích làm việc tại nhà hơn." },
+  // Day 67 - Making suggestions
+  { day:67, en:"What should we do this evening?", vi:"Tối nay chúng ta nên làm gì?" },
+  { day:67, en:"Why do not we try that new Italian restaurant on the beach?", vi:"Sao chúng ta không thử nhà hàng Ý mới trên bãi biển?" },
+  { day:67, en:"We could go for a walk along the river.", vi:"Chúng ta có thể đi bộ dọc bờ sông." },
+  { day:67, en:"I suggest we invite Anna and Tom.", vi:"Tôi gợi ý chúng ta mời Anna và Tom." },
+  { day:67, en:"We had better book now. It can get very busy.", vi:"Chúng ta nên đặt chỗ ngay. Nó có thể rất đông." },
+  // Day 68 - Giving advice
+  { day:68, en:"I have been feeling very stressed lately. Any advice?", vi:"Gần đây tôi cảm thấy rất căng thẳng. Bạn có lời khuyên nào không?" },
+  { day:68, en:"You should try exercising more.", vi:"Bạn nên thử tập thể dục nhiều hơn." },
+  { day:68, en:"I ought to sleep earlier too.", vi:"Tôi cũng nên ngủ sớm hơn." },
+  { day:68, en:"You could try meditation or yoga.", vi:"Bạn có thể thử thiền hoặc yoga." },
+  { day:68, en:"If the stress continues, you had better see a professional.", vi:"Nếu căng thẳng tiếp tục, bạn nên đi gặp chuyên gia." },
+  // Day 69 - Expressing opinions
+  { day:69, en:"What do you think about working from home?", vi:"Bạn nghĩ gì về việc làm việc tại nhà?" },
+  { day:69, en:"In my opinion, it increases productivity for many people.", vi:"Theo tôi, nó tăng năng suất cho nhiều người." },
+  { day:69, en:"I agree to some extent. But team collaboration suffers.", vi:"Tôi đồng ý một phần. Nhưng sự hợp tác nhóm bị ảnh hưởng." },
+  { day:69, en:"To be honest, I find online meetings tiring.", vi:"Thật ra, tôi thấy các buổi họp online mệt mỏi." },
+  { day:69, en:"A hybrid model seems to work best.", vi:"Mô hình kết hợp dường như hiệu quả nhất." },
+  // Day 70 - Past Perfect
+  { day:70, en:"By the time I arrived, the meeting had already started.", vi:"Khi tôi đến, cuộc họp đã bắt đầu rồi." },
+  { day:70, en:"I had finished all the reports before the deadline yesterday.", vi:"Tôi đã hoàn thành tất cả báo cáo trước hạn hôm qua." },
+  { day:70, en:"When we got to the cinema, the film had already begun.", vi:"Khi chúng tôi đến rạp, bộ phim đã bắt đầu rồi." },
+  { day:70, en:"Had you booked the tickets in advance?", vi:"Bạn đã đặt vé trước chưa?" },
+  { day:70, en:"We had not eaten before the film and were starving.", vi:"Chúng tôi chưa ăn trước khi xem phim và rất đói." },
+  // Day 71 - Shopping online
+  { day:71, en:"Do you prefer shopping online or in a physical store?", vi:"Bạn thích mua sắm online hay tại cửa hàng?" },
+  { day:71, en:"I love shopping online. It is so convenient and saves time.", vi:"Tôi thích mua sắm online. Rất tiện lợi và tiết kiệm thời gian." },
+  { day:71, en:"I always read reviews before I order anything.", vi:"Tôi luôn đọc đánh giá trước khi đặt hàng." },
+  { day:71, en:"I ordered a coffee maker and it arrived the next day.", vi:"Tôi đã đặt máy pha cà phê và nó đến ngày hôm sau." },
+  { day:71, en:"I always compare prices on different websites first.", vi:"Tôi luôn so sánh giá trên các trang web khác nhau trước." },
+  // Day 72 - Social media
+  { day:72, en:"How many hours a day do you spend on social media?", vi:"Mỗi ngày bạn dùng bao nhiêu giờ cho mạng xã hội?" },
+  { day:72, en:"I try to limit myself to one hour.", vi:"Tôi cố gắng giới hạn bản thân ở một giờ." },
+  { day:72, en:"Which platforms do you use most?", vi:"Bạn dùng nền tảng nào nhiều nhất?" },
+  { day:72, en:"It connects us, but it can also be addictive.", vi:"Nó kết nối chúng ta, nhưng cũng có thể gây nghiện." },
+  { day:72, en:"I use Facebook for keeping in touch with family.", vi:"Tôi dùng Facebook để giữ liên lạc với gia đình." },
+  // Day 73 - At the hospital
+  { day:73, en:"I have a high fever and a sore throat.", vi:"Tôi bị sốt cao và đau họng." },
+  { day:73, en:"I would like to make an appointment with the doctor.", vi:"Tôi muốn đặt lịch khám với bác sĩ." },
+  { day:73, en:"The doctor prescribed some medicine for my cold.", vi:"Bác sĩ đã kê thuốc cho tôi vì cảm lạnh." },
+  { day:73, en:"I am allergic to penicillin and some painkillers.", vi:"Tôi bị dị ứng với penicillin và một số thuốc giảm đau." },
+  { day:73, en:"How many times a day should I take this medicine?", vi:"Tôi nên uống thuốc này mấy lần một ngày?" },
+  // Day 74 - Hotel
+  { day:74, en:"I'd like to check in. I have a reservation.", vi:"Tôi muốn nhận phòng. Tôi có đặt phòng trước." },
+  { day:74, en:"What time is checkout? And is breakfast included?", vi:"Mấy giờ trả phòng? Và bữa sáng có bao gồm không?" },
+  { day:74, en:"Could you bring extra towels to my room, please?", vi:"Bạn có thể mang thêm khăn tắm đến phòng tôi không?" },
+  { day:74, en:"The air conditioner in my room is not working.", vi:"Điều hòa trong phòng tôi không hoạt động." },
+  { day:74, en:"I'd like to extend my stay for two more nights.", vi:"Tôi muốn kéo dài thời gian ở thêm hai đêm nữa." },
+  // Day 75 - Ride-hailing
+  { day:75, en:"Could you call a taxi for me?", vi:"Bạn có thể gọi taxi giúp tôi không?" },
+  { day:75, en:"I need a ride to the airport. How long will it take?", vi:"Tôi cần đi đến sân bay. Mất bao lâu?" },
+  { day:75, en:"Please drop me off at the main entrance.", vi:"Hãy thả tôi xuống ở cổng chính." },
+  { day:75, en:"The driver is waiting outside. He'll be here in two minutes.", vi:"Tài xế đang đợi bên ngoài. Anh ấy sẽ đến trong hai phút." },
+  { day:75, en:"Can you take a different route? This road is congested.", vi:"Bạn có thể đi đường khác không? Con đường này bị tắc." },
+  // Day 76 - Railway Station
+  { day:76, en:"What time does the train leave?", vi:"Mấy giờ tàu chạy?" },
+  { day:76, en:"I need to buy a ticket to Hanoi.", vi:"Tôi cần mua một vé đi Hà Nội." },
+  { day:76, en:"Is there a direct train or do I need to transfer?", vi:"Có tàu thẳng không hay tôi cần chuyển tàu?" },
+  { day:76, en:"Which platform does the train to Hanoi depart from?", vi:"Tàu đi Hà Nội xuất phát từ sân ga nào?" },
+  { day:76, en:"The train is delayed by thirty minutes due to bad weather.", vi:"Tàu bị trễ ba mươi phút do thời tiết xấu." },
+  // Day 77 - Sales Communication
+  { day:77, en:"Let's negotiate a better price for this order.", vi:"Hãy cùng thương lượng một mức giá tốt hơn cho đơn hàng này." },
+  { day:77, en:"We can offer you a discount of ten percent.", vi:"Chúng tôi có thể cung cấp cho bạn mức giảm giá mười phần trăm." },
+  { day:77, en:"Could you send us a quotation by tomorrow?", vi:"Bạn có thể gửi cho chúng tôi báo giá vào ngày mai không?" },
+  { day:77, en:"We would like to place an order for fifty units.", vi:"Chúng tôi muốn đặt hàng năm mươi đơn vị." },
+  { day:77, en:"When can we expect the delivery to arrive?", vi:"Khi nào chúng tôi có thể nhận hàng giao?" },
+  // Day 78 - Vacation
+  { day:78, en:"I am looking forward to our vacation.", vi:"Tôi rất mong chờ kỳ nghỉ của chúng ta." },
+  { day:78, en:"We booked a tour package that includes hotel and flights.", vi:"Chúng tôi đặt gói tour bao gồm khách sạn và vé máy bay." },
+  { day:78, en:"She went snorkeling and saw beautiful coral reefs.", vi:"Cô ấy đã đi lặn và nhìn thấy những rạn san hô đẹp." },
+  { day:78, en:"I always take too many photos when I travel.", vi:"Tôi luôn chụp quá nhiều ảnh khi đi du lịch." },
+  { day:78, en:"This beach town is very peaceful and relaxing.", vi:"Thị trấn biển này rất thanh bình và thư thái." },
+  // Day 79 - Adjective Order (advanced)
+  { day:79, en:"She bought a gorgeous long purple silk scarf.", vi:"Cô ấy mua một chiếc khăn lụa tím dài lộng lẫy." },
+  { day:79, en:"He drives a stylish new German sports car.", vi:"Anh ấy lái một chiếc xe thể thao Đức mới phong cách." },
+  { day:79, en:"We stayed in a charming old stone cottage.", vi:"Chúng tôi ở trong một ngôi nhà đá cổ kính đáng yêu." },
+  { day:79, en:"She wore a stunning enormous diamond ring.", vi:"Cô ấy đeo một chiếc nhẫn kim cương khổng lồ lộng lẫy." },
+  { day:79, en:"He gave her a lovely small round wooden box.", vi:"Anh ấy tặng cô ấy một chiếc hộp gỗ nhỏ tròn xinh xắn." },
+  // Day 80 - P Verbs (promise/prepare/pretend)
+  { day:80, en:"She promised to be honest no matter what happens.", vi:"Cô ấy đã hứa sẽ trung thực dù chuyện gì xảy ra." },
+  { day:80, en:"He prepared a detailed plan before the meeting.", vi:"Anh ấy đã chuẩn bị một kế hoạch chi tiết trước cuộc họp." },
+  { day:80, en:"The children pretended to be superheroes in the garden.", vi:"Bọn trẻ giả vờ là siêu anh hùng trong vườn." },
+  { day:80, en:"She prevented the accident by acting quickly.", vi:"Cô ấy đã ngăn chặn tai nạn bằng cách hành động nhanh chóng." },
+  { day:80, en:"Practice makes perfect, so keep speaking every day.", vi:"Có công mài sắt có ngày nên kim, hãy luyện nói mỗi ngày." },
+];
+
+// ── Toàn bộ câu luyện nói (xáo trộn 1 lần khi tải trang) ──
+var SESSION_SENTENCES = [];
+var practiceIndex = 0;
+
+function shuffleArray(arr){
+  var pool = arr.slice();
+  for(var i = pool.length - 1; i > 0; i--){
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = pool[i]; pool[i] = pool[j]; pool[j] = tmp;
+  }
+  return pool;
+}
+
+function initPracticeTab(){
+  SESSION_SENTENCES = shuffleArray(ALL_PRACTICE_SENTENCES);
+  practiceIndex = 0;
+  document.getElementById('prac-total').textContent = SESSION_SENTENCES.length;
+  renderPracticeSentence();
+}
+
+function renderPracticeSentence(){
+  var item = SESSION_SENTENCES[practiceIndex];
+  document.getElementById('prac-sentence').textContent = item.en;
+  document.getElementById('prac-translation').textContent = item.vi;
+  document.getElementById('prac-day').textContent = item.day;
+  document.getElementById('prac-index').textContent = (practiceIndex + 1);
+  document.getElementById('prac-total').textContent = SESSION_SENTENCES.length;
+  document.getElementById('prac-heard').textContent = '—';
+  document.getElementById('prac-score-row').style.display = 'none';
+  document.getElementById('prac-text-input').value = '';
+  document.getElementById('prac-text-input').placeholder = 'Nhấn 🎙️ và nói câu tiếng Anh ở trên...';
+}
+
+function nextSentence(){
+  practiceIndex = (practiceIndex + 1) % SESSION_SENTENCES.length;
+  if(practiceIndex === 0) SESSION_SENTENCES = shuffleArray(ALL_PRACTICE_SENTENCES);
+  renderPracticeSentence();
+}
+function prevSentence(){
+  practiceIndex = (practiceIndex - 1 + SESSION_SENTENCES.length) % SESSION_SENTENCES.length;
+  renderPracticeSentence();
+}
+function listenSentence(){
+  speakText(SESSION_SENTENCES[practiceIndex].en);
+}
+
+// ── Speech recognition để tự nhập câu nói vào ô input ──
+var practiceRecognition = null;
+var practiceRecording = false;
+
+function togglePracticeMic(){
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  var btn = document.getElementById('prac-mic-btn');
+
+  if(!SR){
+    alert('Trình duyệt này không hỗ trợ nhận diện giọng nói trực tiếp.\n\n👉 Trên ĐIỆN THOẠI: hãy chạm vào ô nhập "✏️ Ô nhập tự động" bên dưới, sau đó nhấn nút 🎤 micro trên bàn phím Google (Gboard) và đọc câu tiếng Anh — kết quả sẽ tự động được nhập vào ô đó để bạn đối chiếu.');
+    document.getElementById('prac-text-input').focus();
+    return;
+  }
+
+  if(practiceRecording){
+    practiceRecognition.stop();
+    return;
+  }
+
+  practiceRecognition = new SR();
+  practiceRecognition.lang = 'en-US';
+  practiceRecognition.interimResults = false;
+  practiceRecognition.maxAlternatives = 1;
+
+  practiceRecognition.onstart = function(){
+    practiceRecording = true;
+    btn.classList.add('recording');
+    btn.textContent = '🔴 Đang nghe...';
+  };
+  practiceRecognition.onresult = function(e){
+    var text = e.results[0][0].transcript;
+    document.getElementById('prac-text-input').value = text;
+    checkPronunciation();
+  };
+  practiceRecognition.onerror = function(){
+    practiceRecording = false;
+    btn.classList.remove('recording');
+    btn.textContent = '🎙️ Bắt đầu nói';
+  };
+  practiceRecognition.onend = function(){
+    practiceRecording = false;
+    btn.classList.remove('recording');
+    btn.textContent = '🎙️ Bắt đầu nói';
+  };
+  practiceRecognition.start();
+}
+
+// So sánh đơn giản giữa câu mẫu và câu nói được nhận diện
+function normalize(s){
+  return s.toLowerCase().replace(/[^a-z0-9\s]/g,'').trim().replace(/\s+/g,' ');
+}
+
+function checkPronunciation(){
+  var heard = document.getElementById('prac-text-input').value;
+  document.getElementById('prac-heard').textContent = heard || '—';
+  if(!heard.trim()){
+    document.getElementById('prac-score-row').style.display = 'none';
+    return;
+  }
+  var target = normalize(SESSION_SENTENCES[practiceIndex].en);
+  var said = normalize(heard);
+  var targetWords = target.split(' ');
+  var saidWords = said.split(' ');
+
+  var matched = 0;
+  var saidCopy = saidWords.slice();
+  targetWords.forEach(function(w){
+    var idx = saidCopy.indexOf(w);
+    if(idx >= 0){ matched++; saidCopy.splice(idx,1); }
+  });
+  var pct = Math.round((matched / targetWords.length) * 100);
+
+  var row = document.getElementById('prac-score-row');
+  var badge = document.getElementById('prac-score-badge');
+  var detail = document.getElementById('prac-score-detail');
+  row.style.display = 'flex';
+
+  if(said === target){
+    badge.className = 'score-badge good';
+    badge.textContent = '✅ Hoàn hảo!';
+    detail.textContent = 'Bạn đã nói đúng 100% câu mẫu.';
+  } else if(pct >= 80){
+    badge.className = 'score-badge good';
+    badge.textContent = '👍 Tốt (' + pct + '%)';
+    detail.textContent = 'Rất gần với câu mẫu, tiếp tục luyện tập!';
+  } else if(pct >= 50){
+    badge.className = 'score-badge mid';
+    badge.textContent = '🙂 Khá (' + pct + '%)';
+    detail.textContent = 'Hãy nghe lại câu mẫu và thử lại.';
+  } else {
+    badge.className = 'score-badge bad';
+    badge.textContent = '🔁 Thử lại (' + pct + '%)';
+    detail.textContent = 'Phát âm chưa khớp nhiều, hãy nghe mẫu rồi nói lại chậm rãi.';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', initPracticeTab);
+</script>
+</body>
+</html>
