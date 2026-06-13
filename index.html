@@ -495,6 +495,130 @@ main{max-width:900px;margin:0 auto;padding:32px 16px 64px;}
   .tab-btn{font-size:.78rem;padding:10px;min-width:90px;}
   .chat-wrap{height:75vh;}
 }
+
+/* ── LUYỆN NGHE TAB ── */
+.listen-wrap{
+  background:var(--card);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:20px;
+}
+.listen-day-selector{
+  display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:20px;
+}
+.listen-day-selector select{
+  flex:1;min-width:200px;
+  padding:10px 16px;border-radius:12px;
+  border:2px solid #dee2e6;font-size:.9rem;font-family:inherit;font-weight:700;
+  outline:none;background:white;color:var(--primary);cursor:pointer;
+  transition:border .2s;
+}
+.listen-day-selector select:focus{border-color:var(--blue);}
+.listen-player-box{
+  background:linear-gradient(135deg,#0d1b2a,#1a3a5c);
+  border-radius:16px;
+  padding:24px 20px;
+  margin-bottom:18px;
+  color:white;
+}
+.listen-player-title{
+  font-family:'Baloo 2',cursive;
+  font-size:1.1rem;font-weight:800;
+  margin-bottom:4px;
+}
+.listen-player-topic{
+  font-size:.82rem;color:rgba(255,255,255,.6);font-weight:600;margin-bottom:18px;
+}
+.listen-waveform{
+  display:flex;align-items:center;gap:3px;justify-content:center;
+  height:40px;margin-bottom:16px;
+}
+.wave-bar{
+  width:4px;border-radius:4px;
+  background:var(--accent);opacity:.4;
+  transition:height .1s,opacity .1s;
+}
+.listen-controls{
+  display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;
+  margin-bottom:18px;
+}
+.listen-btn{
+  border:none;border-radius:12px;padding:11px 18px;
+  font-size:.86rem;font-weight:800;font-family:inherit;cursor:pointer;
+  display:flex;align-items:center;gap:6px;transition:all .2s;
+}
+.lb-play{background:var(--accent);color:var(--primary);}
+.lb-play:hover{background:#f5c300;}
+.lb-stop{background:#f1f3f5;color:var(--primary);}
+.lb-stop:hover{background:#dee2e6;}
+.lb-replay{background:rgba(255,255,255,.12);color:white;border:1px solid rgba(255,255,255,.2);}
+.lb-replay:hover{background:rgba(255,255,255,.2);}
+.listen-speed-row{
+  display:flex;align-items:center;gap:10px;justify-content:center;flex-wrap:wrap;
+}
+.listen-speed-label{font-size:.78rem;font-weight:800;color:rgba(255,255,255,.6);}
+.speed-btn{
+  border:2px solid rgba(255,255,255,.25);background:transparent;color:white;
+  border-radius:20px;padding:4px 13px;font-size:.78rem;font-weight:800;
+  cursor:pointer;font-family:inherit;transition:all .2s;
+}
+.speed-btn.active{background:var(--accent);color:var(--primary);border-color:var(--accent);}
+.listen-timer{
+  text-align:center;font-size:.82rem;font-weight:700;color:rgba(255,255,255,.55);
+  margin-bottom:12px;
+}
+.listen-progress-wrap{
+  background:rgba(255,255,255,.12);height:6px;border-radius:6px;overflow:hidden;
+  margin-bottom:16px;cursor:pointer;
+}
+.listen-progress-fill{
+  height:100%;border-radius:6px;
+  background:linear-gradient(90deg,var(--accent),#ff9f43);
+  transition:width .3s;
+}
+.listen-dialogue-box{
+  background:#f8f9fa;border-radius:14px;padding:18px;
+}
+.dialogue-title{
+  font-family:'Baloo 2',cursive;font-size:.95rem;font-weight:800;
+  color:var(--primary);margin-bottom:12px;display:flex;align-items:center;gap:6px;
+}
+.dialogue-line{
+  display:flex;gap:10px;margin-bottom:12px;align-items:flex-start;
+}
+.dialogue-line.b-line{flex-direction:row-reverse;}
+.dialogue-avatar{
+  width:34px;height:34px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1rem;flex-shrink:0;font-weight:800;
+}
+.av-a{background:var(--blue);color:white;}
+.av-b{background:var(--green);color:white;}
+.dialogue-bubble{
+  max-width:75%;
+  padding:10px 14px;border-radius:14px;
+  font-size:.88rem;line-height:1.6;font-weight:600;
+}
+.bubble-a{background:white;border:2px solid #e9ecef;border-top-left-radius:4px;color:var(--primary);}
+.bubble-b{background:#e8f5e9;border:2px solid #c8e6c9;border-top-right-radius:4px;color:#1a5e2a;text-align:right;}
+.bubble-vi{font-size:.76rem;color:#868e96;margin-top:4px;font-weight:600;font-style:italic;}
+.dialogue-line.active-line .dialogue-bubble{
+  background:linear-gradient(135deg,#fff8db,#fffbe6);
+  border-color:var(--accent);
+  box-shadow:0 2px 10px rgba(255,217,61,.3);
+}
+.listen-note{
+  background:#e7f5ff;border:2px dashed var(--blue);
+  border-radius:12px;padding:12px 16px;
+  font-size:.84rem;line-height:1.7;color:#1864ab;font-weight:600;margin-bottom:16px;
+}
+.wakelock-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  background:#d3f9d8;color:#2b8a3e;
+  border-radius:20px;padding:3px 10px;font-size:.74rem;font-weight:800;
+  margin-top:8px;
+}
+.wakelock-badge.off{background:#ffe3e3;color:#c92a2a;}
 </style>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0d1b2a">
@@ -1227,6 +1351,7 @@ document.addEventListener('DOMContentLoaded', buildSite);
 <div class="main-tabs">
   <button class="tab-btn active" data-tab="lessons" onclick="switchTab('lessons')">📚 Bài học</button>
   <button class="tab-btn" data-tab="ai-chat" onclick="switchTab('ai-chat')">🤖 Chat với AI</button>
+  <button class="tab-btn" data-tab="listen-practice" onclick="switchTab('listen-practice')">🎧 Luyện nghe</button>
   <button class="tab-btn" data-tab="speak-practice" onclick="switchTab('speak-practice')">🗣️ Luyện nói</button>
 </div>
 
@@ -1303,6 +1428,55 @@ document.addEventListener('DOMContentLoaded', buildSite);
   </div>
 </div>
 <!-- ═══════ /TAB: CHAT VỚI AI ═══════ -->
+
+<!-- ═══════ TAB: LUYỆN NGHE ═══════ -->
+<div class="tab-panel" id="tab-listen-practice">
+  <div class="section-title">🎧 Luyện nghe hội thoại theo từng ngày</div>
+
+  <div class="listen-note">
+    🔊 <strong>Cách dùng:</strong> Chọn bài học, nhấn <strong>▶ Phát</strong> để nghe hội thoại (~5 phút). Hai giọng đọc khác nhau phân biệt nhân vật A và B. Bạn có thể chỉnh tốc độ nghe. Màn hình sẽ <strong>không tắt</strong> trong khi nghe.
+    <div class="wakelock-badge off" id="wakelock-status">🔒 Chưa kích hoạt giữ màn hình</div>
+  </div>
+
+  <div class="listen-day-selector">
+    <select id="listen-day-select" onchange="loadListenLesson()">
+      <option value="">-- Chọn bài học --</option>
+    </select>
+    <button class="listen-btn lb-play" onclick="playDialogue()" id="listen-play-btn" disabled>▶ Phát</button>
+    <button class="listen-btn lb-stop" onclick="stopDialogue()">⏹ Dừng</button>
+  </div>
+
+  <div class="listen-player-box" id="listen-player-box" style="display:none">
+    <div class="listen-player-title" id="listen-title">—</div>
+    <div class="listen-player-topic" id="listen-topic">—</div>
+    <div class="listen-waveform" id="listen-waveform">
+      <!-- wave bars injected by JS -->
+    </div>
+    <div class="listen-timer" id="listen-timer">0:00 / 5:00</div>
+    <div class="listen-progress-wrap" id="listen-prog-wrap" onclick="seekDialogue(event)">
+      <div class="listen-progress-fill" id="listen-prog-fill" style="width:0%"></div>
+    </div>
+    <div class="listen-controls">
+      <button class="listen-btn lb-replay" onclick="replayLine()">⟳ Nghe lại câu này</button>
+    </div>
+    <div class="listen-speed-row">
+      <span class="listen-speed-label">TỐC ĐỘ:</span>
+      <button class="speed-btn" onclick="setSpeed(0.6)" data-speed="0.6">0.6×</button>
+      <button class="speed-btn" onclick="setSpeed(0.8)" data-speed="0.8">0.8×</button>
+      <button class="speed-btn active" onclick="setSpeed(1.0)" data-speed="1.0">1×</button>
+      <button class="speed-btn" onclick="setSpeed(1.2)" data-speed="1.2">1.2×</button>
+      <button class="speed-btn" onclick="setSpeed(1.5)" data-speed="1.5">1.5×</button>
+    </div>
+  </div>
+
+  <div class="listen-dialogue-box" id="listen-dialogue-box" style="display:none">
+    <div class="dialogue-title">💬 Nội dung hội thoại</div>
+    <div id="dialogue-content">
+      <!-- Dialogue lines injected by JS -->
+    </div>
+  </div>
+</div>
+<!-- ═══════ /TAB: LUYỆN NGHE ═══════ -->
 
 <!-- ═══════ TAB: LUYỆN NÓI ═══════ -->
 <div class="tab-panel" id="tab-speak-practice">
@@ -1521,6 +1695,1233 @@ function toggleChatMic(){
   };
   chatRecognition.start();
 }
+</script>
+
+<!-- ══════════════ LUYỆN NGHE TAB ══════════════ -->
+<script>
+// ═══════════════════════════════════════════════════════════════
+// DỮ LIỆU HỘI THOẠI – LUYỆN NGHE (Day 1 – 10 mẫu, thêm tiếp)
+// Mỗi entry: { day, title, topic, lines: [{speaker:'A'|'B', text}] }
+// ═══════════════════════════════════════════════════════════════
+const DIALOGUES = [
+  {
+    day: 1, title: 'SHORT PHRASES', topic: 'Chào hỏi & Giao tiếp cơ bản',
+    lines: [
+      { speaker:'A', text:"Hello! My name is Anna. Nice to meet you." },
+      { speaker:'B', text:"Hi Anna! I'm Ben. Nice to meet you too." },
+      { speaker:'A', text:"How are you today, Ben?" },
+      { speaker:'B', text:"I'm great, thank you! And you?" },
+      { speaker:'A', text:"I'm fine, thanks. Excuse me, could you say that again?" },
+      { speaker:'B', text:"Of course! I said I am doing great today." },
+      { speaker:'A', text:"Thank you so much for your help." },
+      { speaker:'B', text:"You're welcome! Have a great day!" },
+    ]
+  },
+  {
+    day: 2, title: 'WH QUESTIONS', topic: 'Câu hỏi WH cơ bản',
+    lines: [
+      { speaker:'A', text:"What is your name?" },
+      { speaker:'B', text:"My name is Lily. What about you?" },
+      { speaker:'A', text:"I'm Tom. Where do you live, Lily?" },
+      { speaker:'B', text:"I live in Da Nang. Where are you from?" },
+      { speaker:'A', text:"I'm from Hanoi. Why are you learning English?" },
+      { speaker:'B', text:"I want to travel abroad. When did you start learning?" },
+      { speaker:'A', text:"I started three years ago. Who is your English teacher?" },
+      { speaker:'B', text:"My teacher's name is Ms. Hoa. She is wonderful!" },
+    ]
+  },
+  {
+    day: 3, title: 'WHERE IS / WHERE ARE', topic: 'Hỏi vị trí',
+    lines: [
+      { speaker:'A', text:"Excuse me, where is the nearest bus station?" },
+      { speaker:'B', text:"It's about two blocks from here, on Nguyen Van Linh Street." },
+      { speaker:'A', text:"Thank you! And where are the toilets in this building?" },
+      { speaker:'B', text:"They are on the second floor, next to the elevator." },
+      { speaker:'A', text:"Where is the nearest hospital?" },
+      { speaker:'B', text:"Da Nang Hospital is about five minutes by taxi." },
+      { speaker:'A', text:"Great. Where are my keys? I can't find them!" },
+      { speaker:'B', text:"I think they are on the table near the door." },
+    ]
+  },
+  {
+    day: 4, title: 'AGE & MARITAL STATUS', topic: 'Tuổi tác & Tình trạng hôn nhân',
+    lines: [
+      { speaker:'A', text:"How old are you?" },
+      { speaker:'B', text:"I am twenty-five years old. How about you?" },
+      { speaker:'A', text:"I am thirty. Are you married?" },
+      { speaker:'B', text:"No, I am still single. Are you?" },
+      { speaker:'A', text:"Yes, I got married last year." },
+      { speaker:'B', text:"Congratulations! How is married life?" },
+      { speaker:'A', text:"It is wonderful, thank you! Do you have any children?" },
+      { speaker:'B', text:"Not yet. Maybe in a few years!" },
+    ]
+  },
+  {
+    day: 5, title: 'FAMILY MEMBERS', topic: 'Thành viên gia đình',
+    lines: [
+      { speaker:'A', text:"Tell me about your family." },
+      { speaker:'B', text:"I have two brothers and one sister. My parents live in the countryside." },
+      { speaker:'A', text:"Are you the oldest?" },
+      { speaker:'B', text:"Yes, I am. My sister is younger than me by three years." },
+      { speaker:'A', text:"What does your brother do?" },
+      { speaker:'B', text:"My brother works as a teacher. My other brother is still a student." },
+      { speaker:'A', text:"That sounds like a wonderful family!" },
+      { speaker:'B', text:"Thank you! We are very close. We meet every weekend." },
+    ]
+  },
+  {
+    day: 6, title: 'EXTENDED FAMILY', topic: 'Họ hàng mở rộng',
+    lines: [
+      { speaker:'A', text:"Do you have a big family?" },
+      { speaker:'B', text:"Yes! My grandparents live in the village and we visit them often." },
+      { speaker:'A', text:"Do you have any cousins?" },
+      { speaker:'B', text:"Yes, I have five cousins. My cousin is visiting us next week." },
+      { speaker:'A', text:"How about aunts and uncles?" },
+      { speaker:'B', text:"I have two aunts on my mother's side and one uncle on my father's side." },
+      { speaker:'A', text:"Do you have a family reunion?" },
+      { speaker:'B', text:"Yes! We have a big family reunion every Lunar New Year." },
+    ]
+  },
+  {
+    day: 7, title: 'JOBS', topic: 'Nghề nghiệp',
+    lines: [
+      { speaker:'A', text:"What do you do for a living?" },
+      { speaker:'B', text:"I work as an engineer in the city. What about you?" },
+      { speaker:'A', text:"I am a nurse at the local hospital." },
+      { speaker:'B', text:"That must be very rewarding work." },
+      { speaker:'A', text:"Yes, it is! Do you enjoy your job?" },
+      { speaker:'B', text:"Most of the time. But sometimes the hours are very long." },
+      { speaker:'A', text:"I understand. My father is a farmer and works very hard too." },
+      { speaker:'B', text:"All jobs have challenges. What matters is that we enjoy what we do!" },
+    ]
+  },
+  {
+    day: 8, title: 'OBJECT PRONOUNS', topic: 'Đại từ tân ngữ',
+    lines: [
+      { speaker:'A', text:"Can you help me, please?" },
+      { speaker:'B', text:"Of course! What do you need?" },
+      { speaker:'A', text:"I need to send this package. Can you give it to her?" },
+      { speaker:'B', text:"Sure. She gave him a gift earlier too." },
+      { speaker:'A', text:"We saw them at the market yesterday." },
+      { speaker:'B', text:"Really? Tell her I will call her back later." },
+      { speaker:'A', text:"He sent us an invitation to his party." },
+      { speaker:'B', text:"How nice! Let's go together. I'll meet you there." },
+    ]
+  },
+  {
+    day: 9, title: 'PRONOUNS & POSSESSIVE', topic: 'Đại từ & Tính từ sở hữu',
+    lines: [
+      { speaker:'A', text:"Is this your bag?" },
+      { speaker:'B', text:"No, it is not mine. I think it is hers." },
+      { speaker:'A', text:"Her bag is red. This one is black." },
+      { speaker:'B', text:"Maybe it is his. Ask him when he comes back." },
+      { speaker:'A', text:"Wait, I see a name tag. It says 'Tom'." },
+      { speaker:'B', text:"Then it is his! We should give it to him." },
+      { speaker:'A', text:"Good idea. Their bags all look very similar." },
+      { speaker:'B', text:"That is why labels are so important!" },
+    ]
+  },
+  {
+    day: 10, title: 'THIS / THAT / THESE / THOSE', topic: 'Đại từ chỉ định',
+    lines: [
+      { speaker:'A', text:"What is this?" },
+      { speaker:'B', text:"This is my new phone. Do you like it?" },
+      { speaker:'A', text:"It looks nice! And what are those over there?" },
+      { speaker:'B', text:"Those are my new shoes. I bought them yesterday." },
+      { speaker:'A', text:"How about these books on the table?" },
+      { speaker:'B', text:"These are for my English class. That big one is a dictionary." },
+      { speaker:'A', text:"And that poster on the wall?" },
+      { speaker:'B', text:"That is a map of the world. I love geography!" },
+    ]
+  },
+  {
+    day: 11, title: 'SỐ ĐẾM (0–99)', topic: 'Đếm từ 0 đến 99',
+    lines: [
+      { speaker:'A', text:"How many students are in your class?" },
+      { speaker:'B', text:"There are thirty-five students. How about yours?" },
+      { speaker:'A', text:"We have forty-two. That is quite a big class!" },
+      { speaker:'B', text:"Yes. My phone number ends in seventy-eight." },
+      { speaker:'A', text:"Mine ends in ninety-nine. Easy to remember!" },
+      { speaker:'B', text:"Ha! My apartment is on the fifteenth floor." },
+      { speaker:'A', text:"Mine is on the twenty-third. The view is amazing." },
+      { speaker:'B', text:"I agree. High floors are always better!" },
+    ]
+  },
+  {
+    day: 12, title: 'SỐ ĐẾM (Trăm–Triệu)', topic: '100 / 1,000 / 1,000,000',
+    lines: [
+      { speaker:'A', text:"How much does that laptop cost?" },
+      { speaker:'B', text:"It costs about fifteen million dong." },
+      { speaker:'A', text:"That is expensive! The one I have cost eight million." },
+      { speaker:'B', text:"But this one has five hundred gigabytes of storage." },
+      { speaker:'A', text:"How many people live in Da Nang?" },
+      { speaker:'B', text:"About one million two hundred thousand people." },
+      { speaker:'A', text:"And Ho Chi Minh City has about nine million, right?" },
+      { speaker:'B', text:"Yes, almost ten million! It is the biggest city in Vietnam." },
+    ]
+  },
+  {
+    day: 13, title: 'SỐ ĐẾM – Hàng Trăm & How Much?', topic: 'Hỏi giá tiền cơ bản',
+    lines: [
+      { speaker:'A', text:"Excuse me, how much is this shirt?" },
+      { speaker:'B', text:"It is two hundred and fifty thousand dong." },
+      { speaker:'A', text:"And those trousers over there?" },
+      { speaker:'B', text:"Those are three hundred and eighty thousand." },
+      { speaker:'A', text:"Can I get a discount if I buy both?" },
+      { speaker:'B', text:"Sure! I can give you five hundred and fifty for both." },
+      { speaker:'A', text:"That saves me eighty thousand. Deal!" },
+      { speaker:'B', text:"Great! Let me wrap them up for you." },
+    ]
+  },
+  {
+    day: 14, title: 'YEARS – Cách đọc năm', topic: 'Cách đọc năm trong Tiếng Anh',
+    lines: [
+      { speaker:'A', text:"When were you born?" },
+      { speaker:'B', text:"I was born in nineteen ninety-eight. And you?" },
+      { speaker:'A', text:"I was born in two thousand and one." },
+      { speaker:'B', text:"When did you graduate from university?" },
+      { speaker:'A', text:"I graduated in twenty twenty-three. What about you?" },
+      { speaker:'B', text:"I graduated in twenty twenty-one." },
+      { speaker:'A', text:"Which year did Vietnam host the SEA Games?" },
+      { speaker:'B', text:"Vietnam hosted the SEA Games in twenty twenty-two." },
+    ]
+  },
+  {
+    day: 15, title: 'BODY PARTS', topic: 'Các bộ phận cơ thể',
+    lines: [
+      { speaker:'A', text:"Are you okay? You look like you are in pain." },
+      { speaker:'B', text:"My back hurts from sitting too long at the computer." },
+      { speaker:'A', text:"You should take a break. I have a headache too." },
+      { speaker:'B', text:"Maybe we both need to exercise more." },
+      { speaker:'A', text:"She broke her arm while playing basketball yesterday." },
+      { speaker:'B', text:"Oh no! Is she going to the hospital?" },
+      { speaker:'A', text:"Yes. The doctor will check her shoulder and wrist too." },
+      { speaker:'B', text:"I hope she recovers quickly. Take care of your eyes too!" },
+    ]
+  },
+  {
+    day: 16, title: 'CLOTHING', topic: 'Quần áo & Giày dép',
+    lines: [
+      { speaker:'A', text:"What are you wearing to the party tonight?" },
+      { speaker:'B', text:"I am wearing a blue shirt and black trousers. And you?" },
+      { speaker:'A', text:"I bought a beautiful red dress for the occasion." },
+      { speaker:'B', text:"That sounds lovely! Did you get new shoes too?" },
+      { speaker:'A', text:"Yes, I got white sneakers. They match everything." },
+      { speaker:'B', text:"His trousers are too long. He needs to shorten them." },
+      { speaker:'A', text:"He should take them to the tailor on the corner." },
+      { speaker:'B', text:"Good idea. That tailor does great work!" },
+    ]
+  },
+  {
+    day: 17, title: 'CLOTHES (Mở rộng)', topic: 'Trang phục mở rộng',
+    lines: [
+      { speaker:'A', text:"It is cold outside today. Are you wearing a coat?" },
+      { speaker:'B', text:"Yes, I have a warm coat and a scarf. You should wear one too." },
+      { speaker:'A', text:"I only have a light jacket. Maybe I need to buy a new one." },
+      { speaker:'B', text:"She bought a new swimsuit for her vacation in Phu Quoc." },
+      { speaker:'A', text:"I love casual clothes on weekends. No uniforms!" },
+      { speaker:'B', text:"Me too. But at work I have to wear a uniform every day." },
+      { speaker:'A', text:"He wore a suit and tie to the interview yesterday." },
+      { speaker:'B', text:"Did he get the job?" },
+    ]
+  },
+  {
+    day: 18, title: 'ACCESSORIES', topic: 'Phụ kiện thời trang',
+    lines: [
+      { speaker:'A', text:"I love your watch! Where did you buy it?" },
+      { speaker:'B', text:"I bought it downtown last month. It was on sale." },
+      { speaker:'A', text:"She wears a gold necklace every day to work." },
+      { speaker:'B', text:"I prefer silver. I have a bracelet that matches my earrings." },
+      { speaker:'A', text:"Do not forget to bring your umbrella today. It might rain." },
+      { speaker:'B', text:"Good reminder! I always forget it and get wet." },
+      { speaker:'A', text:"His leather belt matches his shoes perfectly." },
+      { speaker:'B', text:"He always dresses so well. He has great style!" },
+    ]
+  },
+  {
+    day: 19, title: 'PLACES', topic: 'Địa điểm trong thành phố',
+    lines: [
+      { speaker:'A', text:"Excuse me, is there a pharmacy near here?" },
+      { speaker:'B', text:"Yes, there is one next to the supermarket on Bach Dang Street." },
+      { speaker:'A', text:"And where is the post office?" },
+      { speaker:'B', text:"The post office is on the corner of the street, near the park." },
+      { speaker:'A', text:"Thank you! We met at the coffee shop downtown yesterday." },
+      { speaker:'B', text:"Oh, I know that place! The coffee there is excellent." },
+      { speaker:'A', text:"The hospital is next to the museum, is that right?" },
+      { speaker:'B', text:"Correct! It is easy to find. There are signs everywhere." },
+    ]
+  },
+  {
+    day: 20, title: 'TRANSPORTATION', topic: 'Phương tiện giao thông',
+    lines: [
+      { speaker:'A', text:"How do you get to work every day?" },
+      { speaker:'B', text:"I take the bus. It is cheaper than riding a motorbike." },
+      { speaker:'A', text:"How long does it take?" },
+      { speaker:'B', text:"About thirty minutes. Can I walk to the station from here?" },
+      { speaker:'A', text:"Yes, it is only a ten minute walk. Turn left at the corner." },
+      { speaker:'B', text:"The flight from Hanoi to Ho Chi Minh City takes one hour." },
+      { speaker:'A', text:"That is so fast! I prefer flying to taking the train." },
+      { speaker:'B', text:"Me too, especially for long distances." },
+    ]
+  },
+  {
+    day: 21, title: 'IN THE LIVING ROOM', topic: 'Đồ vật trong phòng khách',
+    lines: [
+      { speaker:'A', text:"Your living room is so nice! I love the sofa." },
+      { speaker:'B', text:"Thank you! We just bought it last week." },
+      { speaker:'A', text:"Where did you put the television?" },
+      { speaker:'B', text:"The television is on the wall, opposite the sofa." },
+      { speaker:'A', text:"And that large bookshelf next to the window looks great." },
+      { speaker:'B', text:"Yes, I love reading. She put fresh flowers in the vase on the shelf." },
+      { speaker:'A', text:"The lamp on the table gives a very warm light." },
+      { speaker:'B', text:"Thank you! We watch television together every evening here." },
+    ]
+  },
+  {
+    day: 22, title: 'SENTENCE STRUCTURE', topic: 'Cấu tạo câu cơ bản S-V-O',
+    lines: [
+      { speaker:'A', text:"She reads books every night before sleeping." },
+      { speaker:'B', text:"That is a great habit. I drink coffee every morning to stay awake." },
+      { speaker:'A', text:"The children play in the garden after school." },
+      { speaker:'B', text:"My dog runs fast and jumps very high in the garden too." },
+      { speaker:'A', text:"We cook dinner together on Sundays. It is our family tradition." },
+      { speaker:'B', text:"That sounds lovely. He drinks coffee in the morning to stay awake." },
+      { speaker:'A', text:"She reads books every night before sleeping." },
+      { speaker:'B', text:"Reading before bed helps you relax and sleep better." },
+    ]
+  },
+  {
+    day: 24, title: 'POLITE COMMUNICATION', topic: 'Giao tiếp lịch sự',
+    lines: [
+      { speaker:'A', text:"Excuse me, could you please pass me the salt?" },
+      { speaker:'B', text:"Of course! Here you go." },
+      { speaker:'A', text:"Thank you. Would you mind opening the window?" },
+      { speaker:'B', text:"Not at all. I appreciate your kindness very much." },
+      { speaker:'A', text:"May I ask you a quick question?" },
+      { speaker:'B', text:"Sure, go ahead." },
+      { speaker:'A', text:"I was wondering if you could help me with this form." },
+      { speaker:'B', text:"Absolutely! I would be happy to help." },
+    ]
+  },
+  {
+    day: 25, title: 'HOW MUCH & HOW MANY', topic: 'Hỏi số lượng & Giá tiền',
+    lines: [
+      { speaker:'A', text:"How many people are coming to the party?" },
+      { speaker:'B', text:"About twenty. How much food should we prepare?" },
+      { speaker:'A', text:"A lot! We do not have much time before the meeting." },
+      { speaker:'B', text:"How many languages can you speak?" },
+      { speaker:'A', text:"I speak three: Vietnamese, English, and a little Chinese." },
+      { speaker:'B', text:"Impressive! How much water do you drink per day?" },
+      { speaker:'A', text:"About two liters. Doctors recommend eight glasses." },
+      { speaker:'B', text:"I know. There are not many seats left in the theater, by the way." },
+    ]
+  },
+  {
+    day: 26, title: 'MANY / MUCH / A LOT OF', topic: 'Diễn đạt số lượng',
+    lines: [
+      { speaker:'A', text:"There are a lot of cars on the road today." },
+      { speaker:'B', text:"Yes, traffic is terrible. I do not have much time to wait." },
+      { speaker:'A', text:"He has many friends in different countries." },
+      { speaker:'B', text:"That is great! I do not have much money left in my wallet." },
+      { speaker:'A', text:"We got a lot of rain last month." },
+      { speaker:'B', text:"Yes, the streets flooded many times." },
+      { speaker:'A', text:"She does not have much free time on weekdays." },
+      { speaker:'B', text:"Same here. Weekends are precious!" },
+    ]
+  },
+  {
+    day: 27, title: 'SOME / ANY / NO', topic: 'Lượng từ Some / Any / No',
+    lines: [
+      { speaker:'A', text:"Is there any milk left in the fridge?" },
+      { speaker:'B', text:"There is some milk, but not much. Do you want some?" },
+      { speaker:'A', text:"Yes please. There is no sugar in my coffee." },
+      { speaker:'B', text:"I have some sugar here. Is there any problem with the contract?" },
+      { speaker:'A', text:"No, there are no problems. Everything looks good." },
+      { speaker:'B', text:"Can I have some water, please?" },
+      { speaker:'A', text:"Of course! I do not have any idea where she went." },
+      { speaker:'B', text:"Maybe she went to the market. She goes there every morning." },
+    ]
+  },
+  {
+    day: 28, title: 'ĐẠI TỪ BẤT ĐỊNH (Mở rộng)', topic: 'Every / Some / Any / No + body/thing/where',
+    lines: [
+      { speaker:'A', text:"Everybody knows that exercise is good for health." },
+      { speaker:'B', text:"Yes, but not everyone has time to exercise every day." },
+      { speaker:'A', text:"Something strange happened this morning at the office." },
+      { speaker:'B', text:"Really? Is everything okay now?" },
+      { speaker:'A', text:"Yes, somebody left a mysterious package at the door." },
+      { speaker:'B', text:"She looked everywhere but could not find her phone." },
+      { speaker:'A', text:"Nobody told me about the meeting change today." },
+      { speaker:'B', text:"Is there anything I can do to help you?" },
+    ]
+  },
+  {
+    day: 29, title: 'WAS / WERE', topic: 'Động từ To Be quá khứ',
+    lines: [
+      { speaker:'A', text:"I was very tired after the long trip yesterday." },
+      { speaker:'B', text:"Were you able to sleep on the bus?" },
+      { speaker:'A', text:"A little. Was she at home when you called?" },
+      { speaker:'B', text:"No, she was not. They were at the cinema." },
+      { speaker:'A', text:"We were late because the traffic was terrible." },
+      { speaker:'B', text:"The weather was perfect for a picnic last Sunday." },
+      { speaker:'A', text:"Yes! The sky was clear and the temperature was just right." },
+      { speaker:'B', text:"We should do that again soon." },
+    ]
+  },
+  {
+    day: 30, title: 'WAS & WERE (Luyện tập)', topic: 'Ứng dụng WAS/WERE trong câu',
+    lines: [
+      { speaker:'A', text:"He was not at the office yesterday. Do you know why?" },
+      { speaker:'B', text:"I think he was sick. The food at the restaurant was amazing!" },
+      { speaker:'A', text:"Were you nervous during the presentation?" },
+      { speaker:'B', text:"Yes, I was a little. But it went well in the end." },
+      { speaker:'A', text:"There were a lot of people at the concert last night." },
+      { speaker:'B', text:"I know! Why were they so quiet during the opening act?" },
+      { speaker:'A', text:"Maybe they were tired from waiting so long." },
+      { speaker:'B', text:"Possibly. The wait was almost two hours!" },
+    ]
+  },
+  {
+    day: 31, title: "DIDN'T & DID", topic: 'Câu phủ định & câu hỏi quá khứ',
+    lines: [
+      { speaker:'A', text:"I did not understand the instructions at first." },
+      { speaker:'B', text:"Did she call you back after the meeting?" },
+      { speaker:'A', text:"No, she did not. He did not come to work because he was sick." },
+      { speaker:'B', text:"Did you enjoy the movie last night?" },
+      { speaker:'A', text:"Yes! It was fantastic. Did you see it too?" },
+      { speaker:'B', text:"No, I did not. I stayed home. They did not finish the project on time." },
+      { speaker:'A', text:"Really? Why not?" },
+      { speaker:'B', text:"There were too many problems. Nothing went according to plan." },
+    ]
+  },
+  {
+    day: 32, title: "DIDN'T & DID (Luyện tập)", topic: 'Ôn tập phủ định & câu hỏi QK',
+    lines: [
+      { speaker:'A', text:"I did my homework before dinner last night." },
+      { speaker:'B', text:"Did they travel to Europe last summer?" },
+      { speaker:'A', text:"Yes, they did. She did not eat anything for breakfast this morning." },
+      { speaker:'B', text:"Why not? Was she not feeling well?" },
+      { speaker:'A', text:"She did not say. We did not know about the problem until later." },
+      { speaker:'B', text:"He did not say anything when she asked him." },
+      { speaker:'A', text:"That is strange. Did he seem upset?" },
+      { speaker:'B', text:"A little. But everything is fine now." },
+    ]
+  },
+  {
+    day: 33, title: 'ĐỘNG TỪ THÊM -ED', topic: 'Regular Verbs – Past Simple',
+    lines: [
+      { speaker:'A', text:"What did you do last weekend?" },
+      { speaker:'B', text:"I cleaned the house and cooked a big meal for my family." },
+      { speaker:'A', text:"That sounds nice! I walked to the park and played badminton." },
+      { speaker:'B', text:"She watched a movie and listened to music all afternoon." },
+      { speaker:'A', text:"He worked late and finished the report by nine o'clock." },
+      { speaker:'B', text:"I called my grandmother and talked to her for an hour." },
+      { speaker:'A', text:"We visited some friends and stayed for dinner." },
+      { speaker:'B', text:"It sounds like everyone had a great weekend!" },
+    ]
+  },
+  {
+    day: 34, title: 'IRREGULAR VERBS (Phần 1)', topic: 'Động từ bất quy tắc QK – nhóm 1',
+    lines: [
+      { speaker:'A', text:"Where did you go last night?" },
+      { speaker:'B', text:"I went to the cinema. I saw a great action film." },
+      { speaker:'A', text:"Who did you go with?" },
+      { speaker:'B', text:"I went with Tom. He came to pick me up at seven." },
+      { speaker:'A', text:"Did you eat before the movie?" },
+      { speaker:'B', text:"Yes, we ate at a restaurant near the cinema." },
+      { speaker:'A', text:"What did you have?" },
+      { speaker:'B', text:"I had grilled fish. It was delicious!" },
+    ]
+  },
+  {
+    day: 35, title: 'IRREGULAR VERBS (Phần 2)', topic: 'Động từ bất quy tắc QK – nhóm 2',
+    lines: [
+      { speaker:'A', text:"Did you sleep well last night?" },
+      { speaker:'B', text:"No, I woke up at three in the morning and could not sleep again." },
+      { speaker:'A', text:"Oh no! I took some medicine and slept very well." },
+      { speaker:'B', text:"I drank too much coffee in the evening. That was my mistake." },
+      { speaker:'A', text:"She wrote a long letter and sent it to her friend abroad." },
+      { speaker:'B', text:"He bought a new motorbike and drove it to work today." },
+      { speaker:'A', text:"We got to the station late and missed the train." },
+      { speaker:'B', text:"That is frustrating! I hope you found another way." },
+    ]
+  },
+  {
+    day: 36, title: 'IRREGULAR VERBS (Phần 3)', topic: 'Động từ bất quy tắc QK – nhóm 3',
+    lines: [
+      { speaker:'A', text:"I read an interesting article about climate change this morning." },
+      { speaker:'B', text:"I heard about it too! Someone told me about it yesterday." },
+      { speaker:'A', text:"She thought about it all day and felt very worried." },
+      { speaker:'B', text:"He made a donation to an environmental charity last week." },
+      { speaker:'A', text:"They found a new solution to reduce plastic waste." },
+      { speaker:'B', text:"That is great! I left my reusable bag at home today." },
+      { speaker:'A', text:"I brought an extra one. You can have it." },
+      { speaker:'B', text:"Thank you! You are always so thoughtful." },
+    ]
+  },
+  {
+    day: 37, title: 'IRREGULAR VERBS & PREPOSITIONS', topic: 'Động từ bất quy tắc & Giới từ hướng',
+    lines: [
+      { speaker:'A', text:"Where did you go after work yesterday?" },
+      { speaker:'B', text:"I walked into the bookstore and looked around for an hour." },
+      { speaker:'A', text:"Did you buy anything?" },
+      { speaker:'B', text:"Yes! I picked up a novel and took it home with me." },
+      { speaker:'A', text:"She ran out of the building when the alarm went off." },
+      { speaker:'B', text:"Everyone moved towards the emergency exit quickly." },
+      { speaker:'A', text:"The manager came out and told us to stay calm." },
+      { speaker:'B', text:"It turned out to be a fire drill. What a relief!" },
+    ]
+  },
+  {
+    day: 38, title: 'PREPOSITIONS OF PLACE', topic: 'Giới từ chỉ nơi chốn',
+    lines: [
+      { speaker:'A', text:"Where is the cat? I cannot find it anywhere." },
+      { speaker:'B', text:"It is under the bed in the bedroom." },
+      { speaker:'A', text:"What about the keys? They are not on the table." },
+      { speaker:'B', text:"I put them in the drawer next to the door." },
+      { speaker:'A', text:"The supermarket is between the bank and the post office." },
+      { speaker:'B', text:"Is the coffee shop behind the supermarket or in front of it?" },
+      { speaker:'A', text:"It is in front of it, on the left side of the entrance." },
+      { speaker:'B', text:"Perfect. I will meet you there at noon." },
+    ]
+  },
+  {
+    day: 39, title: 'WHERE + Giới từ vị trí', topic: 'Hỏi vị trí kết hợp giới từ',
+    lines: [
+      { speaker:'A', text:"Excuse me, where exactly is the conference room?" },
+      { speaker:'B', text:"It is on the third floor, at the end of the corridor." },
+      { speaker:'A', text:"Is it on the left or the right?" },
+      { speaker:'B', text:"It is on the right, just opposite the elevator." },
+      { speaker:'A', text:"Where do you usually park your car?" },
+      { speaker:'B', text:"I park it in the underground car park below the building." },
+      { speaker:'A', text:"And where is the nearest ATM?" },
+      { speaker:'B', text:"There is one at the corner of the street, next to the pharmacy." },
+    ]
+  },
+  {
+    day: 41, title: 'MOVEMENT VERBS', topic: 'Động từ chỉ sự di chuyển',
+    lines: [
+      { speaker:'A', text:"Where did you go this morning? I did not see you." },
+      { speaker:'B', text:"I walked to the market and then cycled along the beach." },
+      { speaker:'A', text:"That sounds wonderful! Did you swim in the sea?" },
+      { speaker:'B', text:"Yes! I jumped in and swam for thirty minutes." },
+      { speaker:'A', text:"She climbed the hill and ran all the way back down." },
+      { speaker:'B', text:"She is so fit! I can barely climb stairs." },
+      { speaker:'A', text:"He drove to the mountains and hiked for six hours." },
+      { speaker:'B', text:"That is impressive. I prefer staying on flat ground!" },
+    ]
+  },
+  {
+    day: 42, title: 'TÍNH TỪ ĐUÔI -ED & -ING', topic: 'Bored vs Boring – cảm xúc',
+    lines: [
+      { speaker:'A', text:"How was the lecture today?" },
+      { speaker:'B', text:"It was so boring! I was bored after the first ten minutes." },
+      { speaker:'A', text:"Really? I found the topic quite interesting." },
+      { speaker:'B', text:"I was confused by all the technical terms." },
+      { speaker:'A', text:"The documentary last night was amazing. Were you surprised?" },
+      { speaker:'B', text:"I was shocked by the ending! It was very exciting." },
+      { speaker:'A', text:"She looked exhausted after the long meeting." },
+      { speaker:'B', text:"Three hours of boring presentations would exhaust anyone!" },
+    ]
+  },
+  {
+    day: 43, title: 'ADJECTIVES -ED & -ING (Ôn tập)', topic: 'Amazed / Amazing – luyện sâu',
+    lines: [
+      { speaker:'A', text:"The concert last night was absolutely amazing!" },
+      { speaker:'B', text:"I was amazed by the singer's voice. It was incredible." },
+      { speaker:'A', text:"Were you not a bit disappointed that it ended so quickly?" },
+      { speaker:'B', text:"A little. But I was so entertained the whole time." },
+      { speaker:'A', text:"The light show was breathtaking." },
+      { speaker:'B', text:"I was thrilled when they played my favorite song." },
+      { speaker:'A', text:"The crowd was so excited. Everyone was jumping and singing." },
+      { speaker:'B', text:"It was the most satisfying concert I have ever attended!" },
+    ]
+  },
+  {
+    day: 44, title: 'PERSONALITY (Phần 1)', topic: 'Tính cách con người – nhóm 1',
+    lines: [
+      { speaker:'A', text:"What is your new colleague like?" },
+      { speaker:'B', text:"She is very friendly and outgoing. Everyone likes her." },
+      { speaker:'A', text:"What about the new manager?" },
+      { speaker:'B', text:"He is a bit strict but very hardworking and fair." },
+      { speaker:'A', text:"My neighbor is so kind. He always helps me carry groceries." },
+      { speaker:'B', text:"That is sweet! My neighbor is quite shy and quiet." },
+      { speaker:'A', text:"Shy people are often very thoughtful and sensitive." },
+      { speaker:'B', text:"That is true. Once you get to know them, they are wonderful." },
+    ]
+  },
+  {
+    day: 45, title: 'PERSONALITY (Phần 2)', topic: 'Tính cách con người – nhóm 2',
+    lines: [
+      { speaker:'A', text:"I find it difficult to work with arrogant people." },
+      { speaker:'B', text:"Me too. I prefer colleagues who are humble and cooperative." },
+      { speaker:'A', text:"She is extremely patient with her students." },
+      { speaker:'B', text:"That is so important for a teacher. He can be quite stubborn sometimes." },
+      { speaker:'A', text:"Is he? He seems very easy-going to me." },
+      { speaker:'B', text:"Depends on the situation. He is generous with his time though." },
+      { speaker:'A', text:"A generous and patient person is hard to find." },
+      { speaker:'B', text:"Absolutely. We are lucky to have people like that around us." },
+    ]
+  },
+  {
+    day: 46, title: 'PERSONALITY (Phần 3)', topic: 'Mô tả tính cách – nâng cao',
+    lines: [
+      { speaker:'A', text:"How would you describe yourself in three words?" },
+      { speaker:'B', text:"I would say I am ambitious, creative, and reliable." },
+      { speaker:'A', text:"Those are great qualities! I think I am honest, empathetic, and curious." },
+      { speaker:'B', text:"Empathy is so important in life and in the workplace." },
+      { speaker:'A', text:"Agreed. What do you think is the most valuable personality trait?" },
+      { speaker:'B', text:"For me, it is integrity. Being trustworthy matters the most." },
+      { speaker:'A', text:"I also value resilience. The ability to bounce back from difficulties." },
+      { speaker:'B', text:"Absolutely. Those two traits together make a very strong person." },
+    ]
+  },
+  {
+    day: 47, title: 'ADVERBS OF DEGREE', topic: 'Very / Quite / Extremely / Rather',
+    lines: [
+      { speaker:'A', text:"How was the food at the new restaurant?" },
+      { speaker:'B', text:"It was extremely delicious! The service was very fast too." },
+      { speaker:'A', text:"Was it expensive?" },
+      { speaker:'B', text:"It was quite expensive, but totally worth it." },
+      { speaker:'A', text:"The weather today is rather hot, do you not think?" },
+      { speaker:'B', text:"Yes, it is incredibly humid too. I am absolutely exhausted." },
+      { speaker:'A', text:"Me too. I am fairly sure it is the hottest day this year." },
+      { speaker:'B', text:"Let's go somewhere air-conditioned. I am completely melting!" },
+    ]
+  },
+  {
+    day: 48, title: 'ADJECTIVE ORDER', topic: 'Trật tự tính từ trong câu',
+    lines: [
+      { speaker:'A', text:"Did you see what she was wearing today?" },
+      { speaker:'B', text:"Yes! She had on a gorgeous long purple silk scarf." },
+      { speaker:'A', text:"And he arrived in a stylish new German sports car." },
+      { speaker:'B', text:"I know! We stayed in a charming old stone cottage last summer." },
+      { speaker:'A', text:"That sounds like a dream vacation!" },
+      { speaker:'B', text:"It was. She wore a stunning enormous diamond ring to the party." },
+      { speaker:'A', text:"I noticed it too. He gave her a lovely small round wooden box." },
+      { speaker:'B', text:"What was inside?" },
+    ]
+  },
+  {
+    day: 49, title: 'KHẨU VỊ (Phần 1)', topic: 'Sweet / Sour / Salty / Bitter',
+    lines: [
+      { speaker:'A', text:"How do you like your coffee?" },
+      { speaker:'B', text:"I like it slightly sweet but not too much sugar." },
+      { speaker:'A', text:"I prefer mine bitter, with no sugar at all." },
+      { speaker:'B', text:"Really? That is too strong for me." },
+      { speaker:'A', text:"Have you tried the tamarind sauce? It is very sour." },
+      { speaker:'B', text:"I love sour food! But this soup is too salty for my taste." },
+      { speaker:'A', text:"You can add water to make it milder." },
+      { speaker:'B', text:"Good tip! I always find the balance between flavors interesting." },
+    ]
+  },
+  {
+    day: 51, title: 'MÔ TẢ ĐỒ ĂN', topic: 'Food Description Vocabulary',
+    lines: [
+      { speaker:'A', text:"How was the pho you had for breakfast?" },
+      { speaker:'B', text:"It was rich and flavorful. The broth was absolutely delicious." },
+      { speaker:'A', text:"Was it oily?" },
+      { speaker:'B', text:"A little greasy, but still wonderful. The meat was very tender." },
+      { speaker:'A', text:"I tried the banh mi. It was crispy on the outside and soft inside." },
+      { speaker:'B', text:"That is the perfect combination! Was it too spicy?" },
+      { speaker:'A', text:"Not at all. It was mild and fresh with lots of herbs." },
+      { speaker:'B', text:"Vietnamese food is truly amazing. Every dish is so well-balanced." },
+    ]
+  },
+  {
+    day: 52, title: 'IN THE GARDEN', topic: 'Từ vựng chủ đề làm vườn',
+    lines: [
+      { speaker:'A', text:"Your garden is beautiful! Do you spend a lot of time here?" },
+      { speaker:'B', text:"Yes! I water the plants every morning and pull out the weeds." },
+      { speaker:'A', text:"What do you grow here?" },
+      { speaker:'B', text:"I grow tomatoes, herbs, and some flowers along the fence." },
+      { speaker:'A', text:"That rose bush is stunning. When does it bloom?" },
+      { speaker:'B', text:"It blooms in spring and summer. I plant new seeds every year." },
+      { speaker:'A', text:"I would love to start a garden. Where do I begin?" },
+      { speaker:'B', text:"Start with easy plants like herbs. Basil and mint are perfect for beginners." },
+    ]
+  },
+  {
+    day: 53, title: 'ACTIVITIES AT HOME', topic: 'Các hoạt động ở nhà',
+    lines: [
+      { speaker:'A', text:"What do you usually do in the evenings at home?" },
+      { speaker:'B', text:"I cook dinner, do the dishes, and then watch a series on Netflix." },
+      { speaker:'A', text:"Do you exercise at home?" },
+      { speaker:'B', text:"Sometimes I do yoga or follow a workout video online." },
+      { speaker:'A', text:"She usually reads or knits after dinner." },
+      { speaker:'B', text:"That sounds so peaceful! He spends hours playing video games." },
+      { speaker:'A', text:"As long as he finishes his homework first!" },
+      { speaker:'B', text:"Exactly. Balance is everything." },
+    ]
+  },
+  {
+    day: 54, title: 'OUTDOOR ACTIVITIES', topic: 'Hoạt động ngoài trời',
+    lines: [
+      { speaker:'A', text:"What do you like to do outdoors on weekends?" },
+      { speaker:'B', text:"I love cycling along the beach and having picnics in the park." },
+      { speaker:'A', text:"Do you ever go hiking?" },
+      { speaker:'B', text:"Yes! I hiked Son Tra peninsula last month. It was breathtaking." },
+      { speaker:'A', text:"She goes jogging every morning before work." },
+      { speaker:'B', text:"That takes real dedication! He plays football with his friends." },
+      { speaker:'A', text:"Outdoor activities are so good for your health and mood." },
+      { speaker:'B', text:"Absolutely. Fresh air and nature make everything better." },
+    ]
+  },
+  {
+    day: 55, title: 'THỜI TIẾT', topic: 'Weather – nói về thời tiết',
+    lines: [
+      { speaker:'A', text:"What is the weather like today?" },
+      { speaker:'B', text:"It is quite cloudy and a bit windy. It might rain this afternoon." },
+      { speaker:'A', text:"Should I bring an umbrella?" },
+      { speaker:'B', text:"Yes, definitely. The forecast says there will be heavy rain." },
+      { speaker:'A', text:"Yesterday was so sunny and warm. The weather changes so fast here." },
+      { speaker:'B', text:"Welcome to Central Vietnam! Last week it was foggy and cool." },
+      { speaker:'A', text:"What is your favorite type of weather?" },
+      { speaker:'B', text:"I love sunny but breezy days. Perfect for a walk on the beach." },
+    ]
+  },
+  {
+    day: 56, title: 'MUST & HAVE TO', topic: 'Diễn đạt sự bắt buộc và cấm đoán',
+    lines: [
+      { speaker:'A', text:"You must wear a helmet when riding a motorbike. It is the law." },
+      { speaker:'B', text:"I know. I always do. Do you have to work this weekend?" },
+      { speaker:'A', text:"Yes, I have to finish a report by Monday." },
+      { speaker:'B', text:"That is tough. Students must not use phones during exams." },
+      { speaker:'A', text:"Of course. And employees must follow the company dress code." },
+      { speaker:'B', text:"Do you have to attend the meeting tomorrow morning?" },
+      { speaker:'A', text:"Yes, but I do not have to give a presentation this time." },
+      { speaker:'B', text:"Lucky you! I have to present to the whole board." },
+    ]
+  },
+  {
+    day: 57, title: 'HAVE A PLAN TO', topic: 'Diễn đạt kế hoạch tương lai',
+    lines: [
+      { speaker:'A', text:"What are your plans for the weekend?" },
+      { speaker:'B', text:"I plan to visit my parents in Hoi An on Saturday." },
+      { speaker:'A', text:"That sounds great! I am planning to go to the gym and cook at home." },
+      { speaker:'B', text:"She has a plan to start her own business next year." },
+      { speaker:'A', text:"Really? What kind of business?" },
+      { speaker:'B', text:"An online café with English teaching services." },
+      { speaker:'A', text:"That is a brilliant idea! Does she have investors?" },
+      { speaker:'B', text:"Not yet. But she is planning to apply for a small business loan." },
+    ]
+  },
+  {
+    day: 58, title: "IT'S + ADJ + TO V", topic: 'Thật … khi / để làm gì',
+    lines: [
+      { speaker:'A', text:"It is important to stay hydrated in this hot weather." },
+      { speaker:'B', text:"Absolutely. It is also essential to wear sunscreen." },
+      { speaker:'A', text:"It is difficult to learn a new language as an adult." },
+      { speaker:'B', text:"But it is possible if you practice every day. It is fun too!" },
+      { speaker:'A', text:"It is dangerous to drive while using your phone." },
+      { speaker:'B', text:"I agree. It is illegal in Vietnam too." },
+      { speaker:'A', text:"It is wonderful to have good friends around you." },
+      { speaker:'B', text:"It is impossible to put a price on true friendship." },
+    ]
+  },
+  {
+    day: 59, title: 'QUESTIONS WITH "ANY"', topic: 'Câu hỏi nghi vấn với Any',
+    lines: [
+      { speaker:'A', text:"Do you have any questions about the lesson?" },
+      { speaker:'B', text:"Yes! Is there any homework for tomorrow?" },
+      { speaker:'A', text:"No, there is not any homework this week." },
+      { speaker:'B', text:"Great! Are there any events happening this weekend?" },
+      { speaker:'A', text:"There are not any events I know of. Did you find any good restaurants?" },
+      { speaker:'B', text:"Yes! There is a new one on Tran Phu Street. Any recommendations?" },
+      { speaker:'A', text:"Try the seafood noodles. They are excellent." },
+      { speaker:'B', text:"Thanks! Is there any chance you could join me?" },
+    ]
+  },
+  {
+    day: 61, title: 'CONFUSING WORDS', topic: 'Cặp từ dễ nhầm lẫn',
+    lines: [
+      { speaker:'A', text:"I always confuse 'lend' and 'borrow'. Can you explain?" },
+      { speaker:'B', text:"Sure! You lend something to someone, and you borrow from someone." },
+      { speaker:'A', text:"So I should say 'Can you lend me your pen?' not 'borrow me'?" },
+      { speaker:'B', text:"Exactly! Another confusing pair is 'rise' and 'raise'." },
+      { speaker:'A', text:"I know that one. The sun rises but you raise your hand." },
+      { speaker:'B', text:"Perfect! What about 'affect' and 'effect'?" },
+      { speaker:'A', text:"Affect is the verb: the rain affects traffic." },
+      { speaker:'B', text:"And effect is the noun: the effects of pollution. Well done!" },
+    ]
+  },
+  {
+    day: 62, title: 'VERBS STARTING WITH P', topic: 'Động từ thông dụng bắt đầu chữ P',
+    lines: [
+      { speaker:'A', text:"Please pay attention during the training session today." },
+      { speaker:'B', text:"Of course. I plan to participate in the whole workshop." },
+      { speaker:'A', text:"We need to prepare all the materials before the guests arrive." },
+      { speaker:'B', text:"I will print the documents and put them on the table." },
+      { speaker:'A', text:"Can you also push the chairs closer together?" },
+      { speaker:'B', text:"Sure. Should I pick up the name tags from reception?" },
+      { speaker:'A', text:"Yes please. And do not forget to plug in the projector." },
+      { speaker:'B', text:"Everything will be perfect. Do not worry!" },
+    ]
+  },
+  {
+    day: 63, title: 'HAVE / HAS + EVER', topic: 'Hỏi về trải nghiệm trong đời',
+    lines: [
+      { speaker:'A', text:"Have you ever been to Japan?" },
+      { speaker:'B', text:"Yes! I have been there twice. Have you?" },
+      { speaker:'A', text:"No, never. Have you ever tried skydiving?" },
+      { speaker:'B', text:"Never! That sounds terrifying. Has she ever lived abroad?" },
+      { speaker:'A', text:"Yes, she has. She lived in Australia for two years." },
+      { speaker:'B', text:"How exciting! Have they ever met a famous person?" },
+      { speaker:'A', text:"He has. He once met a famous Vietnamese singer at an airport." },
+      { speaker:'B', text:"Wow! Have you ever won a competition or award?" },
+    ]
+  },
+  {
+    day: 64, title: 'ALREADY / JUST / YET / STILL', topic: 'Đã, Vừa mới, Chưa, Vẫn',
+    lines: [
+      { speaker:'A', text:"Have you eaten lunch yet?" },
+      { speaker:'B', text:"No, not yet. I have just finished a meeting." },
+      { speaker:'A', text:"I have already eaten. The new noodle shop is great." },
+      { speaker:'B', text:"Really? I have not tried it yet. Is it still crowded?" },
+      { speaker:'A', text:"It was still busy when I left. She has just arrived, by the way." },
+      { speaker:'B', text:"Oh good! I have already sent her the address." },
+      { speaker:'A', text:"He has not replied to my message yet." },
+      { speaker:'B', text:"He is still in the meeting. He will call you back soon." },
+    ]
+  },
+  {
+    day: 65, title: 'PHRASAL VERBS', topic: 'Cụm động từ thông dụng',
+    lines: [
+      { speaker:'A', text:"Can you turn off the air conditioning? I am cold." },
+      { speaker:'B', text:"Sure. Do not forget to turn on the lights before you leave." },
+      { speaker:'A', text:"I need to look up this word in the dictionary." },
+      { speaker:'B', text:"You can look it up online. What word is it?" },
+      { speaker:'A', text:"The word is 'call off'. What does it mean?" },
+      { speaker:'B', text:"To call off means to cancel something. They called off the meeting." },
+      { speaker:'A', text:"I see! And 'run out of'?" },
+      { speaker:'B', text:"It means you have no more of something. I ran out of coffee this morning!" },
+    ]
+  },
+  {
+    day: 66, title: 'EXPRESSING PREFERENCES', topic: 'Love / Adore / Big fan of',
+    lines: [
+      { speaker:'A', text:"Do you prefer coffee or tea in the morning?" },
+      { speaker:'B', text:"I am a big fan of Vietnamese iced coffee. I love it!" },
+      { speaker:'A', text:"I adore green tea. It is so calming." },
+      { speaker:'B', text:"What kind of music do you prefer?" },
+      { speaker:'A', text:"I prefer soft pop and acoustic guitar. I cannot stand loud music." },
+      { speaker:'B', text:"I am into jazz and classical music. I find it relaxing." },
+      { speaker:'A', text:"Do you prefer working from home or at the office?" },
+      { speaker:'B', text:"I would rather work from home. It saves so much time!" },
+    ]
+  },
+  {
+    day: 67, title: 'MAKING SUGGESTIONS', topic: 'Đề xuất & Gợi ý',
+    lines: [
+      { speaker:'A', text:"What should we do this evening?" },
+      { speaker:'B', text:"Why do not we try that new Italian restaurant on the beach?" },
+      { speaker:'A', text:"That sounds great! Or we could go for a walk along the river." },
+      { speaker:'B', text:"How about doing both? Dinner first, then a walk." },
+      { speaker:'A', text:"Perfect! Let's invite some friends too." },
+      { speaker:'B', text:"Good idea. I suggest we invite Anna and Tom." },
+      { speaker:'A', text:"Should we book a table in advance?" },
+      { speaker:'B', text:"Yes, we had better book now. It can get very busy on Fridays." },
+    ]
+  },
+  {
+    day: 68, title: 'GIVING ADVICE', topic: 'Lời khuyên & Hướng dẫn',
+    lines: [
+      { speaker:'A', text:"I have been feeling very stressed lately. Any advice?" },
+      { speaker:'B', text:"You should try exercising more. It really helps with stress." },
+      { speaker:'A', text:"I know. I ought to sleep earlier too. I stay up too late." },
+      { speaker:'B', text:"You should not work until midnight every night. It is not healthy." },
+      { speaker:'A', text:"You are right. What would you recommend for relaxation?" },
+      { speaker:'B', text:"You could try meditation or yoga. Even ten minutes a day helps." },
+      { speaker:'A', text:"That is a good idea. Should I also see a doctor?" },
+      { speaker:'B', text:"If the stress continues, you had better see a professional." },
+    ]
+  },
+  {
+    day: 69, title: 'EXPRESSING OPINIONS', topic: 'Nêu ý kiến & Đồng ý / Phản đối',
+    lines: [
+      { speaker:'A', text:"What do you think about working from home?" },
+      { speaker:'B', text:"In my opinion, it increases productivity for many people." },
+      { speaker:'A', text:"I agree to some extent. But I think team collaboration suffers." },
+      { speaker:'B', text:"That is a fair point. Do you believe online meetings are effective?" },
+      { speaker:'A', text:"To be honest, I find them tiring. Face to face is better." },
+      { speaker:'B', text:"I see your point. However, they save a lot of travel time." },
+      { speaker:'A', text:"That is true. I suppose the ideal solution is a mix of both." },
+      { speaker:'B', text:"Exactly! A hybrid model seems to work best for most companies." },
+    ]
+  },
+  {
+    day: 71, title: 'SHOPPING ONLINE', topic: 'Mua sắm trực tuyến',
+    lines: [
+      { speaker:'A', text:"Do you prefer shopping online or in a physical store?" },
+      { speaker:'B', text:"I love shopping online. It is so convenient and saves time." },
+      { speaker:'A', text:"Do you worry about the quality of products?" },
+      { speaker:'B', text:"Sometimes. I always read reviews before I order anything." },
+      { speaker:'A', text:"What was the last thing you bought online?" },
+      { speaker:'B', text:"I ordered a coffee maker and it arrived the next day." },
+      { speaker:'A', text:"That is fast! Did it match the description?" },
+      { speaker:'B', text:"Perfectly. I always compare prices on different websites first." },
+    ]
+  },
+  {
+    day: 72, title: 'SOCIAL MEDIA', topic: 'Mạng xã hội & Công nghệ',
+    lines: [
+      { speaker:'A', text:"How many hours a day do you spend on social media?" },
+      { speaker:'B', text:"Probably two to three hours. Maybe too much." },
+      { speaker:'A', text:"I try to limit myself to one hour. It is so easy to lose track of time." },
+      { speaker:'B', text:"Which platforms do you use most?" },
+      { speaker:'A', text:"I use Facebook for keeping in touch with family and YouTube for learning." },
+      { speaker:'B', text:"I love Instagram for travel inspiration and TikTok for entertainment." },
+      { speaker:'A', text:"Do you think social media has more benefits or drawbacks?" },
+      { speaker:'B', text:"Both! It connects us, but it can also be addictive and misleading." },
+    ]
+  },
+  {
+    day: 74, title: 'HOTEL', topic: 'Đặt phòng & Lưu trú khách sạn',
+    lines: [
+      { speaker:'A', text:"Good afternoon! I would like to check in. I have a reservation." },
+      { speaker:'B', text:"Welcome! May I have your name, please?" },
+      { speaker:'A', text:"My name is Nguyen Thi Lan." },
+      { speaker:'B', text:"Thank you! What time is checkout? And is breakfast included?" },
+      { speaker:'A', text:"Checkout is at noon and yes, breakfast is included." },
+      { speaker:'B', text:"Could you bring extra towels to my room, please?" },
+      { speaker:'A', text:"Certainly! Is there anything else you need?" },
+      { speaker:'B', text:"The air conditioner in my room is not working. Could someone fix it?" },
+    ]
+  },
+  {
+    day: 76, title: 'RAILWAY STATION', topic: 'Tại ga tàu lửa',
+    lines: [
+      { speaker:'A', text:"Excuse me, I need to buy a ticket to Hanoi." },
+      { speaker:'B', text:"Certainly! What time would you like to travel?" },
+      { speaker:'A', text:"As early as possible tomorrow morning." },
+      { speaker:'B', text:"There is a train at six fifteen. Is there a direct train or do I need to transfer?" },
+      { speaker:'A', text:"This one is direct. It arrives in Hanoi at twelve thirty." },
+      { speaker:'B', text:"Which platform does the train to Hanoi depart from?" },
+      { speaker:'A', text:"Platform three. What time does the train leave?" },
+      { speaker:'B', text:"It departs at six fifteen sharp. Do not be late!" },
+    ]
+  },
+  {
+    day: 77, title: 'SALES COMMUNICATION', topic: 'Giao tiếp trong kinh doanh',
+    lines: [
+      { speaker:'A', text:"Good morning! We would like to place an order for fifty units." },
+      { speaker:'B', text:"Great! Could you send us a quotation by tomorrow?" },
+      { speaker:'A', text:"Of course. Let's negotiate a better price for this large order." },
+      { speaker:'B', text:"We can offer you a discount of ten percent for bulk orders." },
+      { speaker:'A', text:"That is acceptable. When can we expect the delivery to arrive?" },
+      { speaker:'B', text:"We can deliver within five to seven working days." },
+      { speaker:'A', text:"Perfect. We would like to confirm the order in writing." },
+      { speaker:'B', text:"We will send you a formal contract by the end of today." },
+    ]
+  },
+  {
+    day: 79, title: 'ADJECTIVE ORDER (Advanced)', topic: 'Trật tự tính từ nâng cao',
+    lines: [
+      { speaker:'A', text:"Did you see what she was wearing at the gala?" },
+      { speaker:'B', text:"Yes! She had on a gorgeous long purple silk gown." },
+      { speaker:'A', text:"And her ring! She wore a stunning enormous diamond ring." },
+      { speaker:'B', text:"He arrived in a stylish new German sports car." },
+      { speaker:'A', text:"We stayed in a charming old stone cottage on our honeymoon." },
+      { speaker:'B', text:"How romantic! He gave her a lovely small round wooden box." },
+      { speaker:'A', text:"What was in the box?" },
+      { speaker:'B', text:"A handwritten letter and a tiny beautiful pearl necklace." },
+    ]
+  },
+  {
+    day: 80, title: 'P VERBS – PROMISE / PREPARE / PRETEND', topic: 'Ôn tập tổng kết',
+    lines: [
+      { speaker:'A', text:"We have reached the final lesson! How do you feel?" },
+      { speaker:'B', text:"I feel proud and a little surprised. I promised myself I would finish." },
+      { speaker:'A', text:"And you did it! She prepared a detailed plan before starting." },
+      { speaker:'B', text:"Practice makes perfect, so keep speaking every day." },
+      { speaker:'A', text:"The children pretended to be superheroes in the garden." },
+      { speaker:'B', text:"She prevented many mistakes by acting carefully and preparing well." },
+      { speaker:'A', text:"He prepared a detailed plan before every important meeting." },
+      { speaker:'B', text:"Never stop learning. Every day is a new opportunity to grow!" },
+    ]
+  },
+];
+
+// ── Tạo map { day → dialogue } để tra nhanh ──
+var DIALOGUE_MAP = {};
+DIALOGUES.forEach(function(d){ DIALOGUE_MAP[d.day] = d; });
+
+// ── Populate dropdown & khởi tạo tab ──
+function initListenTab(){
+  var sel = document.getElementById('listen-day-select');
+  // Chỉ build 1 lần
+  if(sel.options.length > 1) return;
+  DIALOGUES.forEach(function(d){
+    var opt = document.createElement('option');
+    opt.value = d.day;
+    opt.textContent = 'Ngày ' + d.day + ' – ' + d.title;
+    sel.appendChild(opt);
+  });
+}
+
+// Gọi initListenTab khi chuyển tab luyện nghe
+var _origSwitchTab = window.switchTab;
+
+// ── State ──
+var currentDialogue = null;
+var listenLines = [];
+var listenIndex = 0;
+var listenUtterance = null;
+var listenPlaying = false;
+var listenSpeed = 1.0;
+var waveBars = [];
+var waveInterval = null;
+var wakeLock = null;
+
+// ── Load bài học khi chọn dropdown ──
+function loadListenLesson(){
+  var day = parseInt(document.getElementById('listen-day-select').value);
+  var playBtn = document.getElementById('listen-play-btn');
+  var playerBox = document.getElementById('listen-player-box');
+  var dialogueBox = document.getElementById('listen-dialogue-box');
+
+  stopDialogue();
+
+  if(!day || !DIALOGUE_MAP[day]){
+    playBtn.disabled = true;
+    playerBox.style.display = 'none';
+    dialogueBox.style.display = 'none';
+    return;
+  }
+
+  currentDialogue = DIALOGUE_MAP[day];
+  listenLines = currentDialogue.lines;
+  listenIndex = 0;
+
+  // Hiện player box
+  document.getElementById('listen-title').textContent = 'Ngày ' + currentDialogue.day + ' – ' + currentDialogue.title;
+  document.getElementById('listen-topic').textContent = currentDialogue.topic;
+  playerBox.style.display = 'block';
+  playBtn.disabled = false;
+
+  // Build waveform bars
+  buildWaveBars();
+
+  // Build dialogue lines
+  renderDialogue();
+  dialogueBox.style.display = 'block';
+
+  // Reset progress
+  updateTimer(0);
+  document.getElementById('listen-prog-fill').style.width = '0%';
+}
+
+function buildWaveBars(){
+  var wv = document.getElementById('listen-waveform');
+  wv.innerHTML = '';
+  waveBars = [];
+  for(var i=0;i<28;i++){
+    var b = document.createElement('div');
+    b.className = 'wave-bar';
+    b.style.height = Math.floor(Math.random()*24+8)+'px';
+    wv.appendChild(b);
+    waveBars.push(b);
+  }
+}
+
+function animateWave(on){
+  clearInterval(waveInterval);
+  if(!on){
+    waveBars.forEach(function(b){ b.style.opacity='.4'; b.style.height=Math.floor(Math.random()*24+8)+'px'; });
+    return;
+  }
+  waveInterval = setInterval(function(){
+    waveBars.forEach(function(b){
+      b.style.height = Math.floor(Math.random()*32+6)+'px';
+      b.style.opacity = (Math.random()*0.5+0.5).toFixed(2);
+    });
+  }, 150);
+}
+
+function renderDialogue(){
+  var cont = document.getElementById('dialogue-content');
+  cont.innerHTML = '';
+  listenLines.forEach(function(line, idx){
+    var isB = line.speaker === 'B';
+    var row = document.createElement('div');
+    row.className = 'dialogue-line' + (isB ? ' b-line' : '');
+    row.id = 'dl-line-' + idx;
+
+    var av = document.createElement('div');
+    av.className = 'dialogue-avatar ' + (isB ? 'av-b' : 'av-a');
+    av.textContent = line.speaker;
+
+    var bubble = document.createElement('div');
+    bubble.className = 'dialogue-bubble' + (isB ? ' b-bubble' : '');
+    bubble.textContent = line.text;
+
+    row.appendChild(av);
+    row.appendChild(bubble);
+    cont.appendChild(row);
+  });
+}
+
+function highlightLine(idx){
+  document.querySelectorAll('.dialogue-line').forEach(function(el){ el.classList.remove('active-line'); });
+  var el = document.getElementById('dl-line-' + idx);
+  if(el){
+    el.classList.add('active-line');
+    el.scrollIntoView({ behavior:'smooth', block:'nearest' });
+  }
+}
+
+// ── Phát hội thoại ──
+function playDialogue(){
+  if(!currentDialogue){ alert('Vui lòng chọn bài học trước!'); return; }
+  if(listenPlaying) return;
+  listenPlaying = true;
+  animateWave(true);
+  requestWakeLock();
+  speakLineAt(listenIndex);
+}
+
+function speakLineAt(idx){
+  if(!listenPlaying || idx >= listenLines.length){
+    onDialogueEnd();
+    return;
+  }
+  listenIndex = idx;
+  highlightLine(idx);
+  updateProgress(idx, listenLines.length);
+
+  var line = listenLines[idx];
+  var u = new SpeechSynthesisUtterance(line.text);
+  u.lang = 'en-US';
+  u.rate = listenSpeed;
+
+  // Dùng 2 giọng khác nhau cho A & B nếu có
+  var voices = speechSynthesis.getVoices();
+  var enVoices = voices.filter(function(v){ return v.lang && v.lang.startsWith('en'); });
+  if(enVoices.length >= 2){
+    u.voice = line.speaker === 'A' ? enVoices[0] : enVoices[1];
+  }
+
+  u.onend = function(){
+    // Dừng 600ms giữa các câu
+    setTimeout(function(){
+      speakLineAt(idx + 1);
+    }, Math.round(600 / listenSpeed));
+  };
+
+  listenUtterance = u;
+  speechSynthesis.cancel();
+  speechSynthesis.speak(u);
+}
+
+function onDialogueEnd(){
+  listenPlaying = false;
+  listenIndex = 0;
+  animateWave(false);
+  releaseWakeLock();
+  updateProgress(listenLines.length, listenLines.length);
+  // Bỏ highlight sau 1s
+  setTimeout(function(){
+    document.querySelectorAll('.dialogue-line').forEach(function(el){ el.classList.remove('active-line'); });
+  }, 1000);
+}
+
+function stopDialogue(){
+  speechSynthesis.cancel();
+  listenPlaying = false;
+  animateWave(false);
+  releaseWakeLock();
+}
+
+function replayLine(){
+  if(!currentDialogue){ return; }
+  speechSynthesis.cancel();
+  listenPlaying = true;
+  speakLineAt(listenIndex);
+}
+
+function setSpeed(s){
+  listenSpeed = s;
+  document.querySelectorAll('.speed-btn').forEach(function(b){
+    b.classList.toggle('active', parseFloat(b.dataset.speed) === s);
+  });
+}
+
+function updateTimer(idx){
+  var el = document.getElementById('listen-timer');
+  if(!el) return;
+  var estTotal = listenLines.length * 4; // ~4s mỗi câu
+  var current = idx * 4;
+  el.textContent = fmtTime(current) + ' / ~' + fmtTime(estTotal);
+}
+
+function updateProgress(idx, total){
+  var pct = total > 0 ? Math.round((idx / total) * 100) : 0;
+  document.getElementById('listen-prog-fill').style.width = pct + '%';
+  updateTimer(idx);
+}
+
+function fmtTime(sec){
+  var m = Math.floor(sec / 60);
+  var s = sec % 60;
+  return m + ':' + (s < 10 ? '0' : '') + s;
+}
+
+function seekDialogue(e){
+  if(!currentDialogue || listenLines.length === 0) return;
+  var rect = e.currentTarget.getBoundingClientRect();
+  var pct = (e.clientX - rect.left) / rect.width;
+  var newIdx = Math.floor(pct * listenLines.length);
+  newIdx = Math.max(0, Math.min(newIdx, listenLines.length - 1));
+  speechSynthesis.cancel();
+  listenPlaying = true;
+  speakLineAt(newIdx);
+}
+
+// ── Wake Lock ──
+async function requestWakeLock(){
+  if('wakeLock' in navigator){
+    try {
+      wakeLock = await navigator.wakeLock.request('screen');
+      document.getElementById('wakelock-status').textContent = '✅ Đã giữ màn hình sáng';
+      document.getElementById('wakelock-status').className = 'wakelock-badge on';
+    } catch(e){}
+  }
+}
+function releaseWakeLock(){
+  if(wakeLock){ wakeLock.release(); wakeLock = null; }
+  var el = document.getElementById('wakelock-status');
+  if(el){
+    el.textContent = '🔒 Chưa kích hoạt giữ màn hình';
+    el.className = 'wakelock-badge off';
+  }
+}
+
+// Patch switchTab để init listen tab
+document.addEventListener('DOMContentLoaded', function(){
+  var origSwitch = window.switchTab;
+  window.switchTab = function(name){
+    origSwitch(name);
+    if(name === 'listen-practice') initListenTab();
+  };
+  // Thêm CSS cần thiết
+  var style = document.createElement('style');
+  style.textContent = `
+    .wakelock-badge { display:inline-block; font-size:.75rem; font-weight:700; padding:4px 12px; border-radius:20px; }
+    .wakelock-badge.off { background:#fff3bf; color:#7c5c00; }
+    .wakelock-badge.on  { background:#d3f9d8; color:#2b8a3e; }
+    .dialogue-line.active-line .dialogue-bubble {
+      background: var(--accent) !important;
+      color: var(--primary) !important;
+      box-shadow: 0 2px 10px rgba(255,217,61,.45);
+      transform: scale(1.03);
+      transition: all .2s;
+    }
+    .b-bubble { background:#e6fcf5; color:var(--primary); }
+    .listen-note { background:#e7f5ff; border:2px dashed var(--blue); border-radius:12px;
+      padding:12px 16px; font-size:.84rem; line-height:1.7; color:#1864ab; font-weight:600; margin-bottom:16px; }
+  `;
+  document.head.appendChild(style);
+});
 </script>
 
 <!-- ══════════════ LUYỆN NÓI TAB ══════════════ -->
