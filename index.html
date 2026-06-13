@@ -1249,8 +1249,6 @@ function renderNextBatch(){
   if(old) old.remove();
   grid.appendChild(frag);
   renderedCount = end;
-  var rc = document.getElementById('rendered-count');
-  if(rc) rc.textContent = renderedCount;
   if(renderedCount < filteredLessons.length){
     var sentinel = document.createElement('div');
     sentinel.id = 'load-sentinel';
@@ -1285,6 +1283,8 @@ function filterLessons(query){
   initLazyLoader(lessons);
   var fc = document.getElementById('filter-count');
   if(fc) fc.textContent = lessons.length;
+  var rc = document.getElementById('rendered-count');
+  if(rc) rc.textContent = lessons.length;
   if(q && lessons.length===0){
     document.getElementById('lesson-grid').innerHTML =
       '<p style="grid-column:1/-1;text-align:center;padding:40px 20px;color:#868e96;font-weight:700;font-size:1rem;">🔍 Không tìm thấy bài nào. Thử từ khác!</p>';
@@ -1296,6 +1296,8 @@ function buildSite(){
   document.getElementById('total-lessons').textContent = total;
   var fc = document.getElementById('filter-count');
   if(fc) fc.textContent = total;
+  var rc = document.getElementById('rendered-count');
+  if(rc) rc.textContent = total;
   // Progress bar: tiến độ theo tổng số bài hiện có
   var pct = 100; // Hiển thị đầy đủ khi tất cả bài đã có
   document.getElementById('prog-fill').style.width = pct+'%';
