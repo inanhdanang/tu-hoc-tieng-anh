@@ -40,6 +40,14 @@ main{max-width:900px;margin:0 auto;padding:28px 16px 64px;}
 .lb-stop:hover{background:#dee2e6;}
 .lb-replay{background:rgba(255,255,255,.12);color:white;border:1px solid rgba(255,255,255,.2);}
 .lb-replay:hover{background:rgba(255,255,255,.2);}
+.lb-all{background:#2f9e44;color:white;}
+.lb-all:hover{background:#2b8a3e;}
+.lb-all.playing-all{background:#e67700;color:white;}
+.lb-loop{background:rgba(255,255,255,.12);color:white;border:1px solid rgba(255,255,255,.2);}
+.lb-loop:hover{background:rgba(255,255,255,.2);}
+.lb-loop.loop-on{background:var(--accent);color:var(--primary);border-color:var(--accent);}
+.dialogue-line{cursor:pointer;transition:opacity .15s;}
+.dialogue-line:hover .dialogue-bubble{opacity:.75;}
 .listen-speed-row{display:flex;align-items:center;gap:10px;justify-content:center;flex-wrap:wrap;}
 .listen-speed-label{font-size:.78rem;font-weight:800;color:rgba(255,255,255,.6);}
 .speed-btn{border:2px solid rgba(255,255,255,.25);background:transparent;color:white;border-radius:20px;padding:4px 13px;font-size:.78rem;font-weight:800;cursor:pointer;font-family:inherit;transition:all .2s;}
@@ -72,7 +80,7 @@ main{max-width:900px;margin:0 auto;padding:28px 16px 64px;}
 <main>
   <div class="section-title">🎧 Luyện nghe hội thoại theo từng ngày</div>
   <div class="listen-note">
-    🔊 <strong>Cách dùng:</strong> Chọn bài học, nhấn <strong>▶ Phát</strong> để nghe hội thoại (~3 phút). Hai giọng đọc khác nhau phân biệt nhân vật A và B. Bạn có thể chỉnh tốc độ nghe. Màn hình sẽ <strong>không tắt</strong> trong khi nghe.
+    🔊 <strong>Cách dùng:</strong> Chọn bài học, nhấn <strong>▶ Phát</strong> để nghe hội thoại. Hai giọng đọc khác nhau phân biệt nhân vật A và B. Bạn có thể chỉnh tốc độ nghe. Màn hình sẽ <strong>không tắt</strong> trong khi nghe.
     <div class="wakelock-badge off" id="wakelock-status">🔒 Chưa kích hoạt giữ màn hình</div>
   </div>
   <div class="listen-day-selector">
@@ -80,18 +88,20 @@ main{max-width:900px;margin:0 auto;padding:28px 16px 64px;}
       <option value="">-- Chọn bài học --</option>
     </select>
     <button class="listen-btn lb-play" onclick="playDialogue()" id="listen-play-btn" disabled>▶ Phát</button>
+    <button class="listen-btn lb-all" onclick="togglePlayAll()" id="listen-all-btn">⏭ Nghe tất cả</button>
     <button class="listen-btn lb-stop" onclick="stopDialogue()">⏹ Dừng</button>
   </div>
   <div class="listen-player-box" id="listen-player-box" style="display:none">
     <div class="listen-player-title" id="listen-title">—</div>
     <div class="listen-player-topic" id="listen-topic">—</div>
     <div class="listen-waveform" id="listen-waveform"></div>
-    <div class="listen-timer" id="listen-timer">0:00 / ~3:00</div>
+    <div class="listen-timer" id="listen-timer">0:00</div>
     <div class="listen-progress-wrap" id="listen-prog-wrap" onclick="seekDialogue(event)">
       <div class="listen-progress-fill" id="listen-prog-fill" style="width:0%"></div>
     </div>
     <div class="listen-controls">
       <button class="listen-btn lb-replay" onclick="replayLine()">⟳ Nghe lại câu này</button>
+      <button class="listen-btn lb-loop" onclick="toggleLoop()" id="listen-loop-btn">🔁 Lặp bài</button>
     </div>
     <div class="listen-speed-row">
       <span class="listen-speed-label">TỐC ĐỘ:</span>
@@ -113,7 +123,7 @@ main{max-width:900px;margin:0 auto;padding:28px 16px 64px;}
 </footer>
 <script>
 // ═══════════════════════════════════════════════════════════
-// DỮ LIỆU – mỗi bài 12 câu ≈ 3 phút
+// DỮ LIỆU HỘI THOẠI
 // Bổ sung đầy đủ: Day 23, 40, 50, 60, 70, 73, 75, 78
 // ═══════════════════════════════════════════════════════════
 const DIALOGUES=[
@@ -1253,17 +1263,22 @@ document.addEventListener('DOMContentLoaded',function(){
 });
 
 var currentDialogue=null,listenLines=[],listenIndex=0,listenPlaying=false,listenSpeed=1.0,waveBars=[],waveInterval=null,wakeLock=null;
+var timerInterval=null,timerStart=null,timerElapsed=0;
+var playAllMode=false,loopMode=false,currentDayIdx=0;
 
-function loadListenLesson(){
+function loadListenLesson(autoplay){
   var day=parseInt(document.getElementById('listen-day-select').value);
   var playBtn=document.getElementById('listen-play-btn');
   var playerBox=document.getElementById('listen-player-box');
   var dialogueBox=document.getElementById('listen-dialogue-box');
-  stopDialogue();
+  if(!autoplay) stopDialogue();
   if(!day||!DIALOGUE_MAP[day]){playBtn.disabled=true;playerBox.style.display='none';dialogueBox.style.display='none';return;}
   currentDialogue=DIALOGUE_MAP[day];
   listenLines=currentDialogue.lines;
   listenIndex=0;
+  // track index in DIALOGUES array for play-all
+  for(var i=0;i<DIALOGUES.length;i++){if(DIALOGUES[i].day===day){currentDayIdx=i;break;}}
+  if(!autoplay){stopDialogue();resetRealTimer();}
   document.getElementById('listen-title').textContent='Ngày '+currentDialogue.day+' – '+currentDialogue.title;
   document.getElementById('listen-topic').textContent=currentDialogue.topic;
   playerBox.style.display='block';
@@ -1271,8 +1286,53 @@ function loadListenLesson(){
   buildWaveBars();
   renderDialogue();
   dialogueBox.style.display='block';
-  updateTimer(0);
+  if(!autoplay) resetRealTimer();
   document.getElementById('listen-prog-fill').style.width='0%';
+  if(autoplay){
+    listenPlaying=true;animateWave(true);requestWakeLock();startRealTimer();speakLineAt(0);
+  }
+}
+
+function togglePlayAll(){
+  var btn=document.getElementById('listen-all-btn');
+  if(playAllMode){
+    // Stop play-all
+    playAllMode=false;
+    stopDialogue();
+    btn.textContent='⏭ Nghe tất cả';btn.classList.remove('playing-all');
+    return;
+  }
+  // Start play-all from current or first lesson
+  playAllMode=true;loopMode=false;
+  var loopBtn=document.getElementById('listen-loop-btn');
+  if(loopBtn){loopBtn.classList.remove('loop-on');loopBtn.textContent='🔁 Lặp bài';}
+  btn.textContent='⏹ Dừng tất cả';btn.classList.add('playing-all');
+  // If no lesson selected, start from first
+  if(!currentDialogue){
+    currentDayIdx=0;
+    var sel=document.getElementById('listen-day-select');
+    if(sel) sel.value=DIALOGUES[0].day;
+    loadListenLesson(true);
+  } else {
+    if(listenPlaying){stopDialogue();}
+    listenIndex=0;resetRealTimer();
+    updateProgress(0,listenLines.length);
+    listenPlaying=true;animateWave(true);requestWakeLock();startRealTimer();speakLineAt(0);
+  }
+}
+
+function toggleLoop(){
+  var btn=document.getElementById('listen-loop-btn');
+  loopMode=!loopMode;
+  if(loopMode){
+    btn.classList.add('loop-on');btn.textContent='🔁 Đang lặp';
+    // Turn off play-all
+    playAllMode=false;
+    var allBtn=document.getElementById('listen-all-btn');
+    if(allBtn){allBtn.textContent='⏭ Nghe tất cả';allBtn.classList.remove('playing-all');}
+  } else {
+    btn.classList.remove('loop-on');btn.textContent='🔁 Lặp bài';
+  }
 }
 
 function buildWaveBars(){
@@ -1295,6 +1355,13 @@ function renderDialogue(){
     var row=document.createElement('div');
     row.className='dialogue-line'+(isB?' b-line':'');
     row.id='dl-line-'+idx;
+    row.title='Nhấn để nghe từ câu này';
+    row.addEventListener('click',function(){
+      speechSynthesis.cancel();
+      listenPlaying=true;
+      if(!timerInterval) startRealTimer();
+      speakLineAt(idx);
+    });
     var av=document.createElement('div');
     av.className='dialogue-avatar '+(isB?'av-b':'av-a');
     av.textContent=line.speaker;
@@ -1314,7 +1381,7 @@ function highlightLine(idx){
 function playDialogue(){
   if(!currentDialogue){alert('Vui lòng chọn bài học trước!');return;}
   if(listenPlaying)return;
-  listenPlaying=true;animateWave(true);requestWakeLock();speakLineAt(listenIndex);
+  listenPlaying=true;animateWave(true);requestWakeLock();startRealTimer();speakLineAt(listenIndex);
 }
 
 function speakLineAt(idx){
@@ -1331,16 +1398,61 @@ function speakLineAt(idx){
 }
 
 function onDialogueEnd(){
-  listenPlaying=false;listenIndex=0;animateWave(false);releaseWakeLock();
+  listenPlaying=false;animateWave(false);releaseWakeLock();stopRealTimer();
   updateProgress(listenLines.length,listenLines.length);
+
+  // LOOP MODE: replay same lesson
+  if(loopMode && currentDialogue){
+    setTimeout(function(){
+      listenIndex=0;
+      resetRealTimer();
+      updateProgress(0,listenLines.length);
+      listenPlaying=true;animateWave(true);requestWakeLock();startRealTimer();
+      speakLineAt(0);
+    },800);
+    return;
+  }
+
+  // PLAY ALL MODE: move to next lesson
+  if(playAllMode){
+    setTimeout(function(){
+      var nextIdx=currentDayIdx+1;
+      if(nextIdx>=DIALOGUES.length){
+        // Finished all lessons
+        playAllMode=false;
+        var allBtn=document.getElementById('listen-all-btn');
+        if(allBtn){allBtn.textContent='⏭ Nghe tất cả';allBtn.classList.remove('playing-all');}
+        listenIndex=0;
+        setTimeout(function(){document.querySelectorAll('.dialogue-line').forEach(function(el){el.classList.remove('active-line');});},1000);
+        return;
+      }
+      currentDayIdx=nextIdx;
+      var nextDay=DIALOGUES[nextIdx].day;
+      var sel=document.getElementById('listen-day-select');
+      if(sel) sel.value=nextDay;
+      loadListenLesson(true); // true = autoplay
+    },600);
+    return;
+  }
+
+  listenIndex=0;
   setTimeout(function(){document.querySelectorAll('.dialogue-line').forEach(function(el){el.classList.remove('active-line');});},1000);
 }
 
-function stopDialogue(){speechSynthesis.cancel();listenPlaying=false;animateWave(false);releaseWakeLock();}
+function stopDialogue(){
+  speechSynthesis.cancel();listenPlaying=false;animateWave(false);releaseWakeLock();stopRealTimer();
+  if(playAllMode){
+    playAllMode=false;
+    var allBtn=document.getElementById('listen-all-btn');
+    if(allBtn){allBtn.textContent='⏭ Nghe tất cả';allBtn.classList.remove('playing-all');}
+  }
+}
 
 function replayLine(){
   if(!currentDialogue)return;
-  speechSynthesis.cancel();listenPlaying=true;speakLineAt(listenIndex);
+  speechSynthesis.cancel();listenPlaying=true;
+  if(!timerInterval) startRealTimer();
+  speakLineAt(listenIndex);
 }
 
 function setSpeed(s){
@@ -1348,18 +1460,29 @@ function setSpeed(s){
   document.querySelectorAll('.speed-btn').forEach(function(b){b.classList.toggle('active',parseFloat(b.dataset.speed)===s);});
 }
 
-function updateTimer(idx){
+function startRealTimer(){
+  timerStart=Date.now()-timerElapsed*1000;
+  clearInterval(timerInterval);
+  timerInterval=setInterval(function(){
+    timerElapsed=Math.floor((Date.now()-timerStart)/1000);
+    var el=document.getElementById('listen-timer');
+    if(el) el.textContent=fmtTime(timerElapsed);
+  },500);
+}
+
+function stopRealTimer(){
+  clearInterval(timerInterval);timerInterval=null;
+}
+
+function resetRealTimer(){
+  stopRealTimer();timerElapsed=0;timerStart=null;
   var el=document.getElementById('listen-timer');
-  if(!el)return;
-  var estTotal=listenLines.length*15;
-  var current=idx*15;
-  el.textContent=fmtTime(current)+' / ~'+fmtTime(estTotal);
+  if(el) el.textContent='0:00';
 }
 
 function updateProgress(idx,total){
   var pct=total>0?Math.round((idx/total)*100):0;
   document.getElementById('listen-prog-fill').style.width=pct+'%';
-  updateTimer(idx);
 }
 
 function fmtTime(sec){var m=Math.floor(sec/60);var s=sec%60;return m+':'+(s<10?'0':'')+s;}
@@ -1370,7 +1493,9 @@ function seekDialogue(e){
   var pct=(e.clientX-rect.left)/rect.width;
   var newIdx=Math.floor(pct*listenLines.length);
   newIdx=Math.max(0,Math.min(newIdx,listenLines.length-1));
-  speechSynthesis.cancel();listenPlaying=true;speakLineAt(newIdx);
+  speechSynthesis.cancel();listenPlaying=true;
+  if(!timerInterval) startRealTimer();
+  speakLineAt(newIdx);
 }
 
 async function requestWakeLock(){
